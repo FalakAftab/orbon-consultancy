@@ -1234,3 +1234,25 @@
     transform: none !important;
   }
 }
+
+/* Navbar Responsiveness */
+.lp-desktop-nav,
+.lp-desktop-actions {
+  display: none;
+}
+.lp-mobile-toggle {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .lp-desktop-nav {
+    display: flex !important;
+  }
+  .lp-desktop-actions {
+    display: flex !important;
+  }
+  .lp-mobile-toggle {
+    display: none !important;
+  }
+}
+
