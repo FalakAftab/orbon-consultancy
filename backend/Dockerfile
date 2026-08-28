@@ -46,6 +46,26 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
     && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# Route every non-file request to Laravel's front controller directly at the
+# vhost level, rather than relying on public/.htaccess + AllowOverride (the
+# Debian default is AllowOverride None, which silently ignores .htaccess and
+# 404s on every clean URL like /api/v1/...).
+RUN { \
+        echo '<Directory /var/www/html/public>'; \
+        echo '    Options -Indexes +FollowSymLinks'; \
+        echo '    AllowOverride All'; \
+        echo '    Require all granted'; \
+        echo ''; \
+        echo '    RewriteEngine On'; \
+        echo '    RewriteCond %{HTTP:Authorization} .'; \
+        echo '    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]'; \
+        echo '    RewriteCond %{REQUEST_FILENAME} !-d'; \
+        echo '    RewriteCond %{REQUEST_FILENAME} !-f'; \
+        echo '    RewriteRule ^ index.php [L]'; \
+        echo '</Directory>'; \
+    } > /etc/apache2/conf-available/laravel.conf \
+    && a2enconf laravel
+
 WORKDIR /var/www/html
 COPY --from=vendor /app ./
 
