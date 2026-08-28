@@ -35,8 +35,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         bcmath \
         mbstring \
     && a2enmod rewrite \
-    && apt-get purge -y --auto-remove libpq-dev libzip-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev libicu-dev libonig-dev \
     && rm -rf /var/lib/apt/lists/*
+# Note: the -dev packages above are intentionally kept installed. Purging
+# them with --auto-remove also cascades into removing the runtime shared
+# libraries (libpq.so.5, libicuio.so.76, libpng16.so.16, ...) that the
+# compiled extensions (pdo_pgsql, intl, gd, zip) link against at runtime,
+# which breaks every one of them silently until PHP tries to load them.
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \

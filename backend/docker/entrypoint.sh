@@ -18,7 +18,9 @@ fi
 
 php artisan config:cache
 php artisan route:cache
-php artisan view:cache
+# No php artisan view:cache: this is an API-only app with no resources/views
+# directory, so that command fails outright (and would abort this script,
+# since we run with set -e).
 php artisan migrate --force
 php artisan storage:link || true
 
