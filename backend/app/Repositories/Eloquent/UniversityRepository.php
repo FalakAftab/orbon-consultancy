@@ -15,12 +15,12 @@ class UniversityRepository implements UniversityRepositoryInterface
         $query = University::query();
 
         if (! empty($filters['search'])) {
-            $search = str_replace(' ', '', trim((string) $filters['search']));
+            $search = str_replace([' ', '-', '_', '.', ','], '', mb_strtolower(trim((string) $filters['search'])));
             $query->where(function ($builder) use ($search): void {
-                $builder->whereRaw("REPLACE(name, ' ', '') ILIKE ?", ['%'.$search.'%'])
-                    ->orWhereRaw("REPLACE(city, ' ', '') ILIKE ?", ['%'.$search.'%'])
-                    ->orWhereRaw("REPLACE(state, ' ', '') ILIKE ?", ['%'.$search.'%'])
-                    ->orWhereRaw("REPLACE(country, ' ', '') ILIKE ?", ['%'.$search.'%']);
+                $builder->whereRaw("REPLACE(REPLACE(REPLACE(LOWER(name), ' ', ''), '-', ''), '_', '') ILIKE ?", ['%'.$search.'%'])
+                    ->orWhereRaw("REPLACE(REPLACE(REPLACE(LOWER(city), ' ', ''), '-', ''), '_', '') ILIKE ?", ['%'.$search.'%'])
+                    ->orWhereRaw("REPLACE(REPLACE(REPLACE(LOWER(state), ' ', ''), '-', ''), '_', '') ILIKE ?", ['%'.$search.'%'])
+                    ->orWhereRaw("REPLACE(REPLACE(REPLACE(LOWER(country), ' ', ''), '-', ''), '_', '') ILIKE ?", ['%'.$search.'%']);
             });
         }
 

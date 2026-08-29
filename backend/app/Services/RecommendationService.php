@@ -421,140 +421,81 @@ if ($criteria->tuitionPreference === null || $this->tuitionMatches($program, $cr
     }
 
     private function subjectMatches(array $preferredSubjects, mixed $programOrCategory): bool
-{
-    $preferredSubjects = array_values(
-        array_filter(
-            $preferredSubjects,
-            static fn ($v) => $v !== null && $v !== ''
-        )
-    );
+    {
+        $preferredSubjects = array_values(
+            array_filter(
+                $preferredSubjects,
+                static fn ($v) => $v !== null && $v !== ''
+            )
+        );
 
-    if (empty($preferredSubjects)) {
-        return true;
-    }
-
-    $programSubjectCategory = null;
-    $fieldName = '';
-    $progName = '';
-
-    if ($programOrCategory instanceof Program) {
-        $programSubjectCategory = $programOrCategory->subject_category;
-        $fieldName = (string) ($programOrCategory->field ?? '');
-        $progName = (string) ($programOrCategory->name ?? '');
-    } else {
-        $programSubjectCategory = (string) $programOrCategory;
-    }
-
-    $allTargets = [];
-
-    foreach ($preferredSubjects as $subject) {
-        $s = trim((string) $subject);
-
-        if ($s === '') {
-            continue;
+        if (empty($preferredSubjects)) {
+            return true;
         }
 
-        $sLower = mb_strtolower($s);
+        $programSubjectCategory = null;
+        $fieldName = '';
+        $progName = '';
 
-        /*
-         * Check whether the selected subject is:
-         * 1. A parent category
-         * 2. An alias of a parent category
-         * 3. A specific leaf/subcategory
-         */
+        if ($programOrCategory instanceof Program) {
+            $programSubjectCategory = $programOrCategory->subject_category;
+            $fieldName = (string) ($programOrCategory->field ?? '');
+            $progName = (string) ($programOrCategory->name ?? '');
+        } else {
+            $programSubjectCategory = (string) $programOrCategory;
+        }
 
-        $matchedAsParent = false;
+        $allTargets = [];
 
-        // Example:
-        // "cs" -> "computer science"
-        // "it" -> "computer science"
-        // "engineering" -> "engineering"
-        $aliasParent = self::PARENT_ALIASES[$sLower] ?? null;
+        foreach ($preferredSubjects as $subject) {
+            $s = trim((string) $subject);
+            if ($s === '') {
+                continue;
+            }
 
-        foreach (self::SUBJECT_GROUPS as $parentName => $leaves) {
-            $leavesLower = array_map('mb_strtolower', $leaves);
-            $parentLower = mb_strtolower($parentName);
+            $sLower = mb_strtolower($s);
+            $sNormalized = trim(preg_replace('/\s+/', ' ', str_replace(['_', '-'], ' ', $sLower)));
 
-            /*
-             * IMPORTANT:
-             * An alias must belong to THIS specific parent.
-             * We must not treat every alias as matching every
-             * subject group.
-             */
-            $isThisParent =
-                $sLower === $parentLower
-                || (
-                    $aliasParent !== null
-                    && mb_strtolower($aliasParent) === $parentLower
-                );
+            $allTargets[] = $sLower;
+            $allTargets[] = $sNormalized;
 
-            if ($isThisParent) {
-                // Parent selected:
-                // Computer Science -> all CS subcategories are valid.
-                $allTargets[] = $parentLower;
+            $aliasParent = self::PARENT_ALIASES[$sLower] ?? (self::PARENT_ALIASES[$sNormalized] ?? null);
 
-                foreach ($leavesLower as $leaf) {
-                    $allTargets[] = $leaf;
+            foreach (self::SUBJECT_GROUPS as $parentName => $leaves) {
+                $leavesLower = array_map(static fn ($l) => str_replace(['_', '-'], ' ', mb_strtolower($l)), $leaves);
+                $parentLower = str_replace(['_', '-'], ' ', mb_strtolower($parentName));
+
+                $isThisParent = $sNormalized === $parentLower
+                    || ($aliasParent !== null && str_replace(['_', '-'], ' ', mb_strtolower($aliasParent)) === $parentLower)
+                    || in_array($sNormalized, $leavesLower, true);
+
+                if ($isThisParent) {
+                    $allTargets[] = $parentLower;
+                    foreach ($leavesLower as $leaf) {
+                        $allTargets[] = $leaf;
+                    }
                 }
-
-                $matchedAsParent = true;
             }
         }
 
-        /*
-         * If the user selected a specific subcategory,
-         * ONLY that subcategory should be matched.
-         *
-         * Example:
-         * "Artificial Intelligence"
-         * should NOT automatically match:
-         * - Data Science
-         * - Software Engineering
-         * - Cyber Security
-         */
-        if (! $matchedAsParent) {
-            $allTargets[] = $sLower;
-        }
-    }
+        $allTargets = array_values(array_unique(array_filter($allTargets)));
 
-    $allTargets = array_values(array_unique($allTargets));
+        $catLower = str_replace(['_', '-'], ' ', mb_strtolower(trim((string) $programSubjectCategory)));
+        $fieldLower = str_replace(['_', '-'], ' ', mb_strtolower(trim($fieldName)));
+        $progLower = str_replace(['_', '-'], ' ', mb_strtolower(trim($progName)));
 
-    /*
-     * First check the normalized subject_category stored
-     * in the database.
-     */
-    $catLower = mb_strtolower(
-        trim((string) $programSubjectCategory)
-    );
-
-    if (
-        $catLower !== ''
-        && in_array($catLower, $allTargets, true)
-    ) {
-        return true;
-    }
-
-    /*
-     * Then check program field/name.
-     *
-     * This allows matching when the subject information exists
-     * in the program's field or program name instead of
-     * subject_category.
-     */
-    $combinedText = mb_strtolower(
-        $catLower . ' ' . $fieldName . ' ' . $progName
-    );
-
-    foreach ($allTargets as $target) {
-        if (
-            strlen($target) > 2
-            && str_contains($combinedText, $target)
-        ) {
+        if ($catLower !== '' && in_array($catLower, $allTargets, true)) {
             return true;
         }
+
+        $combinedText = $catLower . ' ' . $fieldLower . ' ' . $progLower;
+
+        foreach ($allTargets as $target) {
+            if (strlen($target) > 2 && str_contains($combinedText, $target)) {
+                return true;
+            }
+        }
+
+        return false;
     }
-
-    return false;
-}
-
 }

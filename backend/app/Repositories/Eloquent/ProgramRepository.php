@@ -64,14 +64,14 @@ class ProgramRepository implements ProgramRepositoryInterface
     private function applyFilters(Builder $query, array $filters): void
     {
         if (! empty($filters['search'])) {
-            $search = str_replace(' ', '', trim((string) $filters['search']));
+            $search = str_replace([' ', '-', '_', '.', ','], '', mb_strtolower(trim((string) $filters['search'])));
             $query->where(function (Builder $builder) use ($search): void {
-                $builder->whereRaw("REPLACE(name, ' ', '') ILIKE ?", ['%'.$search.'%'])
-                    ->orWhereRaw("REPLACE(field, ' ', '') ILIKE ?", ['%'.$search.'%'])
+                $builder->whereRaw("REPLACE(REPLACE(REPLACE(LOWER(name), ' ', ''), '-', ''), '_', '') ILIKE ?", ['%'.$search.'%'])
+                    ->orWhereRaw("REPLACE(REPLACE(REPLACE(LOWER(field), ' ', ''), '-', ''), '_', '') ILIKE ?", ['%'.$search.'%'])
                     ->orWhereHas('university', function (Builder $universityQuery) use ($search): void {
-                        $universityQuery->whereRaw("REPLACE(name, ' ', '') ILIKE ?", ['%'.$search.'%'])
-                            ->orWhereRaw("REPLACE(city, ' ', '') ILIKE ?", ['%'.$search.'%'])
-                            ->orWhereRaw("REPLACE(state, ' ', '') ILIKE ?", ['%'.$search.'%']);
+                        $universityQuery->whereRaw("REPLACE(REPLACE(REPLACE(LOWER(name), ' ', ''), '-', ''), '_', '') ILIKE ?", ['%'.$search.'%'])
+                            ->orWhereRaw("REPLACE(REPLACE(REPLACE(LOWER(city), ' ', ''), '-', ''), '_', '') ILIKE ?", ['%'.$search.'%'])
+                            ->orWhereRaw("REPLACE(REPLACE(REPLACE(LOWER(state), ' ', ''), '-', ''), '_', '') ILIKE ?", ['%'.$search.'%']);
                     });
             });
         }
