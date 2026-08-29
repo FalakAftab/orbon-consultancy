@@ -1074,6 +1074,38 @@ textarea.input {
   display: block;
 }
 
+.wizard-stepper-wrapper {
+  margin-bottom: var(--space-8);
+}
+
+.wizard-stepper-mobile-pill {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 1rem;
+}
+
+.wizard-stepper-mobile-badge {
+  font-size: 0.725rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--color-gold);
+  color: #0e1b2e;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+}
+
+.wizard-stepper-mobile-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-charcoal);
+}
+
 @media (max-width: 900px) {
   .wizard-grid {
     grid-template-columns: 1fr;
@@ -1082,6 +1114,21 @@ textarea.input {
     position: static;
   }
   .wizard-stepper-label {
+    display: none;
+  }
+  .wizard-stepper-mobile-pill {
+    display: flex;
+  }
+  .wizard-card {
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius-xl);
+  }
+  .wizard-stepper {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+  .wizard-stepper::-webkit-scrollbar {
     display: none;
   }
 }
