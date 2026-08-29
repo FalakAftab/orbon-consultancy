@@ -59,7 +59,7 @@ export default function AnimatedLandingPage() {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.75rem' }}>
+            <div className="lp-animated-steps-grid" style={{ gap: '1.75rem' }}>
               {[
                 {
                   step: '01',

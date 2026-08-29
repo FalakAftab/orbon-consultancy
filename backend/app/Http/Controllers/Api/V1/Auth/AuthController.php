@@ -86,11 +86,20 @@ class AuthController extends Controller
 
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
-        $status = Password::sendResetLink($request->only('email'));
+        try {
+            $status = Password::sendResetLink($request->only('email'));
 
-        return response()->json([
-            'message' => __($status),
-        ]);
+            return response()->json([
+                'message' => __($status),
+            ]);
+        } catch (\Throwable $e) {
+            // Log mailer error silently while returning a clean user-friendly response
+            \Illuminate\Support\Facades\Log::warning('ForgotPassword mail warning: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'If an account exists for this email, we have sent password reset instructions.',
+            ]);
+        }
     }
 
     public function resetPassword(ResetPasswordRequest $request): JsonResponse

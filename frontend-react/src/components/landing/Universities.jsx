@@ -44,7 +44,7 @@ export function Universities() {
         </div>
 
         {/* 3 Cards Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem' }}>
+        <div className="lp-uni-grid" style={{ gap: '2rem' }}>
           {universities.map((uni) => (
             <div
               key={uni.name}

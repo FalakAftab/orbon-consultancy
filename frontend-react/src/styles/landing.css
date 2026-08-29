@@ -1341,5 +1341,144 @@
   }
 }
 
+/* Animated Steps Grid (4 steps) */
+.lp-animated-steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .lp-animated-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .lp-animated-steps-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Stats Strip Grid (5 stats) */
+.lp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 768px) {
+  .lp-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .lp-stats-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Universities Grid (3 cards) */
+.lp-uni-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .lp-uni-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .lp-uni-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Signals Section (Engine) */
+.lp-signals-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .lp-signals-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+}
+
+.lp-signals-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .lp-signals-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Footer Grid */
+.lp-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .lp-footer-grid {
+    grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.8fr));
+  }
+}
+
+/* Universal Mobile Overflow Guard */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden !important;
+}
+
+/* Process Timeline & Roadmap */
+.lp-process-line {
+  display: none;
+}
+@media (min-width: 900px) {
+  .lp-process-line {
+    display: block;
+  }
+}
+
+.lp-process-steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .lp-process-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .lp-process-steps-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.lp-process-callout-banner {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .lp-process-callout-banner {
+    flex-direction: row;
+    text-align: left;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Journey Section */
+.lp-journey-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .lp-journey-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  }
+}
+
+
+
 
 

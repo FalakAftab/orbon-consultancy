@@ -75,12 +75,11 @@ export function Stats() {
       }}
     >
       <div
+        className="lp-stats-grid"
         style={{
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '0 2rem',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
+          padding: '0 1.5rem',
           gap: '1.75rem',
           alignItems: 'center',
           textAlign: 'center',

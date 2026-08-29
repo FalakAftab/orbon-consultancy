@@ -80,6 +80,7 @@ export function Process() {
           
           {/* Horizontal Connecting Timeline Bar (Desktop line running across nodes) */}
           <div
+            className="lp-process-line"
             style={{
               position: 'absolute',
               top: '40px',
@@ -94,7 +95,7 @@ export function Process() {
           />
 
           {/* 4 Connected Timeline Step Nodes */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', position: 'relative', zIndex: 2 }}>
+          <div className="lp-process-steps-grid" style={{ gap: '1.5rem', position: 'relative', zIndex: 2 }}>
             {steps.map((step, idx) => {
               const Icon = step.icon;
               return (
@@ -182,18 +183,15 @@ export function Process() {
 
         {/* Bottom Callout Banner */}
         <div
+          className="lp-process-callout-banner"
           style={{
-            textAlign: 'center',
             marginTop: '4rem',
             background: '#FFFFFF',
             borderRadius: '16px',
-            padding: '2rem',
+            padding: '1.75rem',
             border: '1px solid rgba(196, 151, 70, 0.2)',
             boxShadow: '0 10px 30px rgba(0,0,0,0.03)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '2rem',
+            gap: '1.5rem',
             maxWidth: '960px',
             margin: '4rem auto 0',
           }}

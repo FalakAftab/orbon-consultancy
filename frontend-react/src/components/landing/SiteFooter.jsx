@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 export function SiteFooter() {
   return (
     <footer style={{ background: '#121722', color: 'rgba(255, 255, 255, 0.7)', padding: '4.5rem 0 2.5rem', fontSize: '0.85rem' }}>
-      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) repeat(2, minmax(0, 0.8fr))', gap: '3.5rem', paddingBottom: '3.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 1.5rem' }}>
+        <div className="lp-footer-grid" style={{ gap: '2.5rem', paddingBottom: '3.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
           
           {/* Brand Info */}
           <div>

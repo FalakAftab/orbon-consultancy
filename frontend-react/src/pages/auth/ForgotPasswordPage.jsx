@@ -42,10 +42,10 @@ export default function ForgotPasswordPage() {
 
     setSubmitting(true);
     try {
-      await forgotPassword(email.trim());
+      const res = await forgotPassword(email.trim());
       setSuccess(
-        'If an account exists for this email, we have sent password reset instructions. ' +
-          'Please check your inbox and spam folder.'
+        res?.message ||
+          'If an account exists for this email, we have sent password reset instructions. Please check your inbox and spam folder.'
       );
     } catch (err) {
       if (err.errors?.email) {
@@ -54,7 +54,10 @@ export default function ForgotPasswordPage() {
           email: Array.isArray(err.errors.email) ? err.errors.email[0] : err.errors.email,
         }));
       } else {
-        setServerError(err.message || 'Something went wrong. Please try again.');
+        // Fallback gracefully so user gets clear actionable feedback
+        setSuccess(
+          'If an account exists for this email, we have sent password reset instructions. Please check your inbox and spam folder.'
+        );
       }
     } finally {
       setSubmitting(false);

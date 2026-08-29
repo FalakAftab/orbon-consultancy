@@ -3,8 +3,8 @@ import { User, Sliders } from 'lucide-react';
 export function Signals() {
   return (
     <section id="recommendations" style={{ background: '#FAF7F2', padding: '5rem 0' }}>
-      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.05fr)', gap: '3.5rem', alignItems: 'center' }}>
+      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 1.5rem' }}>
+        <div className="lp-signals-shell" style={{ gap: '3.5rem', alignItems: 'center' }}>
           
           {/* Left: Clean German University Campus Photograph */}
           <div
@@ -36,7 +36,7 @@ export function Signals() {
             </p>
 
             {/* 2 Feature Cards Side-by-Side */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginTop: '2rem' }}>
+            <div className="lp-signals-cards" style={{ gap: '1rem', marginTop: '2rem' }}>
               
               {/* Card 1: Academic Profile */}
               <div style={{ background: '#ffffff', padding: '1.25rem 1rem', borderRadius: '10px', boxShadow: '0 4px 14px rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.06)' }}>

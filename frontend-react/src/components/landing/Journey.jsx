@@ -15,8 +15,8 @@ export function Journey() {
 
   return (
     <section id="journey" style={{ background: '#F7F5EF', padding: '5.5rem 0' }}>
-      <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto', padding: '0 2rem' }}>
-        <div ref={ref} style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.15fr)', gap: '4rem', alignItems: 'flex-start' }}>
+      <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto', padding: '0 1.5rem' }}>
+        <div ref={ref} className="lp-journey-shell" style={{ gap: '3.5rem', alignItems: 'flex-start' }}>
           
           {/* Left Column */}
           <div style={{ position: 'sticky', top: '5rem' }}>
