@@ -13,15 +13,17 @@ class DatabaseSeeder extends Seeder
     {
         $datasetImportService = app(DatasetImportService::class);
 
-        User::query()->updateOrCreate(
+        $adminEmail = env('ADMIN_SEED_EMAIL', 'malikmohsinn17@gmail.com');
+        $adminPassword = env('ADMIN_SEED_PASSWORD', 'icaniwill1122');
 
-            ['email' => 'admin@germany-edu.test'],
+        User::query()->updateOrCreate(
+            ['email' => $adminEmail],
             [
-                'name' => 'System Admin',
+                'name' => 'Malik Mohsin',
                 'phone' => null,
                 'country' => 'Germany',
                 'role' => 'admin',
-                'password' => Hash::make('Password123!'),
+                'password' => Hash::make($adminPassword),
             ]
         );
 

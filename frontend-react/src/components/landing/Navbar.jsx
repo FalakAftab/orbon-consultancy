@@ -127,7 +127,6 @@ export function Navbar() {
             borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
             padding: '1.25rem 1.5rem 1.75rem',
             display: 'flex',
-            flexDirection: 'col',
             flexDirection: 'column',
             gap: '1.25rem',
           }}
@@ -188,4 +187,3 @@ export function Navbar() {
     </header>
   );
 }
-

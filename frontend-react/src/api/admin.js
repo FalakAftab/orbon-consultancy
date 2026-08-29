@@ -1,4 +1,4 @@
-import { api } from './client';
+import { api, API_ROOT } from './client';
 
 /**
  * Admin data services mapping to real Laravel admin endpoints
@@ -153,7 +153,7 @@ export function uploadTemporaryImport() {
 /** GET /v1/admin/exports?type=universities|programs -> download (returns blob) */
 export async function exportData(type) {
   const token = localStorage.getItem('token') || '';
-  const response = await fetch(`http://127.0.0.1:8000/api/v1/admin/exports?type=${type}`, {
+  const response = await fetch(`${API_ROOT}/api/v1/admin/exports?type=${type}`, {
     method: 'GET',
     headers: {
       Accept:

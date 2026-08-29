@@ -22,7 +22,7 @@ function getDeviceName() {
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { signIn, user, refreshUser } = useAuth();
+  const { signIn, user, refreshUser, loginWithToken } = useAuth();
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -42,21 +42,21 @@ export default function LoginPage() {
       setServerError(decodeURIComponent(errParam));
     }
     if (token) {
-      localStorage.setItem('token', token);
       fetchMe()
         .then((meRes) => {
           if (meRes?.user) {
-            setSession(token, meRes.user);
-            if (refreshUser) refreshUser(meRes.user);
+            if (loginWithToken) loginWithToken(token, meRes.user);
+            else setSession(token, meRes.user);
             const target = meRes.user.role === 'admin' ? '/admin' : '/student';
             navigate(target, { replace: true });
           }
         })
         .catch(() => {
+          if (loginWithToken) loginWithToken(token, { role: 'student' });
           navigate('/student', { replace: true });
         });
     }
-  }, [navigate, refreshUser]);
+  }, [navigate, loginWithToken]);
 
   const handleSocialLogin = async (provider) => {
     try {

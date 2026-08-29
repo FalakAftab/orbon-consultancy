@@ -64,9 +64,8 @@ export default function StudentDashboard() {
 
           {/* Main content: 2 columns */}
           <div
-            className="grid"
+            className="dashboard-grid-two-col"
             style={{
-              gridTemplateColumns: '1fr minmax(280px, 340px)',
               gap: 'var(--space-6)',
               alignItems: 'start',
             }}

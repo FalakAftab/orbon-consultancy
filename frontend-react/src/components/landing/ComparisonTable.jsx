@@ -68,7 +68,7 @@ export function ComparisonTable() {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.75rem', alignItems: 'stretch' }}>
+        <div className="lp-comparison-grid" style={{ alignItems: 'stretch' }}>
           {plans.map((plan) => (
             <div
               key={plan.name}

@@ -35,6 +35,12 @@ export function AuthProvider({ children }) {
     };
   }, [token]);
 
+  const loginWithToken = (newToken, newUser) => {
+    setSession(newToken, newUser);
+    setToken(newToken);
+    setUser(newUser);
+  };
+
   const signIn = async (credentials) => {
     const response = await loginRequest(credentials);
     setSession(response.token, response.user);
@@ -50,7 +56,10 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  const value = useMemo(() => ({ user, token, loading, signIn, signOut }), [user, token, loading]);
+  const value = useMemo(
+    () => ({ user, token, loading, signIn, signOut, loginWithToken, refreshUser: (u) => setUser(u) }),
+    [user, token, loading]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

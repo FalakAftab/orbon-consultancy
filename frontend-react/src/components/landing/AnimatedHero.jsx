@@ -89,14 +89,12 @@ export function AnimatedHero() {
       />
 
       <div
+        className="lp-animated-hero-grid"
         style={{
           maxWidth: '1240px',
           margin: '0 auto',
-          padding: '0 2rem',
+          padding: '0 1.5rem',
           width: '100%',
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 0.9fr)',
-          gap: '4rem',
           alignItems: 'center',
           position: 'relative',
           zIndex: 2,
@@ -163,6 +161,7 @@ export function AnimatedHero() {
           {/* Quick Filter Form */}
           <form
             onSubmit={handleSearch}
+            className="lp-animated-search-form"
             style={{
               marginTop: '2.5rem',
               background: 'rgba(255, 255, 255, 0.04)',
@@ -171,8 +170,6 @@ export function AnimatedHero() {
               borderRadius: '16px',
               border: '1px solid rgba(255, 255, 255, 0.12)',
               boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
               gap: '0.75rem',
             }}
           >
@@ -223,7 +220,7 @@ export function AnimatedHero() {
               </select>
             </div>
 
-            <div style={{ gridColumn: 'span 3', display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <div className="lp-animated-btn-group" style={{ gap: '0.75rem', marginTop: '0.5rem' }}>
               <button
                 type="submit"
                 style={{

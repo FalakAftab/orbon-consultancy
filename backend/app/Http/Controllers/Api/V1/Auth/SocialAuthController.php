@@ -69,7 +69,7 @@ class SocialAuthController extends Controller
 
             return redirect()->to("{$frontendUrl}/login?token={$token}&user_id={$user->id}&role={$user->role}");
         } catch (\Throwable $e) {
-            $frontendUrl = config('app.frontend_url', 'http://localhost:5174');
+            $frontendUrl = config('app.frontend_url', 'http://localhost:5173');
             $errorMsg = urlencode('Google Login Error: ' . ($e->getMessage() ?: 'Invalid OAuth configuration.'));
             return redirect()->to("{$frontendUrl}/login?error={$errorMsg}");
         }

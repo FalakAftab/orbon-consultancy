@@ -27,13 +27,11 @@ export function Hero() {
       }}
     >
       <div
+        className="lp-hero-grid-shell"
         style={{
           maxWidth: '1240px',
           margin: '0 auto',
-          padding: '0 2rem',
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 0.95fr) minmax(0, 1.05fr)',
-          gap: '3.5rem',
+          padding: '0 1.5rem',
           alignItems: 'center',
         }}
       >
@@ -42,7 +40,7 @@ export function Hero() {
           <h1
             style={{
               fontFamily: 'Playfair Display, Georgia, serif',
-              fontSize: 'clamp(2.6rem, 4.2vw, 3.6rem)',
+              fontSize: 'clamp(2.2rem, 4.2vw, 3.6rem)',
               fontWeight: 600,
               lineHeight: 1.12,
               letterSpacing: '-0.02em',
@@ -72,14 +70,13 @@ export function Hero() {
           {/* Quick Filter Search Bar */}
           <form
             onSubmit={handleSearch}
+            className="lp-hero-search-form"
             style={{
               marginTop: '2.25rem',
               background: '#EDE8DF',
               padding: '1rem',
               borderRadius: '12px',
               border: '1px solid rgba(0, 0, 0, 0.05)',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
               gap: '0.85rem',
             }}
           >
@@ -171,7 +168,7 @@ export function Hero() {
         </div>
 
         {/* Right Column: 6-Image Grid Collage Exactly Aligned as in Mockup Screenshot */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.85rem' }}>
+        <div className="lp-hero-collage-grid" style={{ gap: '0.85rem' }}>
           {/* Top Row: 3 Cards */}
           <div style={{ height: '150px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
             <img
