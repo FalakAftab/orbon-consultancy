@@ -27,42 +27,28 @@ class RecommendationService
     // expands to ALL its leaves, so old and new records both match.
     private const SUBJECT_GROUPS = [
         'Computer Science & IT' => [
-            'computer science', 'software engineering', 'artificial intelligence',
-            'data science', 'cyber security', 'information technology',
+            'computer science', 'artificial intelligence', 'data science', 'cyber security', 'information technology',
         ],
         'Engineering' => [
             'electrical engineering', 'mechanical engineering', 'civil engineering',
-            'chemical engineering', 'environmental engineering',
-            'biomedical engineering', 'industrial engineering',
-            'aerospace engineering', 'mechatronics & robotics', 'energy engineering',
         ],
         'Natural Sciences' => [
-            'mathematics', 'physics', 'chemistry', 'biology', 'neuroscience',
-            'biotechnology', 'geosciences',
+            'mathematics', 'physics', 'chemistry', 'biology',
         ],
         'Medicine & Health' => ['medicine'],
         'Architecture & Design' => ['architecture', 'design'],
         'Law' => ['law'],
         'Media & Communication' => ['media'],
         'Business & Economics' => [
-            // Legacy DB values (all business sub-disciplines are stored
-            // as 'business' or 'business & management' in the database).
-            'business & management', 'business',
-            // Sub-disciplines — the DB uses 'business' for all of these,
-            // so 'business' above ensures they always match the DB category.
-            // The name/field fallback in subjectMatches() handles finer matching.
-            'economics', 'finance', 'marketing',
+            'business', 'economics', 'finance',
         ],
         'Social Sciences & Humanities' => [
-            'political science & international relations', 'psychology', 'sociology',
-            'history', 'philosophy', 'linguistics & cultural studies', 'humanities',
+            'humanities',
         ],
-        'German Language' => ['german language'],
     ];
 
     private const PARENT_ALIASES = [
         'computer science & it' => 'Computer Science & IT',
-        'computer science'      => 'Computer Science & IT',
         'cs'                    => 'Computer Science & IT',
         'it'                    => 'Computer Science & IT',
         'engineering'           => 'Engineering',
@@ -72,15 +58,7 @@ class RecommendationService
         'law'                   => 'Law',
         'media & communication' => 'Media & Communication',
         'business & economics'  => 'Business & Economics',
-        // Business sub-disciplines: the DB stores all of these as
-        // subject_category = 'business', so selecting any one of them
-        // must expand to the full 'Business & Economics' parent group
-        // (which includes the 'business' DB value as a leaf).
-        'marketing'             => 'Business & Economics',
-        'finance'               => 'Business & Economics',
-        'economics'             => 'Business & Economics',
         'social sciences & humanities' => 'Social Sciences & Humanities',
-        'german language'       => 'German Language',
     ];
 
 
@@ -434,15 +412,17 @@ if ($criteria->tuitionPreference === null || $this->tuitionMatches($program, $cr
         }
 
         $programSubjectCategory = null;
-        $fieldName = '';
-        $progName = '';
-
         if ($programOrCategory instanceof Program) {
-            $programSubjectCategory = $programOrCategory->subject_category;
-            $fieldName = (string) ($programOrCategory->field ?? '');
-            $progName = (string) ($programOrCategory->name ?? '');
+            $programSubjectCategory = (string) ($programOrCategory->subject_category ?? '');
         } else {
             $programSubjectCategory = (string) $programOrCategory;
+        }
+
+        $catLower = str_replace(['_', '-'], ' ', mb_strtolower(trim($programSubjectCategory)));
+
+        // Programs with a NULL or unclassified subject_category are EXCLUDED when subject filters are specified.
+        if ($catLower === '') {
+            return false;
         }
 
         $allTargets = [];
@@ -456,23 +436,20 @@ if ($criteria->tuitionPreference === null || $this->tuitionMatches($program, $cr
             $sLower = mb_strtolower($s);
             $sNormalized = trim(preg_replace('/\s+/', ' ', str_replace(['_', '-'], ' ', $sLower)));
 
+            // Always match the exact requested subject string
             $allTargets[] = $sLower;
             $allTargets[] = $sNormalized;
 
-            $aliasParent = self::PARENT_ALIASES[$sLower] ?? (self::PARENT_ALIASES[$sNormalized] ?? null);
-
+            // Expand ONLY if the student specifically selected a PARENT Category or Parent Alias.
             foreach (self::SUBJECT_GROUPS as $parentName => $leaves) {
-                $leavesLower = array_map(static fn ($l) => str_replace(['_', '-'], ' ', mb_strtolower($l)), $leaves);
                 $parentLower = str_replace(['_', '-'], ' ', mb_strtolower($parentName));
+                $aliasParent = self::PARENT_ALIASES[$sLower] ?? (self::PARENT_ALIASES[$sNormalized] ?? null);
+                $aliasParentLower = $aliasParent ? str_replace(['_', '-'], ' ', mb_strtolower($aliasParent)) : null;
 
-                $isThisParent = $sNormalized === $parentLower
-                    || ($aliasParent !== null && str_replace(['_', '-'], ' ', mb_strtolower($aliasParent)) === $parentLower)
-                    || in_array($sNormalized, $leavesLower, true);
-
-                if ($isThisParent) {
-                    $allTargets[] = $parentLower;
-                    foreach ($leavesLower as $leaf) {
-                        $allTargets[] = $leaf;
+                if ($sNormalized === $parentLower || $parentLower === $aliasParentLower) {
+                    foreach ($leaves as $leaf) {
+                        $allTargets[] = mb_strtolower($leaf);
+                        $allTargets[] = str_replace(['_', '-'], ' ', mb_strtolower($leaf));
                     }
                 }
             }
@@ -480,22 +457,7 @@ if ($criteria->tuitionPreference === null || $this->tuitionMatches($program, $cr
 
         $allTargets = array_values(array_unique(array_filter($allTargets)));
 
-        $catLower = str_replace(['_', '-'], ' ', mb_strtolower(trim((string) $programSubjectCategory)));
-        $fieldLower = str_replace(['_', '-'], ' ', mb_strtolower(trim($fieldName)));
-        $progLower = str_replace(['_', '-'], ' ', mb_strtolower(trim($progName)));
-
-        if ($catLower !== '' && in_array($catLower, $allTargets, true)) {
-            return true;
-        }
-
-        $combinedText = $catLower . ' ' . $fieldLower . ' ' . $progLower;
-
-        foreach ($allTargets as $target) {
-            if (strlen($target) > 2 && str_contains($combinedText, $target)) {
-                return true;
-            }
-        }
-
-        return false;
+        // Strict subject_category column matching — NO free text or program title substring matching!
+        return in_array($catLower, $allTargets, true);
     }
 }

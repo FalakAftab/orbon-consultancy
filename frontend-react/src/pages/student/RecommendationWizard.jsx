@@ -653,6 +653,29 @@ export default function RecommendationWizard() {
                   Choose your specialization in <strong style={{ color: 'var(--color-forest)' }}>{activeCategory}</strong> *
                 </label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginTop: '0.25rem' }}>
+                  {/* Option to select the entire Parent Category */}
+                  {(() => {
+                    const isParentSelected = form.preferred_subjects.includes(activeCategory);
+                    return (
+                      <button
+                        type="button"
+                        onClick={() => toggleSubject(activeCategory)}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          borderRadius: 'var(--radius-full)',
+                          border: `1px solid ${isParentSelected ? 'var(--color-forest)' : 'var(--color-gold, #D4A93A)'}`,
+                          background: isParentSelected ? 'var(--color-forest)' : 'var(--color-gold-soft, #FFF7E6)',
+                          color: isParentSelected ? '#FFFFFF' : 'var(--color-charcoal)',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {isParentSelected ? `✓ Entire ${activeCategory} Selected` : `All ${activeCategory}`}
+                      </button>
+                    );
+                  })()}
+
                   {activeSubcategories.map((sub) => {
                     const selected = form.preferred_subjects.includes(sub.value);
                     return (

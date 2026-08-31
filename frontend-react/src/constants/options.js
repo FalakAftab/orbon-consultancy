@@ -25,7 +25,6 @@ export const SUBJECT_CATEGORIES = [
     category: 'Computer Science & IT',
     subcategories: [
       { value: 'computer science', label: 'Computer Science' },
-      { value: 'software engineering', label: 'Software Engineering' },
       { value: 'artificial intelligence', label: 'Artificial Intelligence' },
       { value: 'data science', label: 'Data Science' },
       { value: 'cyber security', label: 'Cybersecurity' },
@@ -38,13 +37,6 @@ export const SUBJECT_CATEGORIES = [
       { value: 'electrical engineering', label: 'Electrical Engineering' },
       { value: 'mechanical engineering', label: 'Mechanical Engineering' },
       { value: 'civil engineering', label: 'Civil Engineering' },
-      { value: 'chemical engineering', label: 'Chemical Engineering' },
-      { value: 'environmental engineering', label: 'Environmental Engineering' },
-      { value: 'biomedical engineering', label: 'Biomedical Engineering' },
-      { value: 'industrial engineering', label: 'Industrial Engineering' },
-      { value: 'aerospace engineering', label: 'Aerospace Engineering' },
-      { value: 'mechatronics & robotics', label: 'Mechatronics & Robotics' },
-      { value: 'energy engineering', label: 'Energy Engineering' },
     ],
   },
   {
@@ -54,15 +46,12 @@ export const SUBJECT_CATEGORIES = [
       { value: 'physics', label: 'Physics' },
       { value: 'chemistry', label: 'Chemistry' },
       { value: 'biology', label: 'Biology' },
-      { value: 'neuroscience', label: 'Neuroscience' },
-      { value: 'biotechnology', label: 'Biotechnology' },
-      { value: 'geosciences', label: 'Geosciences' },
     ],
   },
   {
     category: 'Medicine & Health',
     subcategories: [
-      { value: 'medicine', label: 'Medicine' },
+      { value: 'medicine', label: 'Medicine & Health' },
     ],
   },
   {
@@ -87,29 +76,15 @@ export const SUBJECT_CATEGORIES = [
   {
     category: 'Business & Economics',
     subcategories: [
-      { value: 'business & management', label: 'Business & Management' },
       { value: 'business', label: 'Business Administration' },
       { value: 'economics', label: 'Economics' },
       { value: 'finance', label: 'Finance' },
-      { value: 'marketing', label: 'Marketing' },
     ],
   },
   {
     category: 'Social Sciences & Humanities',
     subcategories: [
-      { value: 'political science & international relations', label: 'Political Science & International Relations' },
-      { value: 'psychology', label: 'Psychology' },
-      { value: 'sociology', label: 'Sociology' },
-      { value: 'history', label: 'History' },
-      { value: 'philosophy', label: 'Philosophy' },
-      { value: 'linguistics & cultural studies', label: 'Linguistics & Cultural Studies' },
-      { value: 'humanities', label: 'Humanities' },
-    ],
-  },
-  {
-    category: 'German Language',
-    subcategories: [
-      { value: 'german language', label: 'German Language' },
+      { value: 'humanities', label: 'Humanities & Social Sciences' },
     ],
   },
 ];
