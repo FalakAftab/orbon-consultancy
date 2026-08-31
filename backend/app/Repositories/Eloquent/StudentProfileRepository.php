@@ -14,9 +14,13 @@ class StudentProfileRepository implements StudentProfileRepositoryInterface
 
     public function updateOrCreateForUser(int $userId, array $data): StudentProfile
     {
+        $profile = new StudentProfile();
+        $fillable = array_merge($profile->getFillable(), ['user_id']);
+        $validData = array_intersect_key($data, array_flip($fillable));
+
         return StudentProfile::query()->updateOrCreate(
             ['user_id' => $userId],
-            $data
+            $validData
         );
     }
 }
