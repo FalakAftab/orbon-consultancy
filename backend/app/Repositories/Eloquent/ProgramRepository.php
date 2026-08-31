@@ -87,24 +87,36 @@ class ProgramRepository implements ProgramRepositoryInterface
                     } elseif (str_contains($val, 'phd') || str_contains($val, 'doctorate')) {
                         $val = 'phd';
                     }
-                    $query->where('degree_level', $val);
+                    $query->whereRaw("LOWER(degree_level) ILIKE ?", ['%'.$val.'%']);
                 } elseif ($column === 'intake') {
                     $val = strtolower(trim((string) $filters[$column]));
                     if ($val === 'winter') {
-                        $query->whereIn('intake', ['winter', 'both']);
+                        $query->where(function (Builder $b): void {
+                            $b->whereRaw("LOWER(intake) ILIKE 'winter'")
+                                ->orWhereRaw("LOWER(intake) ILIKE 'both'");
+                        });
                     } elseif ($val === 'summer') {
-                        $query->whereIn('intake', ['summer', 'both']);
+                        $query->where(function (Builder $b): void {
+                            $b->whereRaw("LOWER(intake) ILIKE 'summer'")
+                                ->orWhereRaw("LOWER(intake) ILIKE 'both'");
+                        });
                     } elseif ($val !== 'both') {
-                        $query->where('intake', $val);
+                        $query->whereRaw("LOWER(intake) ILIKE ?", ['%'.$val.'%']);
                     }
                 } elseif ($column === 'language_of_instruction') {
                     $val = strtolower(trim((string) $filters[$column]));
                     if ($val === 'english') {
-                        $query->whereIn('language_of_instruction', ['english', 'mixed']);
+                        $query->where(function (Builder $b): void {
+                            $b->whereRaw("LOWER(language_of_instruction) ILIKE 'english'")
+                                ->orWhereRaw("LOWER(language_of_instruction) ILIKE 'mixed'");
+                        });
                     } elseif ($val === 'german') {
-                        $query->whereIn('language_of_instruction', ['german', 'mixed']);
+                        $query->where(function (Builder $b): void {
+                            $b->whereRaw("LOWER(language_of_instruction) ILIKE 'german'")
+                                ->orWhereRaw("LOWER(language_of_instruction) ILIKE 'mixed'");
+                        });
                     } else {
-                        $query->where('language_of_instruction', $val);
+                        $query->whereRaw("LOWER(language_of_instruction) ILIKE ?", ['%'.$val.'%']);
                     }
                 } elseif ($column === 'tuition_type') {
                     $val = strtolower(trim((string) $filters[$column]));
@@ -112,7 +124,7 @@ class ProgramRepository implements ProgramRepositoryInterface
                         $query->where(function (Builder $b): void {
                             $b->whereNull('tuition_fee')
                                 ->orWhere('tuition_fee', '<=', 0)
-                                ->orWhere('tuition_type', 'free');
+                                ->orWhereRaw("LOWER(tuition_type) ILIKE 'free'");
                         });
                     } elseif ($val === 'paid') {
                         $query->where('tuition_fee', '>', 0);
