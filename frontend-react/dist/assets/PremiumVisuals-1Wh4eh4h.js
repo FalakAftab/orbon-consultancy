@@ -1,1 +1,0 @@
-import{j as r,k as i}from"./index-WbPtszh2.js";function c({value:a=94,tone:s="gold",className:t}){return r.jsx("div",{className:i("match-ring",`match-ring-${s}`,t),role:"img","aria-label":`${a}% match`,style:{"--match-value":a},children:r.jsxs("span",{children:[a,"%"]})})}export{c as M};

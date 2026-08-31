@@ -81,13 +81,17 @@ class RecommendationService
 
         if ($userId !== null) {
             try {
+                $snapshotArray = json_decode(json_encode($result), true);
+
                 $this->history->create($userId, [
                     'criteria_snapshot' => $payload,
-                    'results_snapshot' => json_decode(json_encode($result), true),
+                    'results_snapshot' => $snapshotArray,
                     'program_match_count' => $programMatches->count(),
                 ]);
             } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::warning('Failed to record recommendation history: ' . $e->getMessage());
+                \Illuminate\Support\Facades\Log::warning(
+                    'Failed to record recommendation history: ' . $e->getMessage()
+                );
             }
         }
 

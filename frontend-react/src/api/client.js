@@ -1,6 +1,11 @@
 const getFallbackApiRoot = () => {
-  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return window.location.origin;
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname.includes('orbon.aiotstudio.online')) {
+      return 'https://api.orbon.aiotstudio.online';
+    }
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return window.location.origin;
+    }
   }
   return 'http://127.0.0.1:8000';
 };

@@ -28,6 +28,12 @@ Route::prefix('v1')->group(function (): void {
 
     Route::get('/stats', [PublicStatsController::class, 'index']);
 
+    // Public Catalog GET Endpoints
+    Route::get('universities', [UniversityController::class, 'index']);
+    Route::get('universities/{university}', [UniversityController::class, 'show']);
+    Route::get('programs', [ProgramController::class, 'index']);
+    Route::get('programs/{program}', [ProgramController::class, 'show']);
+
     Route::prefix('auth')->group(function (): void {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);

@@ -44837,3 +44837,44 @@ DETAIL:  Failing row contains (3, 3, Falak, Aftab, null, null, Bachelor of Busin
 #6 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/artisan(12): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
 #7 {main}
 "} 
+[2026-08-31 12:32:34] local.ERROR: SQLSTATE[23514]: Check violation: 7 ERROR:  new row for relation "student_profiles" violates check constraint "student_profiles_preferred_degree_check"
+DETAIL:  Failing row contains (2, 2, Test, User, null, null, Bachelor of Science, null, 3.50, 4.00, null, null, 1.75, moi, 7.50, null, none, Master of Science (M.Sc.), null, both, both, free_only, 2026-07-19 12:03:58, 2026-08-31 12:32:30, null, ["electrical engineering"], 2.00, null, null). (Connection: pgsql, Host: 127.0.0.1, Port: 5432, Database: germany_consultancy, SQL: update "student_profiles" set "first_name" = Test, "last_name" = User, "obtained_gpa" = 3.5, "german_grade" = 1.75, "english_test_type" = moi, "preferred_degree" = Master of Science (M.Sc.), "preferred_subjects" = ["electrical engineering"], "updated_at" = 2026-08-31 12:32:30 where "id" = 2) {"exception":"[object] (Illuminate\\Database\\QueryException(code: 23514): SQLSTATE[23514]: Check violation: 7 ERROR:  new row for relation \"student_profiles\" violates check constraint \"student_profiles_preferred_degree_check\"
+DETAIL:  Failing row contains (2, 2, Test, User, null, null, Bachelor of Science, null, 3.50, 4.00, null, null, 1.75, moi, 7.50, null, none, Master of Science (M.Sc.), null, both, both, free_only, 2026-07-19 12:03:58, 2026-08-31 12:32:30, null, [\"electrical engineering\"], 2.00, null, null). (Connection: pgsql, Host: 127.0.0.1, Port: 5432, Database: germany_consultancy, SQL: update \"student_profiles\" set \"first_name\" = Test, \"last_name\" = User, \"obtained_gpa\" = 3.5, \"german_grade\" = 1.75, \"english_test_type\" = moi, \"preferred_degree\" = Master of Science (M.Sc.), \"preferred_subjects\" = [\"electrical engineering\"], \"updated_at\" = 2026-08-31 12:32:30 where \"id\" = 2) at D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php:838)
+[stacktrace]
+#0 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php(794): Illuminate/Database/Connection->runQueryCallback('update \"student...', Array, Object(Closure))
+#1 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php(597): Illuminate/Database/Connection->run('update \"student...', Array, Object(Closure))
+#2 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php(549): Illuminate/Database/Connection->affectingStatement('update \"student...', Array)
+#3 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(4234): Illuminate/Database/Connection->update('update \"student...', Array)
+#4 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(1266): Illuminate/Database/Query/Builder->update(Object(Illuminate/Support/Collection))
+#5 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1316): Illuminate/Database/Eloquent/Builder->update(Array)
+#6 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1233): Illuminate/Database/Eloquent/Model->performUpdate(Object(Illuminate/Database/Eloquent/Builder))
+#7 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(742): Illuminate/Database/Eloquent/Model->save()
+#8 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Support/helpers.php(393): Illuminate/Database/Eloquent/Builder->Illuminate/Database/Eloquent/{closure}(Object(App/Models/StudentProfile))
+#9 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(740): tap(Object(App/Models/StudentProfile), Object(Closure))
+#10 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/app/Repositories/Eloquent/StudentProfileRepository.php(21): Illuminate/Database/Eloquent/Builder->updateOrCreate(Array, Array)
+#11 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/app/Services/StudentProfileService.php(32): App/Repositories/Eloquent/StudentProfileRepository->updateOrCreateForUser(2, Array)
+#12 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/app/Services/RecommendationService.php(49): App/Services/StudentProfileService->saveProfile(2, Array, NULL)
+#13 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/validation_test.php(47): App/Services/RecommendationService->recommend(Array, 2)
+#14 {main}
+
+[previous exception] [object] (PDOException(code: 23514): SQLSTATE[23514]: Check violation: 7 ERROR:  new row for relation \"student_profiles\" violates check constraint \"student_profiles_preferred_degree_check\"
+DETAIL:  Failing row contains (2, 2, Test, User, null, null, Bachelor of Science, null, 3.50, 4.00, null, null, 1.75, moi, 7.50, null, none, Master of Science (M.Sc.), null, both, both, free_only, 2026-07-19 12:03:58, 2026-08-31 12:32:30, null, [\"electrical engineering\"], 2.00, null, null). at D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php:609)
+[stacktrace]
+#0 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php(609): PDOStatement->execute()
+#1 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php(827): Illuminate/Database/Connection->Illuminate/Database/{closure}('update \"student...', Array)
+#2 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php(794): Illuminate/Database/Connection->runQueryCallback('update \"student...', Array, Object(Closure))
+#3 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php(597): Illuminate/Database/Connection->run('update \"student...', Array, Object(Closure))
+#4 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Connection.php(549): Illuminate/Database/Connection->affectingStatement('update \"student...', Array)
+#5 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(4234): Illuminate/Database/Connection->update('update \"student...', Array)
+#6 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(1266): Illuminate/Database/Query/Builder->update(Object(Illuminate/Support/Collection))
+#7 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1316): Illuminate/Database/Eloquent/Builder->update(Array)
+#8 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1233): Illuminate/Database/Eloquent/Model->performUpdate(Object(Illuminate/Database/Eloquent/Builder))
+#9 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(742): Illuminate/Database/Eloquent/Model->save()
+#10 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Support/helpers.php(393): Illuminate/Database/Eloquent/Builder->Illuminate/Database/Eloquent/{closure}(Object(App/Models/StudentProfile))
+#11 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(740): tap(Object(App/Models/StudentProfile), Object(Closure))
+#12 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/app/Repositories/Eloquent/StudentProfileRepository.php(21): Illuminate/Database/Eloquent/Builder->updateOrCreate(Array, Array)
+#13 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/app/Services/StudentProfileService.php(32): App/Repositories/Eloquent/StudentProfileRepository->updateOrCreateForUser(2, Array)
+#14 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/app/Services/RecommendationService.php(49): App/Services/StudentProfileService->saveProfile(2, Array, NULL)
+#15 D:/New_Xampp/htdocs/Consultancy/orbon-consultancy/backend/validation_test.php(47): App/Services/RecommendationService->recommend(Array, 2)
+#16 {main}
+"} 

@@ -80,7 +80,23 @@ class ProgramRepository implements ProgramRepositoryInterface
             if (! empty($filters[$column])) {
                 $value = $filters[$column];
 
-                if (is_array($value)) {
+                if ($column === 'degree_level') {
+                    $rawValues = is_array($value) ? $value : [$value];
+                    $normalizedDegrees = [];
+                    foreach ($rawValues as $v) {
+                        $vLower = strtolower(trim((string) $v));
+                        if (str_contains($vLower, 'bachelor') || str_contains($vLower, 'b.sc') || str_contains($vLower, 'b.a') || str_contains($vLower, 'b.eng') || str_contains($vLower, 'bba')) {
+                            $normalizedDegrees[] = 'bachelor';
+                        } elseif (str_contains($vLower, 'master') || str_contains($vLower, 'm.sc') || str_contains($vLower, 'm.a') || str_contains($vLower, 'm.eng') || str_contains($vLower, 'mba')) {
+                            $normalizedDegrees[] = 'master';
+                        } elseif (str_contains($vLower, 'phd') || str_contains($vLower, 'doctorate')) {
+                            $normalizedDegrees[] = 'phd';
+                        } else {
+                            $normalizedDegrees[] = $vLower;
+                        }
+                    }
+                    $query->whereIn('degree_level', array_values(array_unique($normalizedDegrees)));
+                } elseif (is_array($value)) {
                     $query->whereIn($column, $value);
                 } else {
                     $query->where($column, $value);
