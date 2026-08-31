@@ -124,10 +124,15 @@ class ProgramRepository implements ProgramRepositoryInterface
                         $query->where(function (Builder $b): void {
                             $b->whereNull('tuition_fee')
                                 ->orWhere('tuition_fee', '<=', 0)
-                                ->orWhereRaw("LOWER(tuition_type) ILIKE 'free'");
+                                ->orWhereRaw("COALESCE(tuition_fee, 0) <= 0")
+                                ->orWhereRaw("LOWER(tuition_type) IN ('free', 'both')");
                         });
                     } elseif ($val === 'paid') {
-                        $query->where('tuition_fee', '>', 0);
+                        $query->where(function (Builder $b): void {
+                            $b->where('tuition_fee', '>', 0)
+                                ->orWhereRaw("COALESCE(tuition_fee, 0) > 0")
+                                ->orWhereRaw("LOWER(tuition_type) = 'paid'");
+                        });
                     }
                 } elseif (in_array($column, ['admission_method', 'university_id'], true)) {
                     $query->where($column, $filters[$column]);
@@ -203,10 +208,16 @@ if (! empty($filters['maximum_tuition_fee'])) {
             if ($filters['tuition_class'] === 'free') {
                 $query->where(function (Builder $builder): void {
                     $builder->whereNull('tuition_fee')
-                        ->orWhere('tuition_fee', '<=', 0);
+                        ->orWhere('tuition_fee', '<=', 0)
+                        ->orWhereRaw("COALESCE(tuition_fee, 0) <= 0")
+                        ->orWhereRaw("LOWER(tuition_type) IN ('free', 'both')");
                 });
             } elseif ($filters['tuition_class'] === 'paid') {
-                $query->where('tuition_fee', '>', 0);
+                $query->where(function (Builder $builder): void {
+                    $builder->where('tuition_fee', '>', 0)
+                        ->orWhereRaw("COALESCE(tuition_fee, 0) > 0")
+                        ->orWhereRaw("LOWER(tuition_type) = 'paid'");
+                });
             }
         }
     }
