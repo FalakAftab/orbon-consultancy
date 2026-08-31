@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(Registered::class, SendEmailVerificationNotification::class);
 
         ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+            $frontendUrl = env('FRONTEND_URL') ?: (request()->header('Origin') ?: 'https://app.orbon.aiotstudio.online');
             return "{$frontendUrl}/reset-password?token={$token}&email={$notifiable->getEmailForPasswordReset()}";
         });
     }

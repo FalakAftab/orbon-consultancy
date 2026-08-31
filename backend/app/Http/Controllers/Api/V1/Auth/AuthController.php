@@ -49,8 +49,8 @@ class AuthController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Security: block login until the email address has been verified.
-        if (! $user->hasVerifiedEmail()) {
+        // Security: block student login until the email address has been verified (admins bypass).
+        if ($user->role !== 'admin' && ! $user->hasVerifiedEmail()) {
             return response()->json([
                 'message' => 'Please verify your email address before logging in.',
                 'needs_verification' => true,

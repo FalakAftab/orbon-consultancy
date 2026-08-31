@@ -19,6 +19,7 @@ return new class extends Migration
                 'country' => 'Germany',
                 'role' => 'admin',
                 'password' => Hash::make($adminPassword),
+                'email_verified_at' => now(),
             ]
         );
     }

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
                 'country' => 'Germany',
                 'role' => 'admin',
                 'password' => Hash::make($adminPassword),
+                'email_verified_at' => now(),
             ]
         );
 
