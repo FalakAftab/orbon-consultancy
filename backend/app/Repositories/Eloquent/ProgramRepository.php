@@ -64,14 +64,14 @@ class ProgramRepository implements ProgramRepositoryInterface
     private function applyFilters(Builder $query, array $filters): void
     {
         if (! empty($filters['search'])) {
-            $search = trim((string) $filters['search']);
+            $search = strtolower(trim((string) $filters['search']));
             $query->where(function (Builder $builder) use ($search): void {
-                $builder->where('name', 'ilike', '%'.$search.'%')
-                    ->orWhere('field', 'ilike', '%'.$search.'%')
+                $builder->whereRaw('LOWER(name) LIKE ?', ['%'.$search.'%'])
+                    ->orWhereRaw('LOWER(field) LIKE ?', ['%'.$search.'%'])
                     ->orWhereHas('university', function (Builder $universityQuery) use ($search): void {
-                        $universityQuery->where('name', 'ilike', '%'.$search.'%')
-                            ->orWhere('city', 'ilike', '%'.$search.'%')
-                            ->orWhere('state', 'ilike', '%'.$search.'%');
+                        $universityQuery->whereRaw('LOWER(name) LIKE ?', ['%'.$search.'%'])
+                            ->orWhereRaw('LOWER(city) LIKE ?', ['%'.$search.'%'])
+                            ->orWhereRaw('LOWER(state) LIKE ?', ['%'.$search.'%']);
                     });
             });
         }
@@ -90,8 +90,9 @@ class ProgramRepository implements ProgramRepositoryInterface
 
         foreach (['country', 'city', 'state'] as $column) {
             if (! empty($filters[$column])) {
-                $query->whereHas('university', function (Builder $builder) use ($filters, $column): void {
-                    $builder->where($column, 'ilike', '%'.trim((string) $filters[$column]).'%');
+                $val = strtolower(trim((string) $filters[$column]));
+                $query->whereHas('university', function (Builder $builder) use ($val, $column): void {
+                    $builder->whereRaw("LOWER({$column}) LIKE ?", ['%'.$val.'%']);
                 });
             }
         }
