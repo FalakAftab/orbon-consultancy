@@ -7,7 +7,6 @@ use App\Http\Resources\ProgramResource;
 use App\Http\Resources\UniversityResource;
 use App\Models\Program;
 use App\Models\StudentProfile;
-use App\Models\University;
 use App\Repositories\Contracts\ProgramRepositoryInterface;
 use App\Repositories\Contracts\RecommendationHistoryRepositoryInterface;
 use App\Repositories\Contracts\StudentProfileRepositoryInterface;
@@ -15,22 +14,13 @@ use Illuminate\Support\Collection;
 
 class RecommendationService
 {
-// Backward-compatible subject taxonomy. Mirrors the full 38-category
-    // DatasetImportService::normalizeSubjectCategory() map
-    // complete taxonomy) while ALSO preserving the legacy leaf values that
-    // currently exist in the live database ("business", "humanities") so the
-    // existing ~2262 imported programs keep matching without a re-import.
-    //
-    // "business" / "business & management" are treated as aliases under
-    // 'Business & Economics'; "humanities" / "linguistics & cultural studies"
-    // are aliases under 'Social Sciences & Humanities'. Selecting either parent
-    // expands to ALL its leaves, so old and new records both match.
     private const SUBJECT_GROUPS = [
         'Computer Science & IT' => [
-            'computer science', 'artificial intelligence', 'data science', 'cyber security', 'information technology',
+            'computer science', 'artificial intelligence', 'data science',
+            'cyber security', 'information technology',
         ],
         'Engineering' => [
-            'electrical engineering', 'mechanical engineering', 'civil engineering',
+            'mechanical engineering', 'electrical engineering', 'civil engineering',
         ],
         'Natural Sciences' => [
             'mathematics', 'physics', 'chemistry', 'biology',
@@ -39,28 +29,10 @@ class RecommendationService
         'Architecture & Design' => ['architecture', 'design'],
         'Law' => ['law'],
         'Media & Communication' => ['media'],
-        'Business & Economics' => [
-            'business', 'economics', 'finance',
-        ],
-        'Social Sciences & Humanities' => [
-            'humanities',
-        ],
+        'Business & Economics' => ['business', 'economics', 'finance'],
+        'Social Sciences & Humanities' => ['humanities'],
+        'German Language' => [],
     ];
-
-    private const PARENT_ALIASES = [
-        'computer science & it' => 'Computer Science & IT',
-        'cs'                    => 'Computer Science & IT',
-        'it'                    => 'Computer Science & IT',
-        'engineering'           => 'Engineering',
-        'natural sciences'      => 'Natural Sciences',
-        'medicine & health'     => 'Medicine & Health',
-        'architecture & design' => 'Architecture & Design',
-        'law'                   => 'Law',
-        'media & communication' => 'Media & Communication',
-        'business & economics'  => 'Business & Economics',
-        'social sciences & humanities' => 'Social Sciences & Humanities',
-    ];
-
 
     public function __construct(
         private readonly ProgramRepositoryInterface $programs,
@@ -73,7 +45,6 @@ class RecommendationService
 
     public function recommend(array $payload, ?int $userId = null): array
     {
-        
         $profile = $userId !== null
             ? $this->studentProfileService->saveProfile($userId, $payload, null)
             : null;
@@ -89,7 +60,7 @@ class RecommendationService
             ->sortByDesc('score')
             ->values();
 
-$universities = $programMatches->groupBy('university_id')->map(function (Collection $group): array {
+        $universities = $programMatches->groupBy('university_id')->map(function (Collection $group): array {
             /** @var array $first */
             $first = $group->first();
 
@@ -108,9 +79,6 @@ $universities = $programMatches->groupBy('university_id')->map(function (Collect
             'programs' => $programMatches,
         ];
 
-        // Persist a history record for this successful recommendation run so
-        // the student's History page reflects the request. Only recorded when
-        // an authenticated user performed the run (no guest recommendations).
         if ($userId !== null) {
             $this->history->create($userId, [
                 'criteria_snapshot' => $payload,
@@ -152,37 +120,18 @@ $universities = $programMatches->groupBy('university_id')->map(function (Collect
         );
     }
 
-    private function normalizeDegreeLevel(?string $degree): ?string
-    {
-        if ($degree === null || $degree === '') {
-            return null;
-        }
-        $d = strtolower(trim($degree));
-        if (str_contains($d, 'bachelor')) {
-            return 'bachelor';
-        }
-        if (str_contains($d, 'master') || $d === 'mba') {
-            return 'master';
-        }
-        if (str_contains($d, 'phd') || str_contains($d, 'doctorate')) {
-            return 'phd';
-        }
-
-        return $d;
-    }
-
     private function buildSearchFilters(RecommendationCriteriaData $criteria): array
     {
         return array_filter([
-            'degree_level' => $this->normalizeDegreeLevel($criteria->preferredDegree),
+            'degree_level' => $criteria->preferredDegree,
             'intake' => $criteria->preferredIntake === 'both' ? null : $criteria->preferredIntake,
             'city' => $criteria->preferredCity,
             'state' => $criteria->preferredState,
             'minimum_tuition_fee' => $criteria->tuitionFeeMin,
             'maximum_tuition_fee' => $criteria->tuitionFeeMax,
-            'tuition_class' => match ($criteria->tuitionPreference) {
-                'free_only' => 'free',
-                'paid_only' => 'paid',
+            'tuition_type' => match ($criteria->tuitionPreference) {
+                'free_only' => ['free', 'both'],
+                'paid_only' => ['paid', 'both'],
                 default => null,
             },
         ], static fn ($value) => $value !== null && $value !== '');
@@ -195,18 +144,17 @@ $universities = $programMatches->groupBy('university_id')->map(function (Collect
         $mandatoryFailures = [];
 
         if (! empty($criteria->preferredSubjects)) {
-    $subjectOk = $this->subjectMatches($criteria->preferredSubjects, $program);
-    if ($subjectOk) {
-        $reasons[] = 'Subject match found.';
-    } else {
-        $mandatoryFailures[] = 'Subject area differs from primary selection.';
-        $unmatched[] = 'Subject area differs from primary selection.';
-    }
-}
-
+            $subjectOk = $this->subjectMatches($criteria->preferredSubjects, $program->subject_category);
+            if (! $subjectOk) {
+                $mandatoryFailures[] = 'Subject mismatch.';
+                $unmatched[] = 'Subject mismatch.';
+            } else {
+                $reasons[] = 'Subject match found.';
+            }
+        }
 
         if ($criteria->preferredDegree !== null) {
-            $degreeOk = $this->degreeMatches($criteria->preferredDegree, $program);
+            $degreeOk = $program->degree_level === $criteria->preferredDegree;
             if (! $degreeOk) {
                 $mandatoryFailures[] = 'Degree level mismatch.';
                 $unmatched[] = 'Degree level mismatch.';
@@ -278,10 +226,9 @@ $universities = $programMatches->groupBy('university_id')->map(function (Collect
             $reasons[] = 'Subject match found.';
         }
 
-        if ($criteria->preferredDegree === null || $this->degreeMatches($criteria->preferredDegree, $program)) {
+        if ($criteria->preferredDegree === null || $program->degree_level === $criteria->preferredDegree) {
             $score += 20;
         }
-
 
         if ($maxGrade !== null && $criteria->germanGrade !== null) {
             $score += $criteria->germanGrade < $maxGrade ? 15 : 10;
@@ -293,7 +240,7 @@ $universities = $programMatches->groupBy('university_id')->map(function (Collect
             $score += 15;
         }
 
-if ($criteria->tuitionPreference === null || $this->tuitionMatches($program, $criteria->tuitionPreference)) {
+        if ($criteria->tuitionPreference === null || $this->tuitionMatches($program->tuition_type, $criteria->tuitionPreference)) {
             $score += 10;
         }
 
@@ -328,63 +275,11 @@ if ($criteria->tuitionPreference === null || $this->tuitionMatches($program, $cr
         ];
     }
 
-    /**
-     * Checks whether a program satisfies the student's preferred degree.
-     *
-     * The database stores all Master's variants (M.Sc., M.A., MBA, M.Eng., …)
-     * under the same degree_level = 'master' token.  A coarse
-     * normalizeDegreeLevel() comparison alone therefore cannot distinguish
-     * MBA from M.Sc.  This helper adds a second, finer guard:
-     *
-     *  - If the student selected 'mba', only programs whose name contains
-     *    "mba" or "business administration" (case-insensitive) are accepted.
-     *  - Conversely, if the student selected any non-MBA master's degree
-     *    (e.g. 'master', 'master_arts', 'master_eng') and the program's name
-     *    contains "mba", the program is rejected — MBA is its own distinct
-     *    qualification and must not match a generic Master's search.
-     */
-    private function degreeMatches(string $preferredDegree, Program $program): bool
+    private function tuitionMatches(string $programTuition, string $preference): bool
     {
-        $expectedNorm = $this->normalizeDegreeLevel($preferredDegree);
-        $actualNorm   = $this->normalizeDegreeLevel($program->degree_level);
-
-        // Coarse level must match first (bachelor / master / phd).
-        if ($expectedNorm !== $actualNorm) {
-            return false;
-        }
-
-        // Both sides resolved to 'master' — apply the finer MBA guard.
-        if ($expectedNorm === 'master') {
-            $preferredLower = strtolower(trim($preferredDegree));
-            $nameLower      = strtolower((string) ($program->name ?? ''));
-
-            $studentWantsMba = ($preferredLower === 'mba'
-                || preg_match('/\bmba\b/i', $preferredLower) === 1
-                || str_contains($preferredLower, 'master of business administration'));
-
-            $programIsMba = (preg_match('/\bmba\b/i', $nameLower) === 1
-                || str_contains($nameLower, 'master of business administration'));
-
-            // MBA != M.Sc.  The two must agree.
-            if ($studentWantsMba !== $programIsMba) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private function tuitionMatches(Program $program, string $preference): bool
-    {
-        // A program is "free" when it carries no tuition fee (null or 0);
-        // it is "paid" when it charges a positive fee. This is the reliable
-        // differentiator because most records are labelled tuition_type='both'
-        // yet are actually free (fee=0) or paid (fee>0).
-        $isFree = $program->tuition_fee === null || (float) $program->tuition_fee <= 0;
-
         return match ($preference) {
-            'free_only' => $isFree,
-            'paid_only' => ! $isFree,
+            'free_only' => in_array($programTuition, ['free', 'both'], true),
+            'paid_only' => in_array($programTuition, ['paid', 'both'], true),
             default => true,
         };
     }
@@ -398,66 +293,27 @@ if ($criteria->tuitionPreference === null || $this->tuitionMatches($program, $cr
         };
     }
 
-    private function subjectMatches(array $preferredSubjects, mixed $programOrCategory): bool
+    private function subjectMatches(array $preferredSubjects, ?string $programSubjectCategory): bool
     {
-        $preferredSubjects = array_values(
-            array_filter(
-                $preferredSubjects,
-                static fn ($v) => $v !== null && $v !== ''
-            )
-        );
-
-        if (empty($preferredSubjects)) {
-            return true;
-        }
-
-        $programSubjectCategory = null;
-        if ($programOrCategory instanceof Program) {
-            $programSubjectCategory = (string) ($programOrCategory->subject_category ?? '');
-        } else {
-            $programSubjectCategory = (string) $programOrCategory;
-        }
-
-        $catLower = str_replace(['_', '-'], ' ', mb_strtolower(trim($programSubjectCategory)));
-
-        // Programs with a NULL or unclassified subject_category are EXCLUDED when subject filters are specified.
-        if ($catLower === '') {
+        if ($programSubjectCategory === null || $programSubjectCategory === '') {
             return false;
         }
 
-        $allTargets = [];
+        $preferredSubjects = array_values(array_filter($preferredSubjects, static fn ($v) => $v !== null && $v !== ''));
 
+        $expanded = [];
         foreach ($preferredSubjects as $subject) {
-            $s = trim((string) $subject);
-            if ($s === '') {
-                continue;
-            }
-
-            $sLower = mb_strtolower($s);
-            $sNormalized = trim(preg_replace('/\s+/', ' ', str_replace(['_', '-'], ' ', $sLower)));
-
-            // Always match the exact requested subject string
-            $allTargets[] = $sLower;
-            $allTargets[] = $sNormalized;
-
-            // Expand ONLY if the student specifically selected a PARENT Category or Parent Alias.
-            foreach (self::SUBJECT_GROUPS as $parentName => $leaves) {
-                $parentLower = str_replace(['_', '-'], ' ', mb_strtolower($parentName));
-                $aliasParent = self::PARENT_ALIASES[$sLower] ?? (self::PARENT_ALIASES[$sNormalized] ?? null);
-                $aliasParentLower = $aliasParent ? str_replace(['_', '-'], ' ', mb_strtolower($aliasParent)) : null;
-
-                if ($sNormalized === $parentLower || $parentLower === $aliasParentLower) {
-                    foreach ($leaves as $leaf) {
-                        $allTargets[] = mb_strtolower($leaf);
-                        $allTargets[] = str_replace(['_', '-'], ' ', mb_strtolower($leaf));
-                    }
-                }
+            $key = (string) $subject;
+            if (isset(self::SUBJECT_GROUPS[$key])) {
+                array_push($expanded, ...self::SUBJECT_GROUPS[$key]);
+            } else {
+                $expanded[] = $key;
             }
         }
 
-        $allTargets = array_values(array_unique(array_filter($allTargets)));
+        $normalizedProgramSubject = mb_strtolower(trim($programSubjectCategory));
+        $normalizedPreferred = array_map(static fn ($v) => mb_strtolower(trim((string) $v)), $expanded);
 
-        // Strict subject_category column matching — NO free text or program title substring matching!
-        return in_array($catLower, $allTargets, true);
+        return in_array($normalizedProgramSubject, $normalizedPreferred, true);
     }
 }
