@@ -359,11 +359,11 @@ if ($criteria->tuitionPreference === null || $this->tuitionMatches($program, $cr
             $nameLower      = strtolower((string) ($program->name ?? ''));
 
             $studentWantsMba = ($preferredLower === 'mba'
-                || str_contains($preferredLower, 'mba')
-                || str_contains($preferredLower, 'business administration'));
+                || preg_match('/\bmba\b/i', $preferredLower) === 1
+                || str_contains($preferredLower, 'master of business administration'));
 
-            $programIsMba = (str_contains($nameLower, 'mba')
-                || str_contains($nameLower, 'business administration'));
+            $programIsMba = (preg_match('/\bmba\b/i', $nameLower) === 1
+                || str_contains($nameLower, 'master of business administration'));
 
             // MBA != M.Sc.  The two must agree.
             if ($studentWantsMba !== $programIsMba) {
