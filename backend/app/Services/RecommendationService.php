@@ -123,7 +123,7 @@ class RecommendationService
     private function buildSearchFilters(RecommendationCriteriaData $criteria): array
     {
         return array_filter([
-            'degree_level' => $criteria->preferredDegree,
+            'degree_level' => $this->normalizeDegreeLevel($criteria->preferredDegree),
             'intake' => $criteria->preferredIntake === 'both' ? null : $criteria->preferredIntake,
             'city' => $criteria->preferredCity,
             'state' => $criteria->preferredState,
@@ -135,6 +135,37 @@ class RecommendationService
                 default => null,
             },
         ], static fn ($value) => $value !== null && $value !== '');
+    }
+
+    private function normalizeDegreeLevel(?string $degree): ?string
+    {
+        if ($degree === null || $degree === '') {
+            return null;
+        }
+        $d = strtolower(trim($degree));
+        if (str_contains($d, 'bachelor') || str_contains($d, 'b.sc') || str_contains($d, 'b.a') || str_contains($d, 'b.eng') || str_contains($d, 'bba') || str_contains($d, 'bscs')) {
+            return 'bachelor';
+        }
+        if (str_contains($d, 'master') || str_contains($d, 'm.sc') || str_contains($d, 'm.a') || str_contains($d, 'm.eng') || str_contains($d, 'mba')) {
+            return 'master';
+        }
+        if (str_contains($d, 'phd') || str_contains($d, 'doctorate') || str_contains($d, 'dr.')) {
+            return 'phd';
+        }
+
+        return $d;
+    }
+
+    private function degreeMatches(?string $preferredDegree, Program $program): bool
+    {
+        if ($preferredDegree === null || $preferredDegree === '') {
+            return true;
+        }
+
+        $expectedNorm = $this->normalizeDegreeLevel($preferredDegree);
+        $actualNorm = $this->normalizeDegreeLevel($program->degree_level);
+
+        return $expectedNorm === $actualNorm;
     }
 
     private function scoreProgram(Program $program, RecommendationCriteriaData $criteria): array
@@ -154,7 +185,7 @@ class RecommendationService
         }
 
         if ($criteria->preferredDegree !== null) {
-            $degreeOk = $program->degree_level === $criteria->preferredDegree;
+            $degreeOk = $this->degreeMatches($criteria->preferredDegree, $program);
             if (! $degreeOk) {
                 $mandatoryFailures[] = 'Degree level mismatch.';
                 $unmatched[] = 'Degree level mismatch.';
