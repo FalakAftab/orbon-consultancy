@@ -6,11 +6,13 @@ import { PageLoader } from '../components/feedback/PageLoader';
 import { LoadingScreen } from '../components/feedback/LoadingScreen';
 import HomePage from '../pages/HomePage';
 
-// Lazy-loaded auth pages
+// Lazy-loaded auth & public pages
 const LoginPage = lazy(() => import('../pages/auth/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/auth/RegisterPage'));
 const ForgotPasswordPage = lazy(() => import('../pages/auth/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('../pages/auth/ResetPasswordPage'));
+const AboutPage = lazy(() => import('../pages/AboutPage'));
+const ContactPage = lazy(() => import('../pages/ContactPage'));
 
 // Student pages
 const StudentDashboard = lazy(() => import('../pages/student/StudentDashboard'));
@@ -111,6 +113,8 @@ export default function AppRoutes() {
           )
         }
       />
+      <Route path="/about" element={withFallback(<AboutPage />)} />
+      <Route path="/contact" element={withFallback(<ContactPage />)} />
 
       {/* Student portal */}
       <Route

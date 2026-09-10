@@ -107,7 +107,10 @@ export function Sidebar({ nav, onNavigate, isOpen }) {
 
         <button
           type="button"
-          onClick={signOut}
+          onClick={() => {
+            onNavigate?.();
+            signOut();
+          }}
           style={{
             width: '100%',
             display: 'flex',

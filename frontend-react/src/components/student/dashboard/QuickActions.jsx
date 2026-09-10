@@ -18,15 +18,15 @@ const actions = [
     icon: History,
     label: 'Recommendation History',
     desc: 'Your past searches',
-    to: null,
-    active: false,
+    to: '/student/history',
+    active: true,
   },
   {
     icon: BookmarkCheck,
     label: 'My Shortlist',
     desc: 'Saved programs',
-    to: null,
-    active: false,
+    to: '/student/shortlist',
+    active: true,
   },
 ];
 

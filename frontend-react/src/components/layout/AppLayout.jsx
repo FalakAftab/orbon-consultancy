@@ -42,8 +42,8 @@ const studentNav = [
     section: 'My Activity',
     items: [
       { label: 'Shortlist', to: '/student/shortlist', icon: BookmarkCheck },
-      { label: 'Notifications & History', to: '/student/notifications', icon: Bell },
-      { label: 'History', to: '/student/history', icon: History },
+      { label: 'Notifications & Messages', to: '/student/notifications', icon: Bell },
+      { label: 'Recommendation History', to: '/student/history', icon: History },
       { label: 'Profile', to: '/student/profile', icon: User },
     ],
   },
@@ -89,9 +89,26 @@ export function AppLayout({ role = 'student' }) {
     setSidebarOpen((prev) => !prev);
   };
 
+  const handleNavigate = () => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 1024) {
+      setSidebarOpen(false);
+    }
+  };
+
+  const handleOverlayClick = () => {
+    setSidebarOpen(false);
+  };
+
   return (
     <div className={`app-shell ${sidebarOpen ? 'sidebar-expanded' : 'sidebar-collapsed-mode'}`}>
-      <Sidebar nav={effectiveNav} isOpen={sidebarOpen} onNavigate={() => {}} />
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={handleOverlayClick}
+          aria-hidden="true"
+        />
+      )}
+      <Sidebar nav={effectiveNav} isOpen={sidebarOpen} onNavigate={handleNavigate} />
       <div className="app-main" style={{ transition: 'margin 200ms ease, width 200ms ease' }}>
         <Topbar onMenuClick={toggleSidebar} />
         <main className="app-content">

@@ -14,6 +14,9 @@ export function SiteFooter() {
             <p style={{ color: 'rgba(255, 255, 255, 0.55)', marginTop: '1rem', lineHeight: 1.65, maxWidth: '340px', fontSize: '0.825rem' }}>
               Your personal admission companion for German higher education. We simplify the evaluation, planning, and match strategy so you can apply with confidence.
             </p>
+            <div style={{ marginTop: '0.75rem', fontSize: '0.825rem', color: '#C49746' }}>
+              Email: <a href="mailto:info@germanconsultancy.info" style={{ color: '#C49746', textDecoration: 'none' }}>info@germanconsultancy.info</a>
+            </div>
           </div>
 
           {/* Platform Links */}
@@ -22,8 +25,8 @@ export function SiteFooter() {
               PLATFORM
             </h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-              <li><Link to="/universities" style={{ color: 'rgba(255, 255, 255, 0.65)', textDecoration: 'none' }}>Universities</Link></li>
-              <li><Link to="/wizard" style={{ color: 'rgba(255, 255, 255, 0.65)', textDecoration: 'none' }}>Degree Matches</Link></li>
+              <li><Link to="/about" style={{ color: 'rgba(255, 255, 255, 0.65)', textDecoration: 'none' }}>About Us</Link></li>
+              <li><Link to="/contact" style={{ color: 'rgba(255, 255, 255, 0.65)', textDecoration: 'none' }}>Contact Us</Link></li>
               <li><a href="#how-it-works" style={{ color: 'rgba(255, 255, 255, 0.65)', textDecoration: 'none' }}>Pathway Guide</a></li>
               <li><a href="#pricing" style={{ color: 'rgba(255, 255, 255, 0.65)', textDecoration: 'none' }}>Pricing</a></li>
             </ul>

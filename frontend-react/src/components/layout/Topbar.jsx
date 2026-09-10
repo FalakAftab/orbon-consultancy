@@ -10,6 +10,7 @@ import {
   CreditCard,
   Info,
   ChevronRight,
+  X,
 } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { Avatar } from '../ui';
@@ -24,6 +25,7 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   // Notification system state
   const [showNotifications, setShowNotifications] = useState(false);
@@ -65,6 +67,7 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
     e.preventDefault();
     if (!searchQuery.trim()) return;
     const q = searchQuery.trim();
+    setShowMobileSearch(false);
     // Route intelligently based on query keywords or default to program search
     if (q.toLowerCase().includes('university') || q.toLowerCase().includes('uni')) {
       navigate(`/student/universities?search=${encodeURIComponent(q)}`);
@@ -117,8 +120,64 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
   };
 
   return (
-    <header className={cn('topbar', className)} style={{ gap: '1rem' }}>
-      {/* 3 Horizontal Lines (Hamburger Toggle Button) - Always Enabled */}
+    <header className={cn('topbar', className)} style={{ gap: '0.75rem', position: 'relative' }}>
+      {/* Mobile Search Overlay Bar (< 640px when active) */}
+      {showMobileSearch && (
+        <form
+          onSubmit={handleSearchSubmit}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: '#FAF7F2',
+            zIndex: 100,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.65rem',
+            padding: '0 1rem',
+            borderBottom: '1px solid rgba(22, 29, 43, 0.12)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+          }}
+        >
+          <Search size={18} style={{ color: '#C49746', flexShrink: 0 }} />
+          <input
+            type="text"
+            autoFocus
+            placeholder="Search programs or universities..."
+            aria-label="Global Search Mobile"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              flex: 1,
+              padding: '0.55rem 0.85rem',
+              fontSize: '0.875rem',
+              background: '#ffffff',
+              border: '1px solid rgba(22, 29, 43, 0.15)',
+              borderRadius: '8px',
+              color: '#161D2B',
+              outline: 'none',
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => setShowMobileSearch(false)}
+            aria-label="Close Search"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#161D2B',
+              padding: '0.4rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <X size={20} />
+          </button>
+        </form>
+      )}
+
+      {/* 3 Horizontal Lines (Hamburger Toggle Button) */}
       <button
         type="button"
         className="btn btn-ghost btn-icon"
@@ -135,6 +194,7 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
           border: '1px solid rgba(0,0,0,0.08)',
           background: '#FAF7F2',
           cursor: 'pointer',
+          flexShrink: 0,
         }}
       >
         <Menu size={20} style={{ color: '#161D2B' }} />
@@ -142,8 +202,8 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
 
       {breadcrumb && <div className="hidden md:block">{breadcrumb}</div>}
 
-      {/* Global Search Bar */}
-      <form onSubmit={handleSearchSubmit} className="search-bar topbar-search flex-1 max-w-md" style={{ display: 'flex', alignItems: 'center' }}>
+      {/* Desktop Global Search Bar (>= 640px) */}
+      <form onSubmit={handleSearchSubmit} className="search-bar topbar-search topbar-search-desktop flex-1 max-w-md" style={{ display: 'flex', alignItems: 'center' }}>
         <Search size={16} className="search-icon" style={{ left: '12px' }} />
         <input
           type="text"
@@ -155,6 +215,29 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
           style={{ width: '100%', paddingLeft: '2.5rem' }}
         />
       </form>
+
+      {/* Mobile Search Icon Button (< 640px) */}
+      <button
+        type="button"
+        className="btn btn-ghost btn-icon topbar-search-mobile-btn"
+        onClick={() => setShowMobileSearch(true)}
+        aria-label="Open Mobile Search"
+        style={{
+          width: '38px',
+          height: '38px',
+          borderRadius: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          border: '1px solid rgba(0,0,0,0.08)',
+          background: '#FAF7F2',
+          color: '#161D2B',
+          cursor: 'pointer',
+          flexShrink: 0,
+        }}
+      >
+        <Search size={18} />
+      </button>
 
       <div className="flex-1" />
 

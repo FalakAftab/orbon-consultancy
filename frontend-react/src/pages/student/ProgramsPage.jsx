@@ -280,7 +280,7 @@ export default function ProgramsPage() {
         />
       ) : view === 'grid' ? (
         <>
-          <div className="grid grid-3" style={{ gap: 'var(--space-4)' }}>
+          <div className="programs-grid">
             {items.map((prog) => {
               const uni = prog.university || {};
               const uniName = uni.name || 'German University';
@@ -289,7 +289,17 @@ export default function ProgramsPage() {
                 <article
                   key={prog.id}
                   className="card card-hover premium-program-card"
-                  style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+                  style={{
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    padding: '1.5rem 1.6rem',
+                    borderRadius: '16px',
+                    background: 'var(--color-surface)',
+                    border: '1px solid var(--color-border)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.03)',
+                  }}
                   onClick={() => navigate(`/student/programs/${prog.id}`)}
                   role="button"
                   tabIndex={0}
@@ -298,7 +308,17 @@ export default function ProgramsPage() {
                 >
                   <div>
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-xs uppercase tracking-wider text-muted font-semibold">{uniName}</p>
+                      <p
+                        style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.08em',
+                          color: 'var(--color-muted)',
+                        }}
+                      >
+                        {uniName}
+                      </p>
                     </div>
                     <h3
                       style={{
@@ -307,25 +327,51 @@ export default function ProgramsPage() {
                         fontWeight: 400,
                         letterSpacing: '-0.02em',
                         color: 'var(--color-charcoal)',
-                        marginTop: '0.5rem',
-                        lineHeight: 1.15,
+                        marginTop: '0.4rem',
+                        lineHeight: 1.25,
                       }}
                     >
                       {prog.name}
                     </h3>
-                    <p className="text-sm text-muted mt-2 flex items-center gap-1">
-                      <MapPin size={12} />
+                    <p style={{ fontSize: '0.85rem', color: 'var(--color-muted)', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                      <MapPin size={13} style={{ color: 'var(--color-gold)' }} />
                       {city || 'Germany'} · {formatDegreeLevel(prog.degree_level)}
                     </p>
                   </div>
 
-                  <div className="premium-program-grid">
-<div><span>Tuition</span><strong>{formatTuitionType(prog.tuition_type, prog.tuition_fee)}</strong></div>
-                    <div><span>Language</span><strong>{formatLanguage(prog.language_of_instruction)}</strong></div>
-                    <div><span>Intake</span><strong>{formatIntake(prog.intake)}</strong></div>
+                  <div
+                    className="premium-program-grid"
+                    style={{
+                      marginTop: '1.25rem',
+                      paddingTop: '1rem',
+                      borderTop: '1px solid var(--color-border)',
+                    }}
+                  >
+                    <div>
+                      <span>Tuition</span>
+                      <strong>{formatTuitionType(prog.tuition_type, prog.tuition_fee)}</strong>
+                    </div>
+                    <div>
+                      <span>Language</span>
+                      <strong>{formatLanguage(prog.language_of_instruction)}</strong>
+                    </div>
+                    <div>
+                      <span>Intake</span>
+                      <strong>{formatIntake(prog.intake)}</strong>
+                    </div>
                   </div>
 
-                  <div className="mt-4 pt-3 flex items-center justify-between" style={{ borderTop: '1px solid var(--color-border)' }}>
+                  <div
+                    style={{
+                      marginTop: '1.25rem',
+                      paddingTop: '1rem',
+                      borderTop: '1px solid var(--color-border)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.5rem',
+                    }}
+                  >
                     <button
                       type="button"
                       className="btn btn-ghost btn-sm"

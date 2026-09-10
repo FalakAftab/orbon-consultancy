@@ -74,14 +74,18 @@ export function ComparisonTable() {
               key={plan.name}
               style={{
                 background: '#ffffff',
-                borderRadius: '12px',
-                padding: '2rem 1.75rem',
-                border: plan.popular ? '2px solid #C49746' : '1px solid rgba(0,0,0,0.08)',
-                boxShadow: '0 6px 20px rgba(0,0,0,0.04)',
+                borderRadius: '16px',
+                padding: '2.25rem 1.85rem',
+                border: plan.popular ? '2px solid #C49746' : '1.5px solid rgba(15, 23, 42, 0.12)',
+                boxShadow: plan.popular
+                  ? '0 20px 40px -10px rgba(196, 151, 70, 0.35), 0 0 0 1px rgba(196, 151, 70, 0.25)'
+                  : '0 12px 28px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.06)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 position: 'relative',
+                transform: plan.popular ? 'translateY(-4px)' : 'none',
+                transition: 'all 300ms ease',
               }}
             >
               {plan.popular && (

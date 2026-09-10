@@ -67,14 +67,31 @@ const MATCHING_MESSAGES = [
   'Ranking programs by matching confidence score...',
 ];
 
+const CRITERIA_STORAGE_KEY = 'studypath_recommendation_criteria';
+
+const getSavedCriteria = () => {
+  try {
+    const raw = localStorage.getItem(CRITERIA_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      return parsed;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+
 export default function RecommendationWizard() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
 
-  // Prefill form from a "refine criteria" flow (criteria snapshot passed
-  // from ResultsPage) so the user's previous selections are restored.
-  const refineCriteria = location.state?.criteria || null;
+  // Priority: 1. Router state (Refine Criteria) -> 2. Saved localStorage -> 3. Default empty
+  const routerCriteria = location.state?.criteria || null;
+  const savedCriteria = getSavedCriteria();
+  const refineCriteria = routerCriteria || savedCriteria || null;
 
   // Admin mode (Part 2): when the wizard is opened from Admin → Students →
   // "Start Recommendation", the admin selected a target student. Everything
@@ -178,10 +195,23 @@ export default function RecommendationWizard() {
     if (currentStep === 1) {
       if (!form.first_name.trim()) errs.first_name = 'First name is required.';
       if (!form.last_name.trim()) errs.last_name = 'Last name is required.';
+      if (!form.last_degree) errs.last_degree = 'Qualification / degree is required.';
       if (!form.obtained_gpa || isNaN(form.obtained_gpa)) errs.obtained_gpa = 'Obtained GPA must be a number.';
       if (!form.maximum_gpa || isNaN(form.maximum_gpa)) errs.maximum_gpa = 'Maximum GPA is required.';
-      if (Number(form.obtained_gpa) > Number(form.maximum_gpa)) {
+      if (!form.passing_gpa || isNaN(form.passing_gpa)) errs.passing_gpa = 'Passing GPA is required.';
+
+      const obtained = Number(form.obtained_gpa);
+      const max = Number(form.maximum_gpa);
+      const passing = Number(form.passing_gpa);
+
+      if (!isNaN(obtained) && !isNaN(max) && obtained > max) {
         errs.obtained_gpa = 'GPA cannot exceed Maximum GPA.';
+      }
+      if (!isNaN(passing) && !isNaN(max) && passing >= max) {
+        errs.passing_gpa = 'Passing GPA must be less than Maximum GPA.';
+      }
+      if (!isNaN(obtained) && !isNaN(passing) && obtained < passing) {
+        errs.obtained_gpa = 'Obtained GPA is below minimum passing GPA.';
       }
     } else if (currentStep === 2) {
       if (form.english_test_type !== 'moi' && !form.english_test_score) {
@@ -246,6 +276,13 @@ export default function RecommendationWizard() {
         ? await createRecommendationForStudent(adminStudentId, payload)
         : await submitRecommendation(payload);
       clearInterval(interval);
+
+      // Persist criteria locally so wizard pre-fills when opened directly
+      try {
+        localStorage.setItem(CRITERIA_STORAGE_KEY, JSON.stringify(payload));
+      } catch {
+        /* ignore localStorage error */
+      }
 
       // Navigate to results with the real API response AND the exact
       // criteria payload that was just submitted, so "Refine Criteria" on
@@ -375,6 +412,7 @@ export default function RecommendationWizard() {
                     </option>
                   ))}
                 </select>
+                {fieldErrors.last_degree && <span className="field-error">{fieldErrors.last_degree}</span>}
               </div>
 
 

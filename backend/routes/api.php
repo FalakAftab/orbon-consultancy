@@ -35,10 +35,10 @@ Route::prefix('v1')->group(function (): void {
     Route::get('programs/{program}', [ProgramController::class, 'show']);
 
     Route::prefix('auth')->group(function (): void {
-        Route::post('register', [AuthController::class, 'register']);
-        Route::post('login', [AuthController::class, 'login']);
-        Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
-        Route::post('reset-password', [AuthController::class, 'resetPassword']);
+        Route::post('register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+        Route::post('login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+        Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
+        Route::post('reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
 
         // Social Authentication (Google & Microsoft)
         Route::get('{provider}/redirect', [SocialAuthController::class, 'redirect']);
@@ -95,11 +95,6 @@ Route::prefix('v1')->group(function (): void {
         Route::patch('shortlist/{shortlist}/status', [ShortlistController::class, 'updateStatus']);
         Route::post('shortlist/{shortlist}/notes', [ShortlistController::class, 'storeNote']);
         Route::apiResource('comparisons', ComparisonController::class)->only(['index', 'store']);
-
-        Route::get('universities', [UniversityController::class, 'index']);
-        Route::get('universities/{university}', [UniversityController::class, 'show']);
-        Route::get('programs', [ProgramController::class, 'index']);
-        Route::get('programs/{program}', [ProgramController::class, 'show']);
     });
 
     Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function (): void {

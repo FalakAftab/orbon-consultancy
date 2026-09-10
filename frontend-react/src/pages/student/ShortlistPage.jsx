@@ -136,40 +136,148 @@ export default function ShortlistPage() {
           action={<Button variant="primary" onClick={() => navigate('/student/programs')}><ExternalLink size={14} /> Explore programs</Button>}
         />
       ) : (
-        <div className="card" style={{ borderRadius: 'var(--radius-2xl)', padding: 0, overflow: 'hidden' }}>
-          <table className="shortlist-table">
-            <thead>
-              <tr>
-                <th>Program & University</th>
-                <th>Deadline</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {shortlist.map((item) => {
-                const program = item.program || {};
-                const university = item.university || program.university || {};
-                const currentStatus = item.status || 'pending';
-                const programId = program.id || item.program_id;
-                const deadline = program.deadline_winter || program.deadline_summer || item.deadline;
+        <>
+          {/* Desktop Table View (>= 640px) */}
+          <div className="shortlist-desktop-view card" style={{ borderRadius: 'var(--radius-2xl)', padding: 0, overflow: 'hidden' }}>
+            <table className="shortlist-table">
+              <thead>
+                <tr>
+                  <th>Program & University</th>
+                  <th>Deadline</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shortlist.map((item) => {
+                  const program = item.program || {};
+                  const university = item.university || program.university || {};
+                  const currentStatus = item.status || 'pending';
+                  const programId = program.id || item.program_id;
+                  const deadline = program.deadline_winter || program.deadline_summer || item.deadline;
 
-                return (
-                  <tr key={item.id}>
-                    <td>
-                      <p style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 400, color: 'var(--color-charcoal)' }}>
-                        {program.name || item.program_name || 'Degree Program'}
-                      </p>
-                      <p className="text-xs text-muted mt-1">
-                        {university.name || item.university_name || 'German University'}
-                        {university.city ? ` · ${university.city}` : ''}
-                      </p>
-                    </td>
-                    <td className="text-sm">{deadline ? formatDate(deadline) : '—'}</td>
-                    <td>
+                  return (
+                    <tr key={item.id}>
+                      <td>
+                        <p style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 400, color: 'var(--color-charcoal)' }}>
+                          {program.name || item.program_name || 'Degree Program'}
+                        </p>
+                        <p className="text-xs text-muted mt-1">
+                          {university.name || item.university_name || 'German University'}
+                          {university.city ? ` · ${university.city}` : ''}
+                        </p>
+                      </td>
+                      <td className="text-sm">{deadline ? formatDate(deadline) : '—'}</td>
+                      <td>
+                        <select
+                          className="input select"
+                          style={{ maxWidth: 170, padding: '0.35rem 0.6rem', fontSize: '0.78rem' }}
+                          value={currentStatus}
+                          onChange={(e) => handleStatusChange(item.id, e.target.value)}
+                          aria-label="Application status"
+                        >
+                          {STATUS_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <button
+                            type="button"
+                            className="btn btn-ghost btn-sm"
+                            onClick={() => { setNoteTarget(item.id); setNoteText(''); }}
+                          >
+                            <Plus size={13} /> Note
+                          </button>
+                          {programId && (
+                            <button
+                              type="button"
+                              className="btn btn-ghost btn-sm"
+                              onClick={() => navigate(`/student/programs/${programId}`)}
+                            >
+                              Compare
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            className="btn btn-ghost btn-sm text-danger"
+                            onClick={() => setRemoveTarget(item)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card Stack View (< 640px) */}
+          <div className="shortlist-mobile-view flex flex-col gap-4">
+            {shortlist.map((item) => {
+              const program = item.program || {};
+              const university = item.university || program.university || {};
+              const currentStatus = item.status || 'pending';
+              const programId = program.id || item.program_id;
+              const deadline = program.deadline_winter || program.deadline_summer || item.deadline;
+
+              return (
+                <div
+                  key={item.id}
+                  className="card shortlist-mobile-card"
+                  style={{
+                    borderRadius: 'var(--radius-xl)',
+                    padding: '1.25rem',
+                    background: 'var(--color-surface)',
+                    border: '1px solid var(--color-border)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem',
+                  }}
+                >
+                  {/* Header: Program & University */}
+                  <div>
+                    <h3
+                      style={{
+                        fontSize: '1rem',
+                        fontWeight: 700,
+                        color: 'var(--color-charcoal)',
+                        margin: '0 0 0.25rem 0',
+                        fontFamily: "'Plus Jakarta Sans', var(--font-family)",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {program.name || item.program_name || 'Degree Program'}
+                    </h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--color-muted)', margin: 0 }}>
+                      {university.name || item.university_name || 'German University'}
+                      {university.city ? ` · ${university.city}` : ''}
+                    </p>
+                  </div>
+
+                  <div style={{ height: '1px', background: 'var(--color-border)', margin: '0 -1.25rem' }} />
+
+                  {/* Details Grid: Deadline & Status */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', alignItems: 'center' }}>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--color-muted)', letterSpacing: '0.05em', display: 'block', marginBottom: '0.2rem' }}>
+                        Deadline
+                      </span>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-charcoal)' }}>
+                        {deadline ? formatDate(deadline) : '—'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--color-muted)', letterSpacing: '0.05em', display: 'block', marginBottom: '0.2rem' }}>
+                        Status
+                      </span>
                       <select
                         className="input select"
-                        style={{ maxWidth: 170, padding: '0.35rem 0.6rem', fontSize: '0.78rem' }}
+                        style={{ width: '100%', padding: '0.35rem 0.5rem', fontSize: '0.78rem' }}
                         value={currentStatus}
                         onChange={(e) => handleStatusChange(item.id, e.target.value)}
                         aria-label="Application status"
@@ -178,40 +286,45 @@ export default function ShortlistPage() {
                           <option key={opt.value} value={opt.value}>{opt.label}</option>
                         ))}
                       </select>
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-2 flex-wrap">
+                    </div>
+                  </div>
+
+                  <div style={{ height: '1px', background: 'var(--color-border)', margin: '0 -1.25rem' }} />
+
+                  {/* Actions Footer */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        onClick={() => { setNoteTarget(item.id); setNoteText(''); }}
+                      >
+                        <Plus size={13} /> Note
+                      </button>
+                      {programId && (
                         <button
                           type="button"
                           className="btn btn-ghost btn-sm"
-                          onClick={() => { setNoteTarget(item.id); setNoteText(''); }}
+                          onClick={() => navigate(`/student/programs/${programId}`)}
                         >
-                          <Plus size={13} /> Note
+                          Compare
                         </button>
-                        {programId && (
-                          <button
-                            type="button"
-                            className="btn btn-ghost btn-sm"
-                            onClick={() => navigate(`/student/programs/${programId}`)}
-                          >
-                            Compare
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          className="btn btn-ghost btn-sm text-danger"
-                          onClick={() => setRemoveTarget(item)}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm text-danger"
+                      onClick={() => setRemoveTarget(item)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
       {/* Remove confirm dialog */}

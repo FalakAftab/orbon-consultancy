@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-
-const links = [
-  { label: 'Universities', href: '/universities' },
-  { label: 'Programs', href: '/programs' },
-  { label: 'Pathways', href: '#how-it-works' },
-  { label: 'About Us', href: '#recommendations' },
-];
+import { useAuth } from '../../contexts/AuthContext';
 
 export function Navbar() {
+  const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -19,6 +14,31 @@ export function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  const getStartedPath = user
+    ? (user.role === 'admin' ? '/admin' : '/student/wizard')
+    : '/register';
+
+  const universitiesPath = user
+    ? (user.role === 'admin' ? '/admin/universities' : '/student/universities')
+    : '#universities';
+
+  const programsPath = user
+    ? (user.role === 'admin' ? '/admin/programs' : '/student/programs')
+    : '#how-it-works';
+
+  const authPath = user
+    ? (user.role === 'admin' ? '/admin' : '/student')
+    : '/login';
+
+  const authLabel = user ? 'Dashboard' : 'Sign In';
+
+  const navLinks = [
+    { label: 'Universities', href: universitiesPath, isRouter: Boolean(user) },
+    { label: 'Programs', href: programsPath, isRouter: Boolean(user) },
+    { label: 'About', href: '/about', isRouter: true },
+    { label: 'Contact', href: '/contact', isRouter: true },
+  ];
 
   return (
     <header
@@ -53,27 +73,43 @@ export function Navbar() {
 
         {/* Desktop Navigation Links */}
         <nav className="lp-desktop-nav" style={{ alignItems: 'center', gap: '2.25rem' }}>
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              style={{
-                fontSize: '0.9rem',
-                fontWeight: 500,
-                color: '#4A5568',
-                textDecoration: 'none',
-                transition: 'color 150ms ease',
-              }}
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            link.isRouter ? (
+              <Link
+                key={link.label}
+                to={link.href}
+                style={{
+                  fontSize: '0.9rem',
+                  fontWeight: 500,
+                  color: '#4A5568',
+                  textDecoration: 'none',
+                  transition: 'color 150ms ease',
+                }}
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                key={link.label}
+                href={link.href}
+                style={{
+                  fontSize: '0.9rem',
+                  fontWeight: 500,
+                  color: '#4A5568',
+                  textDecoration: 'none',
+                  transition: 'color 150ms ease',
+                }}
+              >
+                {link.label}
+              </a>
+            )
+          )}
         </nav>
 
         {/* Desktop Action Buttons */}
         <div className="lp-desktop-actions" style={{ alignItems: 'center', gap: '1.25rem' }}>
           <Link
-            to="/login"
+            to={authPath}
             style={{
               fontSize: '0.9rem',
               fontWeight: 500,
@@ -81,10 +117,10 @@ export function Navbar() {
               textDecoration: 'none',
             }}
           >
-            Sign In
+            {authLabel}
           </Link>
           <Link
-            to="/wizard"
+            to={getStartedPath}
             style={{
               background: '#161D2B',
               color: '#ffffff',
@@ -132,25 +168,41 @@ export function Navbar() {
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {links.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                style={{
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  color: '#161D2B',
-                  textDecoration: 'none',
-                }}
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.isRouter ? (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 500,
+                    color: '#161D2B',
+                    textDecoration: 'none',
+                  }}
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 500,
+                    color: '#161D2B',
+                    textDecoration: 'none',
+                  }}
+                >
+                  {link.label}
+                </a>
+              )
+            )}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(0, 0, 0, 0.06)' }}>
             <Link
-              to="/login"
+              to={authPath}
               onClick={() => setMobileOpen(false)}
               style={{
                 fontSize: '1rem',
@@ -163,10 +215,10 @@ export function Navbar() {
                 borderRadius: '6px',
               }}
             >
-              Sign In
+              {authLabel}
             </Link>
             <Link
-              to="/wizard"
+              to={getStartedPath}
               onClick={() => setMobileOpen(false)}
               style={{
                 background: '#161D2B',
