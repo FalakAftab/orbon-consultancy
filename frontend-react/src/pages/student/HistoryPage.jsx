@@ -88,17 +88,9 @@ export default function HistoryPage() {
               return (
                 <div
                   key={entry.id}
-                  className="card"
-                  style={{
-                    padding: '1.5rem 1.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '1.5rem',
-                    flexWrap: 'wrap',
-                  }}
+                  className="card history-card"
                 >
-                  <div style={{ minWidth: 130 }}>
+                  <div style={{ minWidth: 120 }}>
                     <p className="text-xs uppercase tracking-wider text-muted font-semibold">Search Date</p>
                     <p
                       style={{
@@ -113,7 +105,7 @@ export default function HistoryPage() {
                     </p>
                   </div>
 
-                  <div style={{ flex: 1, minWidth: 220 }}>
+                  <div style={{ flex: 1, minWidth: 200 }}>
                     <p className="text-xs uppercase tracking-wider text-muted font-semibold mb-2">Criteria Summary</p>
                     <div className="flex items-center gap-2 flex-wrap">
                       {subjects.length > 0 && (
@@ -128,22 +120,24 @@ export default function HistoryPage() {
                     </div>
                   </div>
 
-                  <div style={{ textAlign: 'right', minWidth: 90 }}>
-                    <p className="text-xs uppercase tracking-wider text-muted font-semibold">Results</p>
-                    <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--color-gold)', fontWeight: 400 }}>
-                      {entry.program_match_count ?? 0} Found
-                    </p>
-                  </div>
+                  <div className="history-card-results" style={{ textAlign: 'right' }}>
+                    <div>
+                      <p className="text-xs uppercase tracking-wider text-muted font-semibold">Results</p>
+                      <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--color-gold)', fontWeight: 400 }}>
+                        {entry.program_match_count ?? 0} Found
+                      </p>
+                    </div>
 
-                  <button
-                    type="button"
-                    className="btn btn-icon"
-                    style={{ background: 'var(--color-ivory-warm)', border: '1px solid var(--color-border)' }}
-                    onClick={() => handleView(entry.id)}
-                    aria-label="View results"
-                  >
-                    <ArrowRight size={16} />
-                  </button>
+                    <button
+                      type="button"
+                      className="btn btn-icon"
+                      style={{ background: 'var(--color-ivory-warm)', border: '1px solid var(--color-border)', marginLeft: '1rem' }}
+                      onClick={() => handleView(entry.id)}
+                      aria-label="View results"
+                    >
+                      <ArrowRight size={16} />
+                    </button>
+                  </div>
                 </div>
               );
             })}

@@ -97,9 +97,9 @@ export default function NotificationsPage() {
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '1.5rem 0' }}>
       
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+      <div className="notifications-header">
         <div>
-          <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '2rem', fontWeight: 700, color: '#161D2B', margin: 0 }}>
+          <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, color: '#161D2B', margin: 0 }}>
             Notifications & Messages History
           </h1>
           <p style={{ fontSize: '0.9rem', color: '#5B6578', marginTop: '0.35rem' }}>
@@ -122,6 +122,7 @@ export default function NotificationsPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.4rem',
+            whiteSpace: 'nowrap',
           }}
         >
           <CheckCheck size={16} />
@@ -130,22 +131,8 @@ export default function NotificationsPage() {
       </div>
 
       {/* Filter Tabs & Search Bar */}
-      <div
-        style={{
-          background: '#FFFFFF',
-          borderRadius: '14px',
-          padding: '1rem 1.25rem',
-          border: '1px solid rgba(0,0,0,0.08)',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1rem',
-          marginBottom: '1.5rem',
-          flexWrap: 'wrap',
-        }}
-      >
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+      <div className="notifications-filter-bar">
+        <div className="notifications-filter-pills">
           {[
             { id: 'all', label: 'All' },
             { id: 'unread', label: 'Unread' },
@@ -165,6 +152,7 @@ export default function NotificationsPage() {
                 fontWeight: 600,
                 cursor: 'pointer',
                 transition: 'all 150ms ease',
+                whiteSpace: 'nowrap',
               }}
             >
               {tab.label}
@@ -172,7 +160,7 @@ export default function NotificationsPage() {
           ))}
         </div>
 
-        <div style={{ position: 'relative', minWidth: '220px' }}>
+        <div className="notifications-search-wrap" style={{ position: 'relative', minWidth: '220px' }}>
           <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
           <input
             type="text"

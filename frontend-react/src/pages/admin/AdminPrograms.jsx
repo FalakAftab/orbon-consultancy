@@ -166,7 +166,7 @@ const res = await fetchAdminPrograms({ search: debouncedSearch, per_page: 50, pa
 
   return (
     <div className="admin-programs flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className="admin-page-header">
         <div>
           <h1
             style={{

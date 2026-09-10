@@ -183,7 +183,7 @@ export default function AdminStudents() {
 
   return (
     <div className="admin-students flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className="admin-page-header">
         <div>
           <h1
             style={{

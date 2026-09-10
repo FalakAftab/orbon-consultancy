@@ -160,7 +160,7 @@ const data = Array.isArray(res?.data) ? res.data : res?.items || [];
 
   return (
     <div className="admin-universities flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className="admin-page-header">
         <div>
           <h1
             style={{

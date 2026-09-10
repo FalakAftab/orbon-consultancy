@@ -125,15 +125,7 @@ export default function ProgramDetailPage() {
           boxShadow: 'var(--shadow-lg)',
         }}
       >
-        <div
-          style={{
-            position: 'relative',
-            padding: '3.5rem 2.5rem 2rem',
-            borderBottom: '1px solid var(--color-border)',
-            color: 'var(--color-ivory)',
-            minHeight: 220,
-          }}
-        >
+        <div className="program-detail-hero-content">
           <img
             src="/figma_assets/program-details___hero-banner.png"
             alt=""
@@ -206,17 +198,7 @@ export default function ProgramDetailPage() {
         </div>
 
         {/* Sticky action bar */}
-        <div
-          style={{
-            padding: '1rem 2.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '1rem',
-            flexWrap: 'wrap',
-            background: 'var(--color-surface)',
-          }}
-        >
+        <div className="program-detail-sticky-bar">
           <div className="flex items-center gap-3 flex-wrap">
             {program.deadline_winter && (
               <span className="badge badge-neutral"><Calendar size={12} /> Winter: {formatDate(program.deadline_winter)}</span>
@@ -229,7 +211,7 @@ export default function ProgramDetailPage() {
             <Button variant="secondary" onClick={handleSave} disabled={saved}>
               <Bookmark size={15} /> {saved ? 'Saved to Shortlist' : 'Save to Shortlist'}
             </Button>
-{applicationUrl ? (
+            {applicationUrl ? (
               <a
                 href={applicationUrl}
                 target="_blank"
@@ -267,7 +249,7 @@ export default function ProgramDetailPage() {
       )}
 
       {/* Body grid */}
-      <div className="grid" style={{ gridTemplateColumns: '1fr minmax(280px, 340px)', gap: 'var(--space-6)', alignItems: 'start' }}>
+      <div className="program-detail-grid">
         {/* Main column */}
         <div className="flex flex-col gap-6">
           {/* Overview */}
