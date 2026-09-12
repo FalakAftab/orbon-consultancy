@@ -339,316 +339,127 @@ export default function ApplyForMePage() {
   const uploadedDocsCount = Object.keys(vaultData).length;
 
   return (
-    <div style={{ padding: '1.5rem', maxWidth: '1240px', margin: '0 auto', color: '#161D2B' }}>
+    <div style={{ padding: '0.75rem 0.5rem', maxWidth: '1240px', margin: '0 auto', color: '#161D2B' }}>
       
-      {/* Removed Active Paid Fee Status Banner upon user request */}
+      {/* EXECUTIVE NAVY BLUE & CARAMEL HERO BANNER */}
+      <div className="apply-for-me-hero">
+        <div className="apply-for-me-hero-inner">
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.35rem 0.9rem',
+              borderRadius: '999px',
+              background: 'rgba(196, 151, 70, 0.15)',
+              border: '1px solid rgba(196, 151, 70, 0.35)',
+              color: '#C49746',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              letterSpacing: '0.06em',
+              marginBottom: '1.15rem',
+            }}
+          >
+            <Sparkles size={15} /> GERMAN CONSULTANCY SERVICE
+          </div>
 
-      {/* UNIFIED MASTER CARD CONTAINER */}
-      <div
-        style={{
-          background: '#ffffff',
-          borderRadius: '20px',
-          padding: '2.5rem',
-          border: '1px solid rgba(22, 29, 43, 0.1)',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.04)',
-          marginBottom: '2rem',
-        }}
-      >
-        {/* TOP HERO ROW */}
-        <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', marginBottom: '2.5rem' }}>
-          
-          {/* Left Column: Text & CTA */}
-          <div style={{ flex: '1 1 500px', maxWidth: '620px' }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                padding: '0.35rem 0.85rem',
-                borderRadius: '999px',
-                background: '#FAF7F2',
-                border: '1px solid rgba(196, 151, 70, 0.35)',
-                color: '#C49746',
-                fontSize: '0.75rem',
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                marginBottom: '1.25rem',
-              }}
-            >
-              <Sparkles size={14} style={{ color: '#C49746' }} /> PREMIUM SERVICE
-            </div>
+          <h1
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: 'clamp(1.85rem, 3.5vw, 2.5rem)',
+              fontWeight: 700,
+              lineHeight: 1.2,
+              color: '#ffffff',
+              marginBottom: '0.85rem',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Let Our Experts Handle Your German University Applications
+          </h1>
 
-            <h1
-              style={{
-                fontFamily: "'Playfair Display', Georgia, serif",
-                fontSize: 'clamp(2.2rem, 3.8vw, 2.75rem)',
-                fontWeight: 700,
-                lineHeight: 1.15,
-                color: '#161D2B',
-                marginBottom: '0.6rem',
-                letterSpacing: '-0.015em',
-              }}
-            >
-              Apply for Me
-            </h1>
+          <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.88)', lineHeight: 1.7, maxWidth: '680px' }}>
+            Choose your target field of study or specific program. Our dedicated education consultants verify your transcripts, format your documents for German standards, manage application deadlines, and submit directly on your behalf.
+          </p>
 
-            <h2
-              style={{
-                fontSize: '1.1rem',
-                fontWeight: 600,
-                color: '#5B6578',
-                marginBottom: '0.85rem',
-                lineHeight: 1.4,
-              }}
-            >
-              Let our experts handle your German university applications.
-            </h2>
-
-            <p style={{ fontSize: '0.925rem', color: '#5B6578', lineHeight: 1.65, marginBottom: '1.75rem', maxWidth: '560px' }}>
-              Get professional support with your applications, documentation, and submission process. We make it simple, stress-free, and more successful — so you can focus on your future.
-            </p>
-
+          <div style={{ marginTop: '1.75rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button
               onClick={() => setShowApplyModal(true)}
               style={{
-                background: '#161D2B',
+                background: 'linear-gradient(135deg, #C49746 0%, #B45309 100%)',
                 color: '#FFFFFF',
                 border: 'none',
-                padding: '0.8rem 1.75rem',
-                borderRadius: '10px',
+                padding: '0.85rem 1.85rem',
+                borderRadius: '12px',
                 fontWeight: 700,
-                fontSize: '0.9rem',
+                fontSize: '0.925rem',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.5rem',
-                boxShadow: '0 4px 14px rgba(22, 29, 43, 0.2)',
-                transition: 'all 200ms ease',
+                gap: '0.6rem',
+                boxShadow: '0 8px 24px rgba(196, 151, 70, 0.35)',
+                transition: 'transform 150ms ease, boxShadow 150ms ease',
               }}
             >
-              <Send size={15} /> Request Apply for Me <ArrowRight size={15} />
+              <Send size={18} /> Initiate Application Request
             </button>
           </div>
-
-          {/* Right Column: Visual Illustration */}
-          <div style={{ flex: '1 1 300px', display: 'flex', justifyContent: 'center' }}>
-            <ApplyForMeIllustration />
-          </div>
-
         </div>
 
-        {/* MIDDLE SECTION: 3 REFINED BENEFITS ROW */}
+        {/* Ambient Watermark Icon */}
         <div
           style={{
-            borderTop: '1px solid rgba(0,0,0,0.06)',
-            paddingTop: '2rem',
-            marginBottom: '2rem',
+            position: 'absolute',
+            right: '-20px',
+            bottom: '-30px',
+            opacity: 0.06,
+            pointerEvents: 'none',
+            color: '#FFFFFF',
           }}
         >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-              gap: '1.75rem',
-            }}
-          >
-            {/* Benefit 1 */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
-              <div
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: '10px',
-                  background: '#FAF7F2',
-                  border: '1px solid rgba(196, 151, 70, 0.3)',
-                  color: '#C49746',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <User size={18} />
-              </div>
-              <div>
-                <h4 style={{ fontSize: '0.925rem', fontWeight: 700, color: '#161D2B', margin: '0 0 0.2rem 0' }}>
-                  Expert Guidance
-                </h4>
-                <p style={{ fontSize: '0.825rem', color: '#5B6578', margin: 0, lineHeight: 1.5 }}>
-                  Get personalized support from experienced German educational consultants.
-                </p>
-              </div>
-            </div>
-
-            {/* Benefit 2 */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
-              <div
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: '10px',
-                  background: '#FAF7F2',
-                  border: '1px solid rgba(196, 151, 70, 0.3)',
-                  color: '#C49746',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <FileText size={18} />
-              </div>
-              <div>
-                <h4 style={{ fontSize: '0.925rem', fontWeight: 700, color: '#161D2B', margin: '0 0 0.2rem 0' }}>
-                  Document Review
-                </h4>
-                <p style={{ fontSize: '0.825rem', color: '#5B6578', margin: 0, lineHeight: 1.5 }}>
-                  Ensure your certificates, CV & SOP meet strict German university requirements.
-                </p>
-              </div>
-            </div>
-
-            {/* Benefit 3 */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
-              <div
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: '10px',
-                  background: '#FAF7F2',
-                  border: '1px solid rgba(196, 151, 70, 0.3)',
-                  color: '#C49746',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <Send size={18} />
-              </div>
-              <div>
-                <h4 style={{ fontSize: '0.925rem', fontWeight: 700, color: '#161D2B', margin: '0 0 0.2rem 0' }}>
-                  Application Submission
-                </h4>
-                <p style={{ fontSize: '0.825rem', color: '#5B6578', margin: 0, lineHeight: 1.5 }}>
-                  We handle the submission process and tracking directly from start to finish.
-                </p>
-              </div>
-            </div>
-
-          </div>
+          <Building2 size={320} />
         </div>
-
-        {/* BOTTOM SECTION: PRO USER BANNER */}
-        <div
-          style={{
-            background: '#FAF7F2',
-            border: '1px solid rgba(196, 151, 70, 0.35)',
-            borderRadius: '14px',
-            padding: '1.1rem 1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '1rem',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: '8px',
-                background: '#ffffff',
-                border: '1px solid rgba(196, 151, 70, 0.3)',
-                color: '#C49746',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
-            >
-              <Lightbulb size={18} />
-            </div>
-
-            <div>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#161D2B', margin: '0 0 0.15rem 0' }}>
-                Already a PRO user?
-              </h4>
-              <p style={{ fontSize: '0.825rem', color: '#5B6578', margin: 0 }}>
-                Your Apply for Me service is included in your PRO plan. Start your application journey today!
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setShowApplyModal(true)}
-            style={{
-              background: '#161D2B',
-              color: '#ffffff',
-              border: 'none',
-              padding: '0.55rem 1.25rem',
-              borderRadius: '8px',
-              fontWeight: 700,
-              fontSize: '0.825rem',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              transition: 'all 150ms ease',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Go to PRO Plan <ArrowRight size={14} />
-          </button>
-        </div>
-
       </div>
 
       {/* MINIMAL CLEAN SUB-NAV TAB SELECTORS */}
-      <div style={{ display: 'inline-flex', background: '#FAF7F2', padding: '4px', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', marginBottom: '1.75rem' }}>
+      <div className="apply-for-me-subnav">
         <button
           onClick={() => setActiveTab('applications')}
           style={{
-            background: activeTab === 'applications' ? '#161D2B' : 'transparent',
-            color: activeTab === 'applications' ? '#FFFFFF' : '#5B6578',
-            border: 'none',
-            padding: '0.55rem 1.35rem',
-            borderRadius: '8px',
+            background: activeTab === 'applications' ? '#0F172A' : '#ffffff',
+            color: activeTab === 'applications' ? '#FFFFFF' : '#4A5568',
+            border: activeTab === 'applications' ? '1px solid #0F172A' : '1px solid rgba(0,0,0,0.1)',
+            padding: '0.65rem 1.4rem',
+            borderRadius: '10px',
             fontWeight: 700,
-            fontSize: '0.85rem',
+            fontSize: '0.875rem',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
-            transition: 'all 150ms ease',
-            boxShadow: activeTab === 'applications' ? '0 2px 8px rgba(22, 29, 43, 0.2)' : 'none',
+            boxShadow: activeTab === 'applications' ? '0 4px 12px rgba(15, 23, 42, 0.15)' : 'none',
           }}
         >
-          <FileText size={15} style={{ color: activeTab === 'applications' ? '#C49746' : '#5B6578' }} />
-          Application Requests ({applications.length})
+          <FileText size={16} /> Application Requests ({applications.length})
         </button>
 
         <button
           onClick={() => setActiveTab('vault')}
           style={{
-            background: activeTab === 'vault' ? '#161D2B' : 'transparent',
-            color: activeTab === 'vault' ? '#FFFFFF' : '#5B6578',
-            border: 'none',
-            padding: '0.55rem 1.35rem',
-            borderRadius: '8px',
+            background: activeTab === 'vault' ? '#0F172A' : '#ffffff',
+            color: activeTab === 'vault' ? '#FFFFFF' : '#4A5568',
+            border: activeTab === 'vault' ? '1px solid #0F172A' : '1px solid rgba(0,0,0,0.1)',
+            padding: '0.65rem 1.4rem',
+            borderRadius: '10px',
             fontWeight: 700,
-            fontSize: '0.85rem',
+            fontSize: '0.875rem',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
-            transition: 'all 150ms ease',
-            boxShadow: activeTab === 'vault' ? '0 2px 8px rgba(22, 29, 43, 0.2)' : 'none',
+            boxShadow: activeTab === 'vault' ? '0 4px 12px rgba(15, 23, 42, 0.15)' : 'none',
           }}
         >
-          <FolderLock size={15} style={{ color: activeTab === 'vault' ? '#C49746' : '#5B6578' }} />
-          PRO Document Vault {uploadedDocsCount > 0 && `(${uploadedDocsCount} Files)`}
+          <FolderLock size={16} /> PRO Document Vault ({uploadedDocsCount}/9)
         </button>
       </div>
 

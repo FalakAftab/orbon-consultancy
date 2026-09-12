@@ -102,11 +102,11 @@ export default function UniversityDetailPage() {
                 style={{
                   fontFamily: 'var(--font-display)',
                   fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
-                  fontWeight: 400,
-                  letterSpacing: '-0.03em',
+                  fontWeight: 600,
+                  letterSpacing: 'var(--letter-spacing-tight)',
                   color: 'var(--color-charcoal)',
                   marginTop: '0.6rem',
-                  lineHeight: 1.1,
+                  lineHeight: 1.15,
                 }}
               >
                 {university.name}

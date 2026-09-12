@@ -97,9 +97,9 @@
 .auth-hero-title {
   font-family: var(--font-display);
   font-size: clamp(2rem, 3.2vw, 2.75rem);
-  font-weight: 400;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: var(--letter-spacing-tight);
   margin: 0.75rem 0 0;
   color: var(--color-ivory);
 }
@@ -159,8 +159,8 @@
 .auth-card-heading h1 {
   font-family: var(--font-display);
   font-size: 2.1rem;
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-tight);
   color: var(--color-charcoal);
 }
 

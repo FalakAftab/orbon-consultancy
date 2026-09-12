@@ -160,11 +160,11 @@ export default function ProgramDetailPage() {
                 style={{
                   fontFamily: 'var(--font-display)',
                   fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
-                  fontWeight: 400,
-                  letterSpacing: '-0.03em',
+                  fontWeight: 600,
+                  letterSpacing: 'var(--letter-spacing-tight)',
                   color: 'var(--color-ivory)',
                   marginTop: '0.6rem',
-                  lineHeight: 1.1,
+                  lineHeight: 1.15,
                 }}
               >
                 {program.name}

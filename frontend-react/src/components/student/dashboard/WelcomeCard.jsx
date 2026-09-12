@@ -14,8 +14,8 @@ export function WelcomeCard({ profile }) {
         style={{
           fontFamily: 'var(--font-display)',
           fontSize: 'clamp(1.75rem, 3.4vw, 2.5rem)',
-          fontWeight: 400,
-          letterSpacing: '-0.03em',
+          fontWeight: 600,
+          letterSpacing: 'var(--letter-spacing-tight)',
           color: 'var(--color-charcoal)',
         }}
       >

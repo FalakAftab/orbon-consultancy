@@ -63,8 +63,8 @@ export default function AdminDashboard() {
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-              fontWeight: 400,
-              letterSpacing: '-0.03em',
+              fontWeight: 600,
+              letterSpacing: 'var(--letter-spacing-tight)',
               color: 'var(--color-charcoal)',
             }}
           >
@@ -135,9 +135,9 @@ export default function AdminDashboard() {
                       style={{
                         fontFamily: 'var(--font-display)',
                         fontSize: '2rem',
-                        fontWeight: 400,
+                        fontWeight: 600,
                         lineHeight: 1,
-                        letterSpacing: '-0.03em',
+                        letterSpacing: 'var(--letter-spacing-tight)',
                         color: 'var(--color-charcoal)',
                       }}
                     >

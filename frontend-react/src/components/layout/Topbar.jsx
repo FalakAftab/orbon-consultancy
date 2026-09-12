@@ -33,6 +33,30 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const notifRef = useRef(null);
 
+  // Dynamic user avatar state
+  const [avatarUrl, setAvatarUrl] = useState('');
+
+  useEffect(() => {
+    if (!user) return;
+    const loadAvatar = () => {
+      const stored = localStorage.getItem(`user_avatar_${user.id}`);
+      if (stored) {
+        setAvatarUrl(stored);
+      } else if (user?.student_profile?.document_vault?.profile_picture) {
+        setAvatarUrl(user.student_profile.document_vault.profile_picture);
+      } else {
+        setAvatarUrl('');
+      }
+    };
+    loadAvatar();
+
+    const handleAvatarUpdate = () => {
+      loadAvatar();
+    };
+    window.addEventListener('user-avatar-updated', handleAvatarUpdate);
+    return () => window.removeEventListener('user-avatar-updated', handleAvatarUpdate);
+  }, [user]);
+
   useEffect(() => {
     if (!user) return;
     fetchNotifs();
@@ -99,6 +123,20 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
       }
     }
     setShowNotifications(false);
+
+    // Route advisor messages, application status, or apply-for-me links to unified chat
+    const appIdMatch = notif.link?.match(/app_id=(\d+)/);
+    const appId = appIdMatch ? appIdMatch[1] : null;
+
+    if (
+      notif.type === 'advisor_message' ||
+      notif.type === 'application_status' ||
+      notif.link?.includes('apply-for-me')
+    ) {
+      navigate(`/student/notifications${appId ? `?app_id=${appId}` : '?tab=messages'}`);
+      return;
+    }
+
     if (notif.link) {
       navigate(notif.link);
     } else {
@@ -437,14 +475,19 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
         )}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div
+        className="flex items-center gap-3"
+        style={{ cursor: 'pointer' }}
+        onClick={() => navigate(user?.role === 'admin' ? '/admin/settings' : '/student/profile')}
+        title="View Profile"
+      >
         <div className="hidden sm:block text-right">
-          <p className="text-sm font-semibold leading-tight">{user?.name}</p>
-          <p className="text-xs text-muted">
-            {user?.student_id ? `ID: #${user.student_id}` : user?.role}
+          <p className="text-sm font-semibold leading-tight" style={{ color: '#161D2B' }}>{user?.name}</p>
+          <p className="text-xs" style={{ color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
+            {user?.role === 'admin' ? 'Consultancy Admin' : 'Student Account'}
           </p>
         </div>
-        <Avatar name={user?.name || 'User'} size="md" />
+        <Avatar name={user?.name || 'User'} src={avatarUrl} size="md" />
       </div>
     </header>
   );

@@ -63,6 +63,69 @@ function normalizeProgram(item) {
   };
 }
 
+/**
+ * Helper to extract programs array from either a raw recommendation response,
+ * cached wizard result, or recommendation history detail entry.
+ */
+function extractResultsPrograms(data) {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.programs)) return data.programs;
+  if (Array.isArray(data.matched_programs)) return data.matched_programs;
+  if (Array.isArray(data.recommendations)) return data.recommendations;
+
+  let snapshot = data.results_snapshot || data.results;
+  if (typeof snapshot === 'string') {
+    try {
+      snapshot = JSON.parse(snapshot);
+    } catch {
+      snapshot = null;
+    }
+  }
+
+  if (snapshot) {
+    if (Array.isArray(snapshot)) return snapshot;
+    if (Array.isArray(snapshot.programs)) return snapshot.programs;
+    if (Array.isArray(snapshot.matched_programs)) return snapshot.matched_programs;
+    if (Array.isArray(snapshot.recommendations)) return snapshot.recommendations;
+  }
+
+  return [];
+}
+
+/**
+ * Helper to extract criteria snapshot from location state, history detail,
+ * or cached wizard payload.
+ */
+function extractResultsCriteria(data, locationState) {
+  if (locationState?.criteria) return locationState.criteria;
+  if (!data) return null;
+
+  let criteria = data.criteria_snapshot || data.criteria;
+  if (typeof criteria === 'string') {
+    try {
+      criteria = JSON.parse(criteria);
+    } catch {
+      criteria = null;
+    }
+  }
+  if (criteria && typeof criteria === 'object') return criteria;
+
+  let snapshot = data.results_snapshot || data.results;
+  if (typeof snapshot === 'string') {
+    try {
+      snapshot = JSON.parse(snapshot);
+    } catch {
+      snapshot = null;
+    }
+  }
+  if (snapshot && typeof snapshot === 'object') {
+    return snapshot.criteria_snapshot || snapshot.criteria || null;
+  }
+
+  return null;
+}
+
 export default function ResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -95,11 +158,7 @@ export default function ResultsPage() {
   };
 
   // The criteria snapshot used to generate this result set (for refining).
-  const criteriaSnapshot =
-    location.state?.criteria ||
-    resultsData?.criteria_snapshot ||
-    resultsData?.criteria ||
-    null;
+  const criteriaSnapshot = extractResultsCriteria(resultsData, location.state);
 
   useEffect(() => {
     // If a specific history entry was requested, fetch its detail.
@@ -143,7 +202,13 @@ export default function ResultsPage() {
         .then((res) => {
           if (res?.data && res.data.length > 0) {
             const first = res.data[0];
-            setResultsData(first.results || first);
+            if (first?.id) {
+              return fetchRecommendationHistoryDetail(first.id)
+                .then((detailRes) => setResultsData(detailRes?.data || first))
+                .catch(() => setResultsData(first));
+            } else {
+              setResultsData(first);
+            }
           } else {
             setResultsData(null);
           }
@@ -166,7 +231,7 @@ export default function ResultsPage() {
     }
   };
 
-  const programs = resultsData?.programs || resultsData?.matched_programs || resultsData?.recommendations || [];
+  const programs = extractResultsPrograms(resultsData);
   const totalMatches =
     resultsData?.total_matches ??
     resultsData?.program_match_count ??
@@ -216,8 +281,8 @@ export default function ResultsPage() {
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-              fontWeight: 400,
-              letterSpacing: '-0.03em',
+              fontWeight: 600,
+              letterSpacing: 'var(--letter-spacing-tight)',
               color: 'var(--color-charcoal)',
             }}
           >
@@ -397,8 +462,8 @@ export default function ResultsPage() {
                       style={{
                         fontFamily: 'var(--font-display)',
                         fontSize: '1.3rem',
-                        fontWeight: 400,
-                        letterSpacing: '-0.02em',
+                        fontWeight: 600,
+                        letterSpacing: 'var(--letter-spacing-tight)',
                         color: 'var(--color-charcoal)',
                         marginTop: '0.35rem',
                       }}
@@ -513,8 +578,8 @@ export default function ResultsPage() {
                     style={{
                       fontFamily: 'var(--font-display)',
                       fontSize: '1.15rem',
-                      fontWeight: 400,
-                      letterSpacing: '-0.02em',
+                      fontWeight: 600,
+                      letterSpacing: 'var(--letter-spacing-tight)',
                       color: 'var(--color-charcoal)',
                       marginTop: '0.2rem',
                     }}

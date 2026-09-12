@@ -121,17 +121,7 @@ export default function AdminSettings() {
       )}
 
       {/* Hero Header */}
-      <div
-        style={{
-          background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
-          borderRadius: '20px',
-          padding: '2.5rem 3rem',
-          color: '#FFFFFF',
-          position: 'relative',
-          overflow: 'hidden',
-          boxShadow: '0 16px 40px rgba(15, 23, 42, 0.15)',
-        }}
-      >
+      <div className="admin-settings-hero">
         <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.5rem' }}>
           <div>
             <div
@@ -209,7 +199,7 @@ export default function AdminSettings() {
       ) : (
         <>
           {/* Top Status & Metrics Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
             
             {/* Health Card */}
             <div style={{
@@ -245,27 +235,26 @@ export default function AdminSettings() {
               border: '1px solid rgba(0,0,0,0.08)',
               padding: '1.75rem',
               boxShadow: '0 8px 24px rgba(0,0,0,0.02)',
-              gridColumn: 'auto / span 2',
             }}>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#161D2B', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Database size={18} style={{ color: '#C49746' }} /> Database Overview
               </h3>
-              <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-                <div style={{ flex: 1, minWidth: '120px' }}>
+              <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                <div style={{ flex: 1, minWidth: '100px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#718096', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                     <Building2 size={16} /> Universities
                   </div>
                   <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#161D2B' }}>{data?.universities ?? '—'}</div>
                 </div>
                 <div style={{ width: '1px', background: 'rgba(0,0,0,0.08)' }}></div>
-                <div style={{ flex: 1, minWidth: '120px' }}>
+                <div style={{ flex: 1, minWidth: '100px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#718096', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                     <BookOpen size={16} /> Programs
                   </div>
                   <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#161D2B' }}>{data?.programs ?? '—'}</div>
                 </div>
                 <div style={{ width: '1px', background: 'rgba(0,0,0,0.08)' }}></div>
-                <div style={{ flex: 1, minWidth: '120px' }}>
+                <div style={{ flex: 1, minWidth: '100px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#718096', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                     <Users size={16} /> Students
                   </div>
@@ -275,7 +264,7 @@ export default function AdminSettings() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem' }}>
+          <div className="admin-settings-form-grid">
             
             {/* Admin Profile Form */}
             <div style={{
@@ -330,7 +319,7 @@ export default function AdminSettings() {
                     </div>
                   </div>
                   
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="admin-settings-row-two-col">
                     <div>
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#4A5568', marginBottom: '0.4rem' }}>
                         Phone Number

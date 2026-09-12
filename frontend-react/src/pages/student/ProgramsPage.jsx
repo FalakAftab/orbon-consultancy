@@ -121,8 +121,8 @@ export default function ProgramsPage() {
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-              fontWeight: 400,
-              letterSpacing: '-0.03em',
+              fontWeight: 600,
+              letterSpacing: 'var(--letter-spacing-tight)',
               color: 'var(--color-charcoal)',
             }}
           >
@@ -324,8 +324,8 @@ export default function ProgramsPage() {
                       style={{
                         fontFamily: 'var(--font-display)',
                         fontSize: '1.25rem',
-                        fontWeight: 400,
-                        letterSpacing: '-0.02em',
+                        fontWeight: 600,
+                        letterSpacing: 'var(--letter-spacing-tight)',
                         color: 'var(--color-charcoal)',
                         marginTop: '0.4rem',
                         lineHeight: 1.25,
@@ -437,8 +437,8 @@ export default function ProgramsPage() {
                       style={{
                         fontFamily: 'var(--font-display)',
                         fontSize: '1.15rem',
-                        fontWeight: 400,
-                        letterSpacing: '-0.02em',
+                        fontWeight: 600,
+                        letterSpacing: 'var(--letter-spacing-tight)',
                         color: 'var(--color-charcoal)',
                         marginTop: '0.2rem',
                       }}

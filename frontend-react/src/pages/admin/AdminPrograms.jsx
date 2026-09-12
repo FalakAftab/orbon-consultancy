@@ -172,8 +172,8 @@ const res = await fetchAdminPrograms({ search: debouncedSearch, per_page: 50, pa
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-              fontWeight: 400,
-              letterSpacing: '-0.03em',
+              fontWeight: 600,
+              letterSpacing: 'var(--letter-spacing-tight)',
               color: 'var(--color-charcoal)',
             }}
           >

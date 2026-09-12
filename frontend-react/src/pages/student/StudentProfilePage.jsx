@@ -8,8 +8,13 @@ import {
   Save,
   X,
   BookOpen,
+  Camera,
+  Upload,
+  Trash2,
 } from 'lucide-react';
 import { fetchStudentProfile, updateStudentProfile } from '../../api/student';
+import { getStudentVault, updateStudentVault } from '../../api/premium';
+import { useAuth } from '../../contexts/AuthContext';
 import { ErrorState, Button, Input, Select, Textarea } from '../../components/ui';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
@@ -27,6 +32,7 @@ function Section({ icon: Icon, title, children }) {
 }
 
 export default function StudentProfilePage() {
+  const { user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -36,6 +42,124 @@ export default function StudentProfilePage() {
   const [fieldErrors, setFieldErrors] = useState({});
 
   const [form, setForm] = useState({});
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  // Sync avatar from local storage or backend PRO vault
+  useEffect(() => {
+    if (!user) return;
+    const stored = localStorage.getItem(`user_avatar_${user.id}`);
+    if (stored) {
+      setAvatarUrl(stored);
+    } else {
+      getStudentVault()
+        .then((res) => {
+          if (res?.data?.profile_picture) {
+            setAvatarUrl(res.data.profile_picture);
+            localStorage.setItem(`user_avatar_${user.id}`, res.data.profile_picture);
+            window.dispatchEvent(new Event('user-avatar-updated'));
+          }
+        })
+        .catch(() => {});
+    }
+  }, [user]);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file (PNG, JPG, JPEG, WEBP).');
+      return;
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert('Image size exceeds 8MB. Please choose a smaller photo.');
+      return;
+    }
+
+    setUploadingPhoto(true);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        // Optimize & resize image on canvas (max dimension 600px)
+        const maxDim = 600;
+        let width = img.width;
+        let height = img.height;
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.88);
+        setAvatarUrl(compressedBase64);
+
+        if (user?.id) {
+          localStorage.setItem(`user_avatar_${user.id}`, compressedBase64);
+        }
+        window.dispatchEvent(new Event('user-avatar-updated'));
+
+        getStudentVault()
+          .then((res) => {
+            const vault = res.data || {};
+            return updateStudentVault({ ...vault, profile_picture: compressedBase64 });
+          })
+          .then(() => {
+            setMessage('Profile picture updated successfully!');
+            setTimeout(() => setMessage(''), 3500);
+          })
+          .catch((err) => {
+            console.warn('Could not sync avatar to backend vault', err);
+            setMessage('Profile picture updated locally.');
+            setTimeout(() => setMessage(''), 3500);
+          })
+          .finally(() => {
+            setUploadingPhoto(false);
+          });
+      };
+      img.onerror = () => {
+        alert('Could not process image file.');
+        setUploadingPhoto(false);
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemovePhoto = () => {
+    if (!confirm('Are you sure you want to remove your profile picture?')) return;
+    setAvatarUrl('');
+    if (user?.id) {
+      localStorage.removeItem(`user_avatar_${user.id}`);
+    }
+    window.dispatchEvent(new Event('user-avatar-updated'));
+
+    getStudentVault()
+      .then((res) => {
+        const vault = res.data || {};
+        delete vault.profile_picture;
+        return updateStudentVault(vault);
+      })
+      .then(() => {
+        setMessage('Profile picture removed.');
+        setTimeout(() => setMessage(''), 3000);
+      })
+      .catch((err) => console.warn('Could not remove avatar from backend', err));
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -158,8 +282,8 @@ export default function StudentProfilePage() {
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-              fontWeight: 400,
-              letterSpacing: '-0.03em',
+              fontWeight: 600,
+              letterSpacing: 'var(--letter-spacing-tight)',
               color: 'var(--color-charcoal)',
             }}
           >
@@ -182,29 +306,138 @@ export default function StudentProfilePage() {
 
       {/* Profile summary card */}
       <div className="card" style={{ borderRadius: 'var(--radius-2xl)', padding: '1.75rem 2rem' }}>
-        <div className="flex items-center gap-5 flex-wrap">
-          <div
-            style={{
-              width: 64,
-              height: 64,
-              borderRadius: '50%',
-              background: '#0e1b2e',
-              color: 'var(--color-ivory)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: 'var(--font-display)',
-              fontSize: '1.4rem',
-              flexShrink: 0,
-            }}
-          >
-            {(form.first_name?.[0] || '') + (form.last_name?.[0] || '') || 'S'}
+        <div className="flex items-center gap-6 flex-wrap">
+          {/* Avatar Photo Container with Upload Badge */}
+          <div style={{ position: 'relative', width: 84, height: 84, flexShrink: 0 }}>
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Profile"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '3px solid #C49746',
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+                  color: '#FAF7F2',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '1.8rem',
+                  fontWeight: 600,
+                  border: '3px solid rgba(196, 151, 70, 0.4)',
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.1)',
+                }}
+              >
+                {(form.first_name?.[0] || '') + (form.last_name?.[0] || '') || 'S'}
+              </div>
+            )}
+
+            {/* Camera badge trigger */}
+            <label
+              htmlFor="avatar-file-input"
+              style={{
+                position: 'absolute',
+                bottom: -2,
+                right: -2,
+                width: 30,
+                height: 30,
+                borderRadius: '50%',
+                background: '#0F172A',
+                border: '2px solid #FFFFFF',
+                color: '#C49746',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.25)',
+                transition: 'transform 150ms ease',
+              }}
+              title="Upload Profile Picture"
+            >
+              <Camera size={15} />
+            </label>
+            <input
+              id="avatar-file-input"
+              type="file"
+              accept="image/png,image/jpeg,image/jpg,image/webp"
+              onChange={handlePhotoUpload}
+              style={{ display: 'none' }}
+              disabled={uploadingPhoto}
+            />
           </div>
-          <div style={{ flex: 1, minWidth: 200 }}>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 400, color: 'var(--color-charcoal)' }}>
-              {[form.first_name, form.last_name].filter(Boolean).join(' ') || 'Your Profile'}
-            </h2>
-            <div className="flex items-center gap-2 mt-2" style={{ maxWidth: 420 }}>
+
+          <div style={{ flex: 1, minWidth: 220 }}>
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.45rem', fontWeight: 600, color: 'var(--color-charcoal)', margin: 0 }}>
+                  {[form.first_name, form.last_name].filter(Boolean).join(' ') || 'Your Profile'}
+                </h2>
+                <p style={{ fontSize: '0.825rem', color: '#64748B', marginTop: '0.2rem', marginBottom: 0 }}>
+                  Student Account &bull; German Admissions Track
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="avatar-file-input"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    padding: '0.45rem 0.95rem',
+                    borderRadius: '8px',
+                    background: '#FAF7F2',
+                    border: '1px solid rgba(0,0,0,0.12)',
+                    fontSize: '0.825rem',
+                    fontWeight: 600,
+                    color: '#161D2B',
+                    cursor: uploadingPhoto ? 'wait' : 'pointer',
+                    transition: 'all 150ms ease',
+                  }}
+                >
+                  <Upload size={14} />
+                  {uploadingPhoto ? 'Processing...' : avatarUrl ? 'Change Picture' : 'Upload Picture'}
+                </label>
+
+                {avatarUrl && (
+                  <button
+                    type="button"
+                    onClick={handleRemovePhoto}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      padding: '0.45rem 0.8rem',
+                      borderRadius: '8px',
+                      background: '#FEE2E2',
+                      border: 'none',
+                      fontSize: '0.825rem',
+                      fontWeight: 600,
+                      color: '#B91C1C',
+                      cursor: 'pointer',
+                    }}
+                    title="Remove profile picture"
+                  >
+                    <Trash2 size={13} />
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 mt-3" style={{ maxWidth: 420 }}>
               <div style={{ flex: 1, height: 6, borderRadius: 'var(--radius-full)', background: 'var(--color-surface-subtle)', overflow: 'hidden' }}>
                 <div style={{ height: '100%', width: `${profileCompletionPercent}%`, background: 'var(--color-gold)', borderRadius: 'var(--radius-full)' }} />
               </div>

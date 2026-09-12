@@ -97,7 +97,7 @@
   font-size: 1.45rem;
   font-weight: var(--font-weight-regular);
   color: var(--color-charcoal);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .premium-nav-links {
@@ -162,10 +162,10 @@
 .premium-hero-title {
   margin-top: 1.1rem;
   font-family: var(--font-display);
-  font-size: clamp(3.5rem, 6.5vw, 6.2rem);
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  font-weight: 400;
+  font-size: clamp(3.2rem, 6vw, 5.8rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  font-weight: 500;
   color: var(--color-charcoal);
   max-width: 14ch;
 }
@@ -652,9 +652,9 @@
   max-width: 16ch;
   font-family: var(--font-display);
   font-size: clamp(2.1rem, 4vw, 3.75rem);
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   color: var(--color-charcoal);
 }
 
@@ -727,8 +727,8 @@
 .journey-step-body h3 {
   font-family: var(--font-display);
   font-size: 1.5rem;
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  letter-spacing: -0.005em;
   color: var(--color-charcoal);
 }
 
@@ -785,9 +785,9 @@
   margin-top: 1rem;
   font-family: var(--font-display);
   font-size: 1.65rem;
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
   color: var(--color-charcoal);
 }
 
@@ -1147,10 +1147,10 @@
 .count-up-value {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 4vw, 3.75rem);
-  font-weight: 400;
-  letter-spacing: -0.04em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--color-charcoal);
-  line-height: 1;
+  line-height: 1.1;
 }
 
 .count-up-label {
@@ -1185,9 +1185,9 @@
 .final-cta h2 {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 5vw, 5.5rem);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -0.04em;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
   color: var(--color-charcoal);
   max-width: 14ch;
 }
@@ -1213,9 +1213,9 @@
 .footer-brand {
   font-family: var(--font-display);
   font-size: 2.25rem;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--color-ivory);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
 }
 
 .footer-tagline {

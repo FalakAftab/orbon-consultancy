@@ -53,8 +53,8 @@ export default function HistoryPage() {
           style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-            fontWeight: 400,
-            letterSpacing: '-0.03em',
+            fontWeight: 600,
+            letterSpacing: 'var(--letter-spacing-tight)',
             color: 'var(--color-charcoal)',
           }}
         >
@@ -89,6 +89,8 @@ export default function HistoryPage() {
                 <div
                   key={entry.id}
                   className="card history-card"
+                  onClick={() => handleView(entry.id)}
+                  style={{ cursor: 'pointer', transition: 'all 150ms ease' }}
                 >
                   <div style={{ minWidth: 120 }}>
                     <p className="text-xs uppercase tracking-wider text-muted font-semibold">Search Date</p>
@@ -132,7 +134,10 @@ export default function HistoryPage() {
                       type="button"
                       className="btn btn-icon"
                       style={{ background: 'var(--color-ivory-warm)', border: '1px solid var(--color-border)', marginLeft: '1rem' }}
-                      onClick={() => handleView(entry.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleView(entry.id);
+                      }}
                       aria-label="View results"
                     >
                       <ArrowRight size={16} />
