@@ -22,12 +22,35 @@ class RecommendationRequest extends FormRequest
             'maximum_gpa' => ['required', 'numeric', 'min:1'],
             'passing_gpa' => ['required', 'numeric', 'min:0', 'lte:maximum_gpa'],
 
-            'english_test_type' => ['required', Rule::in(['ielts', 'toefl', 'moi'])],
+            'english_test_type' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $allowed = ['ielts', 'toefl', 'moi'];
+                    if (is_array($value)) {
+                        if (empty($value)) {
+                            $fail('At least one English test type must be selected.');
+                        }
+                        foreach ($value as $item) {
+                            if (! in_array($item, $allowed, true)) {
+                                $fail("Invalid English test type: {$item}.");
+                            }
+                        }
+                    } elseif (! in_array($value, $allowed, true)) {
+                        $fail('The selected English test type is invalid.');
+                    }
+                },
+            ],
             'english_test_score' => [
                 'nullable',
                 'numeric',
                 'min:0',
-                Rule::requiredIf(fn () => $this->input('english_test_type') !== 'moi'),
+                Rule::requiredIf(function () {
+                    $type = $this->input('english_test_type');
+                    if (is_array($type)) {
+                        return in_array('ielts', $type, true) || in_array('toefl', $type, true);
+                    }
+                    return $type !== 'moi';
+                }),
             ],
 
             'preferred_intake' => ['required', Rule::in(['winter', 'summer', 'both'])],

@@ -17,21 +17,135 @@ class RecommendationService
     private const SUBJECT_GROUPS = [
         'Computer Science & IT' => [
             'computer science', 'artificial intelligence', 'data science',
-            'cyber security', 'information technology',
+            'cyber security', 'information technology', 'game & visual computing',
+            'software engineering', 'computer engineering', 'digital engineering',
         ],
         'Engineering' => [
-            'mechanical engineering', 'electrical engineering', 'civil engineering',
+            'engineering', 'mechanical engineering', 'electrical engineering', 'civil engineering',
+            'water engineering', 'nanotechnology', 'robotics', 'polymer',
+            'aerospace', 'renewable energy', 'biomedical', 'materials',
+            'chemical engineering', 'environmental engineering', 'industrial engineering',
+            'computational engineering', 'textile engineering', 'automotive', 'maritime engineering',
         ],
         'Natural Sciences' => [
             'mathematics', 'physics', 'chemistry', 'biology',
+            'nanoscience', 'environmental science', 'polymer', 'materials',
+            'agricultural science', 'geosciences', 'agriculture', 'food science', 'forestry',
         ],
-        'Medicine & Health' => ['medicine'],
-        'Architecture & Design' => ['architecture', 'design'],
-        'Law' => ['law'],
+        'Medicine & Health' => [
+            'medicine', 'biomedical sciences', 'public health', 'pharmacy',
+            'sports science', 'nursing', 'neuroscience',
+        ],
+        'Architecture & Design' => [
+            'architecture', 'design', 'graphic design', 'animation & game',
+            'urban planning', 'landscape architecture',
+        ],
+        'Law' => ['law', 'legal studies'],
         'Media & Communication' => ['media'],
-        'Business & Economics' => ['business', 'economics', 'finance'],
-        'Social Sciences & Humanities' => ['humanities'],
-        'German Language' => [],
+        'Business & Economics' => [
+            'business', 'economics', 'finance', 'management',
+            'international trade', 'supply chain & logistics', 'marketing',
+            'real estate', 'accounting', 'entrepreneurship',
+        ],
+        'Social Sciences & Humanities' => [
+            'humanities', 'psychology', 'social sciences', 'sociology',
+            'political science', 'international relations', 'history',
+            'philosophy', 'literature', 'languages & translation',
+            'area studies', 'education', 'social work',
+        ],
+        'German Language' => ['german'],
+        'Preparatory & Foundation Studies' => [
+            'foundation & preparatory', 'interdisciplinary & research',
+        ],
+    ];
+
+    private const SUBJECT_KEYWORDS = [
+        // Engineering Sub-disciplines
+        'engineering' => ['engineering', 'engineer', 'ingenieur', 'technology', 'technologies', 'mechanics', 'computational mechanics', 'autonomous driving', 'testing', 'non-destructive', 'nautical', 'maritime', 'scientific instrumentation'],
+        'mechanical engineering' => ['mechanical engineering', 'mechanical', 'maschinenbau', 'automotive', 'thermodynamics', 'manufacturing', 'production engineering', 'propulsion', 'combustion', 'fluid mechanics', 'mechatronics'],
+        'electrical engineering' => ['electrical', 'electronic', 'electronics', 'elektrotechnik', 'telecommunication', 'power engineering', 'optics', 'photonics', 'microelectronics', 'signal processing', 'sensor', 'embedded', 'communications'],
+        'civil engineering' => ['civil engineering', 'civil', 'construction', 'structural', 'infrastructure', 'geotechnical', 'traffic', 'transportation', 'geodesy', 'cartography', 'surveying', 'built environment'],
+        'water engineering' => ['water', 'hydrolog', 'hydraul', 'hydro science', 'hydro engineering', 'aquatic', 'waste water', 'wastewater', 'water resources'],
+        'nanotechnology' => ['nano', 'nanotech', 'nanoscience', 'nanomaterial', 'nanotechnology', 'advanced materials', 'metallurgy', 'ceramics'],
+        'polymer' => ['polymer', 'macromolecular', 'plastics', 'rubber', 'chemical engineering', 'process engineering', 'process technology', 'verfahrenstechnik', 'bioprocess', 'membrane'],
+        'robotics' => ['robot', 'robotics', 'mechatronic', 'mechatronics', 'automation', 'autonomous systems', 'cyber-physical', 'autonomous driving', 'control engineering', 'control systems', 'cybernetics'],
+        'materials' => ['material', 'materials science', 'metallurg', 'computational materials', 'biofabrication'],
+        'biomedical' => ['biomedical', 'bioengineering', 'medical engineering', 'biomechanic', 'medical technology', 'biomedizin', 'biomaterials', 'medical physics', 'neural engineering'],
+        'aerospace' => ['aerospace', 'aeronautic', 'aviation', 'space engineering', 'space tech', 'aircraft'],
+        'automotive' => ['automotive', 'vehicle', 'mobility systems', 'automotive engineering', 'autonomous driving'],
+        'renewable energy' => ['renewable energy', 'clean energy', 'solar', 'wind energy', 'energy engineering', 'energy system', 'power engineering', 'energy efficiency', 'sustainable energy'],
+        'environmental engineering' => ['environmental engineering', 'waste management', 'sustainability engineering', 'ecological engineering', 'water and environment', 'environmental planning', 'nature conservation', 'ecosystem', 'circular economy', 'sustainable resources'],
+        'chemical engineering' => ['chemical engineering', 'process engineering', 'bioprocess', 'chemoinformatics'],
+        'industrial engineering' => ['industrial engineering', 'wirtschaftsingenieurwesen', 'operations research', 'engineering management', 'systems engineering', 'production management'],
+        'computational engineering' => ['computational engineering', 'computational methods', 'scientific computing', 'simulation science', 'computational mechanics', 'computer simulation'],
+        'textile engineering' => ['textile', 'leather and textile'],
+        'maritime engineering' => ['maritime', 'nautical', 'shipping', 'offshore'],
+
+        // Computer Science & IT
+        'computer science' => ['computer science', 'software', 'computing', 'informatics', 'programming', 'informatik', 'web', 'computational science', 'computational modelling', 'computational modeling', 'simulation', 'digital studies'],
+        'software engineering' => ['software engineering', 'software development', 'software systems'],
+        'computer engineering' => ['computer engineering', 'hardware', 'digital engineering', 'embedded systems', 'internet of things', 'iot', 'smart systems'],
+        'artificial intelligence' => ['artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'computational intelligence', 'computer vision', 'natural language processing', 'ai'],
+        'data science' => ['data science', 'big data', 'data analytics', 'data engineering'],
+        'cyber security' => ['cyber security', 'cybersecurity', 'information security', 'network security', 'cryptography'],
+        'information technology' => ['information technology', 'information systems', 'business informatics', 'wirtschaftsinformatik', 'digital transformation', 'e-government', 'hci', 'human-computer interaction', 'human computer interaction'],
+        'game & visual computing' => ['game', 'visual computing', 'animation', 'computer graphics', 'virtual reality', 'augmented reality', 'visualisation'],
+
+        // Natural Sciences & Agriculture
+        'mathematics' => ['mathematic', 'mathematics', 'applied mathematics', 'statistics', 'actuarial'],
+        'physics' => ['physic', 'physics', 'quantum', 'optics', 'astrophysics', 'geophysics', 'particle accelerator', 'acoustics', 'theoretical'],
+        'chemistry' => ['chemist', 'chemistry', 'biochemistry', 'organic chemistry', 'chemical science', 'drug sciences'],
+        'biology' => ['biolog', 'biology', 'molecular biology', 'microbiology', 'genetics', 'biotechnology', 'bioinformatics', 'biomedicine', 'neuroscience', 'life science', 'biosciences', 'biosystems', 'biodiversity', 'science'],
+        'agricultural science' => ['agriculture', 'agricultural', 'agronomy', 'horticulture', 'crop', 'soil', 'bioeconomy', 'digital farming', 'plant science', 'plant breeding', 'viticulture', 'enology', 'animal science', 'food science', 'food technology', 'nutrition', 'global food', 'food quality', 'forest', 'forestry', 'wood science'],
+        'geosciences' => ['geoscience', 'geology', 'geography', 'earth sciences', 'paleontology', 'mineralogy', 'geomatics', 'geospatial', 'remote sensing'],
+        'nanoscience' => ['nanoscience', 'nanomaterial', 'nanotechnology'],
+        'environmental science' => ['environmental science', 'ecology', 'geoscience', 'earth science', 'climate science', 'meteorology', 'geology', 'geography', 'atmospheric', 'ecosystem', 'nature conservation'],
+
+        // Medicine & Health
+        'medicine' => ['medicine', 'medical', 'public health', 'healthcare', 'pharmacy', 'pharmaceutical', 'nursing', 'clinical', 'dentistry', 'auditory', 'cardiovascular', 'oral sciences', 'drug', 'gerontology'],
+        'biomedical sciences' => ['biomedical', 'molecular medicine', 'neurobiology', 'immunology', 'toxicology', 'epidemiology', 'pharmacology', 'biosciences'],
+        'public health' => ['public health', 'global health', 'health policy', 'epidemiology'],
+        'sports science' => ['sport', 'sports', 'sports science', 'kinesiology', 'coaching', 'exercise science', 'physical activity'],
+
+        // Architecture & Design
+        'architecture' => ['architecture', 'architectural', 'spatial planning', 'interior architecture', 'built environment'],
+        'urban planning' => ['urban planning', 'urban design', 'landscape architecture', 'regional planning', 'city planning', 'spatial development', 'urban studies'],
+        'design' => ['design', 'industrial design', 'product design', 'interaction design', 'ui/ux', 'spatial design', 'art', 'music', 'sound'],
+        'graphic design' => ['graphic design', 'visual communication', 'visual design', 'typography', 'branding'],
+        'animation & game' => ['animation', 'game design', '3d animation', 'game technologies', 'digital media'],
+
+        // Law
+        'law' => ['law', 'legal', 'llm', 'jurisprudence', 'human rights', 'international law', 'commercial law'],
+        'legal studies' => ['legal studies', 'comparative law', 'european law', 'intellectual property'],
+
+        // Media & Communication
+        'media' => ['media', 'journalism', 'communication', 'digital media', 'broadcasting', 'film', 'media studies', 'public relations'],
+
+        // Business, Economics & Trade
+        'business' => ['business', 'management', 'mba', 'administration', 'international management', 'commerce', 'business administration', 'entrepreneurship', 'consumer science', 'tourism', 'hospitality'],
+        'international trade' => ['trade', 'international trade', 'foreign trade', 'global business', 'world trade', 'customs', 'international business', 'shipping', 'chartering'],
+        'economics' => ['economic', 'economics', 'econometrics', 'macroeconomic', 'microeconomic', 'development economics', 'development research', 'labour'],
+        'finance' => ['finance', 'financial', 'accounting', 'banking', 'fintech', 'investment', 'auditing'],
+        'supply chain & logistics' => ['supply chain', 'logistics', 'procurement', 'transportation management', 'operations management', 'shipping'],
+        'marketing' => ['marketing', 'digital marketing', 'consumer behavior', 'brand management'],
+        'real estate' => ['real estate', 'property management', 'housing'],
+
+        // Social Sciences & Humanities
+        'humanities' => ['humanities', 'history', 'philosophy', 'literature', 'cultural studies', 'cultural heritage', 'heritage studies', 'manuscript', 'archaeology', 'anthropology', 'slavery'],
+        'psychology' => ['psychology', 'cognitive science', 'neuropsychology', 'social psychology', 'clinical psychology', 'counseling', 'behavioural sciences'],
+        'social sciences' => ['social science', 'sociology', 'political science', 'international relations', 'public policy', 'development studies', 'governance', 'peace and conflict', 'war studies', 'humanitarian', 'gender', 'diversity', 'transformation studies', 'postcolonial', 'world studies', 'cultural and social'],
+        'languages & translation' => ['language', 'linguistics', 'translation', 'interpreting', 'english studies', 'german studies', 'french', 'spanish', 'philology', 'romance', 'turcolog', 'turkic', 'semitic'],
+        'area studies' => ['european studies', 'asian studies', 'chinese studies', 'american studies', 'african studies', 'middle eastern', 'turkic', 'latin american', 'global studies', 'area studies', 'slavic', 'sinology', 'indian studies', 'iranian', 'british studies'],
+        'theology & religious studies' => ['theology', 'religion', 'religious', 'islamic', 'jewish', 'intercultural theology'],
+        'social work' => ['social work', 'social pedagogy', 'community development', 'welfare'],
+        'education' => ['education', 'pedagogy', 'educational', 'teaching', 'lifelong education', 'higher education', 'evaluation'],
+
+        // German Language
+        'german' => ['german', 'deutsch', 'germanistik', 'german studies', 'daad', 'daf'],
+
+        // Preparatory & Foundation Studies (Studienkolleg)
+        'foundation & preparatory' => ['foundation', 'studienkolleg', 'pathway', 'freshman', 'university preparation', 'study preparation', 'preparatory'],
+        'interdisciplinary & research' => ['interdisciplinary', 'multidisciplinary', 'graduate academy', 'early career', 'research academy', 'summer school', 'winter university', 'studium individuale', 'research master', 'research'],
     ];
 
     public function __construct(
@@ -183,7 +297,7 @@ class RecommendationService
         $mandatoryFailures = [];
 
         if (! empty($criteria->preferredSubjects)) {
-            $subjectOk = $this->subjectMatches($criteria->preferredSubjects, $program->subject_category);
+            $subjectOk = $this->subjectMatches($criteria->preferredSubjects, $program);
             if (! $subjectOk) {
                 $mandatoryFailures[] = 'Subject mismatch.';
                 $unmatched[] = 'Subject mismatch.';
@@ -217,29 +331,44 @@ class RecommendationService
         $englishReq = $program->english_requirements ?? [];
         $minIelts = isset($englishReq['min_ielts']) ? (float) $englishReq['min_ielts'] : null;
         $minToefl = isset($englishReq['min_toefl']) ? (float) $englishReq['min_toefl'] : null;
+        $acceptsMoi = ! empty($englishReq['accepts_moi']);
+
+        $selectedTestTypes = [];
+        if ($criteria->englishTestType !== null) {
+            $selectedTestTypes = is_array($criteria->englishTestType) ? $criteria->englishTestType : [$criteria->englishTestType];
+        }
 
         $englishOk = false;
-        if ($criteria->englishTestType === null) {
+        if (empty($selectedTestTypes)) {
             $englishOk = true;
-        } elseif ($criteria->englishTestType === 'moi') {
-            $englishOk = true;
-        } elseif ($criteria->englishTestType === 'ielts') {
-            $englishOk = $minIelts === null || ($criteria->englishTestScore !== null && $criteria->englishTestScore >= $minIelts);
-        } elseif ($criteria->englishTestType === 'toefl') {
-            $englishOk = $minToefl === null || ($criteria->englishTestScore !== null && $criteria->englishTestScore >= $minToefl);
+        } else {
+            foreach ($selectedTestTypes as $type) {
+                if ($type === 'moi') {
+                    if ($acceptsMoi || ($minIelts === null && $minToefl === null)) {
+                        $englishOk = true;
+                        $reasons[] = 'MOI accepted for this profile.';
+                    }
+                } elseif ($type === 'ielts') {
+                    if ($minIelts === null || ($criteria->englishTestScore !== null && $criteria->englishTestScore >= $minIelts)) {
+                        $englishOk = true;
+                        if ($minIelts !== null) {
+                            $reasons[] = 'IELTS requirement matched.';
+                        }
+                    }
+                } elseif ($type === 'toefl') {
+                    if ($minToefl === null || ($criteria->englishTestScore !== null && $criteria->englishTestScore >= $minToefl)) {
+                        $englishOk = true;
+                        if ($minToefl !== null) {
+                            $reasons[] = 'TOEFL requirement matched.';
+                        }
+                    }
+                }
+            }
         }
 
         if (! $englishOk) {
             $mandatoryFailures[] = 'English language score does not meet the requirement.';
             $unmatched[] = 'English language score does not meet the requirement.';
-        } else {
-            if ($criteria->englishTestType === 'ielts' && $minIelts !== null) {
-                $reasons[] = 'IELTS requirement matched.';
-            } elseif ($criteria->englishTestType === 'toefl' && $minToefl !== null) {
-                $reasons[] = 'TOEFL requirement matched.';
-            } elseif ($criteria->englishTestType === 'moi') {
-                $reasons[] = 'MOI accepted for this profile.';
-            }
         }
 
         $eligibilityStatus = empty($mandatoryFailures) ? 'eligible' : 'not_eligible';
@@ -332,27 +461,75 @@ class RecommendationService
         };
     }
 
-    private function subjectMatches(array $preferredSubjects, ?string $programSubjectCategory): bool
+    private function subjectMatches(array $preferredSubjects, Program $program): bool
     {
-        if ($programSubjectCategory === null || $programSubjectCategory === '') {
-            return false;
+        $preferredSubjects = array_values(array_filter($preferredSubjects, static fn ($v) => $v !== null && $v !== ''));
+        if (empty($preferredSubjects)) {
+            return true;
         }
 
-        $preferredSubjects = array_values(array_filter($preferredSubjects, static fn ($v) => $v !== null && $v !== ''));
+        $cat = mb_strtolower(trim((string) $program->subject_category));
+        $field = mb_strtolower(trim((string) $program->field));
+        $name = mb_strtolower(trim((string) $program->name));
+        $searchContext = " {$cat} {$field} {$name} ";
 
-        $expanded = [];
         foreach ($preferredSubjects as $subject) {
-            $key = (string) $subject;
-            if (isset(self::SUBJECT_GROUPS[$key])) {
-                array_push($expanded, ...self::SUBJECT_GROUPS[$key]);
+            $prefRaw = trim((string) $subject);
+            $prefLower = mb_strtolower($prefRaw);
+
+            // 1. Direct match on subject_category (100% backward compatible with existing DB values)
+            if ($cat !== '' && ($cat === $prefLower || str_contains($cat, $prefLower) || str_contains($prefLower, $cat))) {
+                return true;
+            }
+
+            // 2. Parent category matching (e.g. "Engineering", "Computer Science & IT")
+            $parentKeys = [];
+            if (isset(self::SUBJECT_GROUPS[$prefRaw])) {
+                $parentKeys = self::SUBJECT_GROUPS[$prefRaw];
             } else {
-                $expanded[] = $key;
+                foreach (self::SUBJECT_GROUPS as $groupName => $subKeys) {
+                    if (strcasecmp($groupName, $prefRaw) === 0) {
+                        $parentKeys = $subKeys;
+                        break;
+                    }
+                }
+            }
+
+            if (! empty($parentKeys)) {
+                // If program has an explicit subject_category in this group
+                if ($cat !== '' && in_array($cat, $parentKeys, true)) {
+                    return true;
+                }
+
+                // Check keywords for all sub-disciplines under this parent
+                foreach ($parentKeys as $subKey) {
+                    if (isset(self::SUBJECT_KEYWORDS[$subKey])) {
+                        foreach (self::SUBJECT_KEYWORDS[$subKey] as $keyword) {
+                            if (str_contains($searchContext, $keyword)) {
+                                return true;
+                            }
+                        }
+                    } elseif (str_contains($searchContext, $subKey)) {
+                        return true;
+                    }
+                }
+            } else {
+                // 3. Specific subcategory / specialized discipline (e.g. "water engineering", "nanotechnology", etc.)
+                if (isset(self::SUBJECT_KEYWORDS[$prefLower])) {
+                    foreach (self::SUBJECT_KEYWORDS[$prefLower] as $keyword) {
+                        if (str_contains($searchContext, $keyword)) {
+                            return true;
+                        }
+                    }
+                }
+
+                // Fallback: general substring match against category, field, or title
+                if (str_contains($searchContext, $prefLower)) {
+                    return true;
+                }
             }
         }
 
-        $normalizedProgramSubject = mb_strtolower(trim($programSubjectCategory));
-        $normalizedPreferred = array_map(static fn ($v) => mb_strtolower(trim((string) $v)), $expanded);
-
-        return in_array($normalizedProgramSubject, $normalizedPreferred, true);
+        return false;
     }
 }

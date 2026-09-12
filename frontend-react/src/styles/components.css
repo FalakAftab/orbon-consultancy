@@ -1035,8 +1035,8 @@ textarea.input {
 .wizard-stepper-line {
   flex: 1;
   height: 1px;
-  margin: 0 1rem;
-  min-width: 24px;
+  margin: 0 0.65rem;
+  min-width: 16px;
 }
 .wizard-stepper-line--done { background: #0e1b2e; }
 .wizard-stepper-line--upcoming { background: var(--color-border); }

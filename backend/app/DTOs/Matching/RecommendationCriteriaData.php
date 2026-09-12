@@ -8,7 +8,7 @@ class RecommendationCriteriaData
         public readonly ?string $lastDegree,
         public readonly ?float $obtainedGpa,
         public readonly ?float $maximumGpa,
-        public readonly ?string $englishTestType,
+        public readonly string|array|null $englishTestType,
         public readonly ?float $englishTestScore,
         public readonly ?string $preferredIntake,
         public readonly ?string $admissionPreference,

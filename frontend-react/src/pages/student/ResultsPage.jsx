@@ -145,7 +145,6 @@ export default function ResultsPage() {
       return 'grid';
     }
   });
-  const [sortBy, setSortBy] = useState('match_desc');
   const [filterAdmission, setFilterAdmission] = useState('all');
 
   const changeView = (next) => {
@@ -237,15 +236,12 @@ export default function ResultsPage() {
     resultsData?.program_match_count ??
     (Array.isArray(programs) ? programs.length : 0);
 
-  // Client-side sort — the backend already ranks by match score, but the
-  // "Sort by" control lets the student flip that ordering without a re-run.
+  // Programs are naturally ranked by match score (highest to lowest).
   const sortedPrograms = Array.isArray(programs)
     ? [...programs].sort((a, b) => {
         const pa = normalizeProgram(a);
         const pb = normalizeProgram(b);
-        if (sortBy === 'match_asc') return (pa.match ?? 0) - (pb.match ?? 0);
-        if (sortBy === 'name_asc') return (pa.programName || '').localeCompare(pb.programName || '');
-        return (pb.match ?? 0) - (pa.match ?? 0); // match_desc (default)
+        return (pb.match ?? 0) - (pa.match ?? 0);
       })
     : programs;
 
@@ -309,17 +305,6 @@ export default function ResultsPage() {
               {totalMatches} programs found
             </span>
           )}
-          <select
-            className="input select"
-            style={{ width: 'auto', minWidth: 180 }}
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            aria-label="Sort programs"
-          >
-            <option value="match_desc">Best Match (High to Low)</option>
-            <option value="match_asc">Match (Low to High)</option>
-            <option value="name_asc">Program Name (A–Z)</option>
-          </select>
           <select
             className="input select"
             style={{ width: 'auto', minWidth: 190 }}

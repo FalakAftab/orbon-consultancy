@@ -8,6 +8,7 @@ import {
   Globe,
   DollarSign,
   BookOpen,
+  Layers,
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
@@ -20,16 +21,17 @@ import { WizardStepper } from '../../components/student/wizard/WizardStepper';
 import { WizardTipPanel } from '../../components/student/wizard/WizardTipPanel';
 
 /**
- * Recommendation Wizard — 5-Step Form Integrated directly with Laravel API.
+ * Recommendation Wizard — 6-Step Form Integrated directly with Laravel API.
  * Captures all fields validated by RecommendationRequest.php.
  */
 
 const STEPS = [
   { id: 'academic', number: 1, title: 'Academic Profile', icon: GraduationCap },
   { id: 'language', number: 2, title: 'Language Proficiency', icon: Globe },
-  { id: 'subjects', number: 3, title: 'Subject & Degree', icon: BookOpen },
-  { id: 'preferences', number: 4, title: 'Intake & Location', icon: DollarSign },
-  { id: 'review', number: 5, title: 'Review & Match', icon: Sparkles },
+  { id: 'discipline', number: 3, title: 'Degree & Field', icon: BookOpen },
+  { id: 'specialization', number: 4, title: 'Specializations', icon: Layers },
+  { id: 'preferences', number: 5, title: 'Intake & Location', icon: DollarSign },
+  { id: 'review', number: 6, title: 'Review & Match', icon: Sparkles },
 ];
 
 const DEGREE_OPTIONS = [
@@ -101,8 +103,10 @@ export default function RecommendationWizard() {
   const adminStudentName = location.state?.adminStudentName || null;
 
   const [step, setStep] = useState(1);
-  const previousSubjects = Array.isArray(refineCriteria?.preferred_subjects)
-    ? refineCriteria.preferred_subjects
+  // Only pre-populate subjects if explicitly passed via navigation state (e.g. Refine Criteria button).
+  // Fresh visits should have completely unselected subcategories.
+  const previousSubjects = Array.isArray(routerCriteria?.preferred_subjects)
+    ? routerCriteria.preferred_subjects
     : [];
   const [activeCategory, setActiveCategory] = useState(() => {
     if (previousSubjects.length > 0) {
@@ -132,12 +136,14 @@ export default function RecommendationWizard() {
     maximum_gpa: refineCriteria?.maximum_gpa ?? '',
     passing_gpa: refineCriteria?.passing_gpa ?? '',
 
-    english_test_type: refineCriteria?.english_test_type || 'ielts',
+    english_test_type: Array.isArray(refineCriteria?.english_test_type)
+      ? refineCriteria.english_test_type
+      : (refineCriteria?.english_test_type ? [refineCriteria.english_test_type] : ['ielts']),
     english_test_score: refineCriteria?.english_test_score ?? '',
     german_level: refineCriteria?.german_level || 'none',
 
     preferred_degree: refineCriteria?.preferred_degree || 'master',
-    preferred_subjects: previousSubjects.length > 0 ? previousSubjects : [],
+    preferred_subjects: previousSubjects,
 
     preferred_intake: refineCriteria?.preferred_intake || 'winter',
     admission_preference: refineCriteria?.admission_preference || 'both',
@@ -182,7 +188,25 @@ export default function RecommendationWizard() {
 
   const handleSelectCategory = (category) => {
     setActiveCategory(category);
+    if (fieldErrors.activeCategory) setFieldErrors((prev) => ({ ...prev, activeCategory: '' }));
     if (fieldErrors.preferred_subjects) setFieldErrors((prev) => ({ ...prev, preferred_subjects: '' }));
+  };
+
+  // Selected English test types as array
+  const selectedEnglishTypes = Array.isArray(form.english_test_type)
+    ? form.english_test_type
+    : (form.english_test_type ? [form.english_test_type] : ['ielts']);
+
+  const toggleEnglishType = (typeId) => {
+    let next;
+    if (selectedEnglishTypes.includes(typeId)) {
+      if (selectedEnglishTypes.length === 1) return; // Keep at least one selected
+      next = selectedEnglishTypes.filter((t) => t !== typeId);
+    } else {
+      next = [...selectedEnglishTypes, typeId];
+    }
+    updateField('english_test_type', next);
+    if (fieldErrors.english_test_score) setFieldErrors((prev) => ({ ...prev, english_test_score: '' }));
   };
 
   // The active parent category's subcategory options.
@@ -214,12 +238,20 @@ export default function RecommendationWizard() {
         errs.obtained_gpa = 'Obtained GPA is below minimum passing GPA.';
       }
     } else if (currentStep === 2) {
-      if (form.english_test_type !== 'moi' && !form.english_test_score) {
+      const needsScore = selectedEnglishTypes.some((t) => t === 'ielts' || t === 'toefl');
+      if (needsScore && !form.english_test_score) {
         errs.english_test_score = 'English score is required for IELTS/TOEFL.';
       }
     } else if (currentStep === 3) {
+      if (!form.preferred_degree) {
+        errs.preferred_degree = 'Target degree level is required.';
+      }
+      if (!activeCategory) {
+        errs.activeCategory = 'Please select your primary field of study.';
+      }
+    } else if (currentStep === 4) {
       if (!form.preferred_subjects.length) {
-        errs.preferred_subjects = 'Select at least one preferred subject area.';
+        errs.preferred_subjects = 'Select at least one specialization or "All" to continue.';
       }
     }
     setFieldErrors(errs);
@@ -228,7 +260,7 @@ export default function RecommendationWizard() {
 
   const handleNext = () => {
     if (!validateStep(step)) return;
-    if (step < 5) setStep((s) => s + 1);
+    if (step < 6) setStep((s) => s + 1);
   };
 
   const handleBack = () => {
@@ -256,8 +288,8 @@ export default function RecommendationWizard() {
         maximum_gpa: parseFloat(form.maximum_gpa),
         passing_gpa: parseFloat(form.passing_gpa),
 
-        english_test_type: form.english_test_type,
-        english_test_score: form.english_test_score ? parseFloat(form.english_test_score) : null,
+        english_test_type: selectedEnglishTypes.length === 1 ? selectedEnglishTypes[0] : selectedEnglishTypes,
+        english_test_score: selectedEnglishTypes.some((t) => t === 'ielts' || t === 'toefl') && form.english_test_score ? parseFloat(form.english_test_score) : null,
         german_level: form.german_level,
 
         preferred_degree: form.preferred_degree,
@@ -556,44 +588,59 @@ export default function RecommendationWizard() {
               </div>
 
               <div className="field">
-                <label className="field-label">English Test Type</label>
+                <label className="field-label">English Test Type *</label>
+                <p style={{ fontSize: '0.825rem', color: 'var(--color-muted)', marginBottom: '0.75rem' }}>
+                  Select one or multiple English proficiency options that apply to your profile (e.g. IELTS, TOEFL, or MOI).
+                </p>
                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                   {[
                     { id: 'ielts', label: 'IELTS Academic' },
                     { id: 'toefl', label: 'TOEFL iBT' },
                     { id: 'moi', label: 'Medium of Instruction (MOI)' },
-                  ].map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => updateField('english_test_type', t.id)}
-                      style={{
-                        padding: '0.65rem 1.1rem',
-                        borderRadius: 'var(--radius-md)',
-                        border: `1px solid ${form.english_test_type === t.id ? 'var(--color-forest)' : 'var(--color-border)'}`,
-                        background: form.english_test_type === t.id ? 'rgba(11, 59, 54, 0.08)' : 'var(--color-surface)',
-                        color: form.english_test_type === t.id ? 'var(--color-forest)' : 'var(--color-charcoal)',
-                        fontSize: '0.875rem',
-                        fontWeight: form.english_test_type === t.id ? 600 : 400,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {t.label}
-                    </button>
-                  ))}
+                  ].map((t) => {
+                    const isSelected = selectedEnglishTypes.includes(t.id);
+                    return (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => toggleEnglishType(t.id)}
+                        style={{
+                          padding: '0.65rem 1.1rem',
+                          borderRadius: 'var(--radius-md)',
+                          border: `1px solid ${isSelected ? 'var(--color-forest)' : 'var(--color-border)'}`,
+                          background: isSelected ? 'rgba(11, 59, 54, 0.08)' : 'var(--color-surface)',
+                          color: isSelected ? 'var(--color-forest)' : 'var(--color-charcoal)',
+                          fontSize: '0.875rem',
+                          fontWeight: isSelected ? 600 : 400,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.45rem',
+                        }}
+                      >
+                        {isSelected && <span>✓</span>}
+                        {t.label}
+                      </button>
+                    );
+                  })}
                 </div>
+                {fieldErrors.english_test_type && <span className="field-error">{fieldErrors.english_test_type}</span>}
               </div>
 
-              {form.english_test_type !== 'moi' && (
+              {selectedEnglishTypes.some((t) => t === 'ielts' || t === 'toefl') && (
                 <div className="field">
                   <label className="field-label">
-                    {form.english_test_type === 'ielts' ? 'IELTS Band Score' : 'TOEFL iBT Score'}
+                    {selectedEnglishTypes.includes('ielts') && selectedEnglishTypes.includes('toefl')
+                      ? 'IELTS Band or TOEFL iBT Score *'
+                      : selectedEnglishTypes.includes('ielts')
+                      ? 'IELTS Band Score *'
+                      : 'TOEFL iBT Score *'}
                   </label>
                   <input
                     type="number"
                     step="0.5"
                     className="input"
-                    placeholder={form.english_test_type === 'ielts' ? '7.5' : '95'}
+                    placeholder={selectedEnglishTypes.includes('ielts') ? '7.5' : '95'}
                     value={form.english_test_score}
                     onChange={(e) => updateField('english_test_score', e.target.value)}
                   />
@@ -618,15 +665,15 @@ export default function RecommendationWizard() {
             </div>
           )}
 
-          {/* STEP 3: Subject & Degree */}
+          {/* STEP 3: Degree & Primary Academic Field */}
           {step === 3 && (
             <div className="flex flex-col gap-5">
               <div>
                 <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 400, color: 'var(--color-charcoal)' }}>
-                  Subject & Degree Preference
+                  Target Degree & Study Discipline
                 </h2>
                 <p style={{ fontSize: '0.875rem', color: 'var(--color-muted)', marginTop: '0.25rem' }}>
-                  Select the level of study and specific academic subjects.
+                  Select your intended degree level and the primary academic discipline you want to study.
                 </p>
               </div>
 
@@ -643,18 +690,20 @@ export default function RecommendationWizard() {
                     </option>
                   ))}
                 </select>
+                {fieldErrors.preferred_degree && (
+                  <span className="field-error">{fieldErrors.preferred_degree}</span>
+                )}
               </div>
 
-
-              {/* Parent category selection */}
+              {/* Primary field selection */}
               <div className="field">
-                <label className="field-label">What would you like to study? *</label>
+                <label className="field-label">Primary Academic Discipline *</label>
                 <div
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-                    gap: '0.6rem',
-                    marginTop: '0.25rem',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                    gap: '0.75rem',
+                    marginTop: '0.35rem',
                   }}
                 >
                   {SUBJECT_CATEGORIES.map((parent) => {
@@ -667,87 +716,178 @@ export default function RecommendationWizard() {
                         style={{
                           width: '100%',
                           textAlign: 'left',
-                          padding: '0.85rem 1rem',
-                          borderRadius: 'var(--radius-md)',
-                          border: `1px solid ${isActive ? 'var(--color-forest)' : 'rgba(31,41,39,0.12)'}`,
+                          padding: '0.95rem 1.1rem',
+                          borderRadius: 'var(--radius-lg)',
+                          border: `1.5px solid ${isActive ? 'var(--color-forest)' : 'rgba(31,41,39,0.12)'}`,
                           background: isActive ? 'rgba(11, 59, 54, 0.08)' : 'rgba(255,255,255,0.7)',
                           color: isActive ? 'var(--color-forest)' : 'var(--color-charcoal)',
-                          fontSize: '0.9rem',
+                          fontSize: '0.92rem',
                           fontWeight: isActive ? 600 : 500,
                           cursor: 'pointer',
-                          boxShadow: isActive ? 'inset 0 0 0 1px rgba(11,59,54,0.25)' : 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '0.5rem',
+                          boxShadow: isActive ? '0 2px 8px rgba(11, 59, 54, 0.08)' : 'none',
+                          transition: 'all 0.15s ease',
                         }}
                       >
-                        {parent.category}
+                        <span>{parent.category}</span>
+                        {isActive && (
+                          <span
+                            style={{
+                              width: 20,
+                              height: 20,
+                              borderRadius: '50%',
+                              background: 'var(--color-forest)',
+                              color: '#fff',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '0.75rem',
+                              flexShrink: 0,
+                            }}
+                          >
+                            ✓
+                          </span>
+                        )}
                       </button>
                     );
                   })}
                 </div>
-              </div>
-
-              {/* Subcategory selection for the active parent */}
-              <div className="field">
-                <label className="field-label">
-                  Choose your specialization in <strong style={{ color: 'var(--color-forest)' }}>{activeCategory}</strong> *
-                </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginTop: '0.25rem' }}>
-                  {/* Option to select the entire Parent Category */}
-                  {(() => {
-                    const isParentSelected = form.preferred_subjects.includes(activeCategory);
-                    return (
-                      <button
-                        type="button"
-                        onClick={() => toggleSubject(activeCategory)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          borderRadius: 'var(--radius-full)',
-                          border: `1px solid ${isParentSelected ? 'var(--color-forest)' : 'var(--color-gold, #D4A93A)'}`,
-                          background: isParentSelected ? 'var(--color-forest)' : 'var(--color-gold-soft, #FFF7E6)',
-                          color: isParentSelected ? '#FFFFFF' : 'var(--color-charcoal)',
-                          fontSize: '0.85rem',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {isParentSelected ? `✓ Entire ${activeCategory} Selected` : `All ${activeCategory}`}
-                      </button>
-                    );
-                  })()}
-
-                  {activeSubcategories.map((sub) => {
-                    const selected = form.preferred_subjects.includes(sub.value);
-                    return (
-                      <button
-                        key={sub.value}
-                        type="button"
-                        onClick={() => toggleSubject(sub.value)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          borderRadius: 'var(--radius-full)',
-                          border: `1px solid ${selected ? 'var(--color-forest)' : 'rgba(31,41,39,0.14)'}`,
-                          background: selected ? 'rgba(11, 59, 54, 0.08)' : 'rgba(255,255,255,0.7)',
-                          color: selected ? 'var(--color-forest)' : 'var(--color-charcoal)',
-                          fontSize: '0.85rem',
-                          fontWeight: selected ? 600 : 400,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {sub.label}
-                      </button>
-                    );
-                  })}
-                </div>
-                {fieldErrors.preferred_subjects && (
-                  <span className="field-error" style={{ marginTop: '0.5rem' }}>
-                    {fieldErrors.preferred_subjects}
+                {fieldErrors.activeCategory && (
+                  <span className="field-error" style={{ marginTop: '0.5rem', display: 'block' }}>
+                    {fieldErrors.activeCategory}
                   </span>
                 )}
               </div>
             </div>
           )}
 
-          {/* STEP 4: Intake & Location */}
+          {/* STEP 4: Specialization & Subcategories */}
           {step === 4 && (
+            <div className="flex flex-col gap-5">
+              <div>
+                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.45rem', fontWeight: 500, color: 'var(--color-charcoal)' }}>
+                  Select Specialization
+                </h2>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-muted)', marginTop: '0.25rem' }}>
+                  Choose your focus areas in <strong style={{ color: 'var(--color-forest)' }}>{activeCategory}</strong>, or select "All".
+                </p>
+              </div>
+
+              {/* Specialization Options Grid */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
+                  gap: '0.75rem',
+                  marginTop: '0.25rem',
+                }}
+              >
+                {/* Option to select the entire Parent Category */}
+                {(() => {
+                  const isParentSelected = form.preferred_subjects.includes(activeCategory);
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => toggleSubject(activeCategory)}
+                      style={{
+                        padding: '0.95rem 1.1rem',
+                        borderRadius: 'var(--radius-lg)',
+                        border: `1.5px solid ${isParentSelected ? 'var(--color-forest)' : 'rgba(31,41,39,0.12)'}`,
+                        background: isParentSelected ? 'rgba(11, 59, 54, 0.08)' : 'rgba(255,255,255,0.7)',
+                        color: isParentSelected ? 'var(--color-forest)' : 'var(--color-charcoal)',
+                        fontSize: '0.92rem',
+                        fontWeight: isParentSelected ? 600 : 500,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem',
+                        boxShadow: isParentSelected ? '0 2px 8px rgba(11, 59, 54, 0.08)' : 'none',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      <span>All {activeCategory}</span>
+                      <span
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: '50%',
+                          border: `1.5px solid ${isParentSelected ? 'var(--color-forest)' : 'rgba(31,41,39,0.2)'}`,
+                          background: isParentSelected ? 'var(--color-forest)' : 'transparent',
+                          color: '#fff',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {isParentSelected && '✓'}
+                      </span>
+                    </button>
+                  );
+                })()}
+
+                {activeSubcategories.map((sub) => {
+                  const selected = form.preferred_subjects.includes(sub.value);
+                  return (
+                    <button
+                      key={sub.value}
+                      type="button"
+                      onClick={() => toggleSubject(sub.value)}
+                      style={{
+                        padding: '0.95rem 1.1rem',
+                        borderRadius: 'var(--radius-lg)',
+                        border: `1.5px solid ${selected ? 'var(--color-forest)' : 'rgba(31,41,39,0.12)'}`,
+                        background: selected ? 'rgba(11, 59, 54, 0.08)' : 'rgba(255,255,255,0.7)',
+                        color: selected ? 'var(--color-forest)' : 'var(--color-charcoal)',
+                        fontSize: '0.92rem',
+                        fontWeight: selected ? 600 : 400,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem',
+                        boxShadow: selected ? '0 2px 8px rgba(11, 59, 54, 0.08)' : 'none',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      <span>{sub.label}</span>
+                      <span
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: '50%',
+                          border: `1.5px solid ${selected ? 'var(--color-forest)' : 'rgba(31,41,39,0.2)'}`,
+                          background: selected ? 'var(--color-forest)' : 'transparent',
+                          color: '#fff',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {selected && '✓'}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {fieldErrors.preferred_subjects && (
+                <span className="field-error" style={{ marginTop: '0.5rem', display: 'block' }}>
+                  {fieldErrors.preferred_subjects}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* STEP 5: Intake & Location */}
+          {step === 5 && (
             <div className="flex flex-col gap-5">
               <div>
                 <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 400, color: 'var(--color-charcoal)' }}>
@@ -814,8 +954,8 @@ export default function RecommendationWizard() {
             </div>
           )}
 
-          {/* STEP 5: Review & Submit */}
-          {step === 5 && (
+          {/* STEP 6: Review & Submit */}
+          {step === 6 && (
             <div>
               {submitting ? (
                 /* Cinematic Matching calculation screen */
@@ -904,14 +1044,23 @@ export default function RecommendationWizard() {
                     </div>
                     <div>
                       <span className="text-muted">English Level:</span>
-                      <strong className="block" style={{ color: 'var(--color-charcoal)' }}>{form.english_test_type.toUpperCase()} ({form.english_test_score || 'MOI'})</strong>
+                      <strong className="block" style={{ color: 'var(--color-charcoal)' }}>
+                        {Array.isArray(form.english_test_type)
+                          ? form.english_test_type.map((t) => t.toUpperCase()).join(', ')
+                          : (form.english_test_type || '').toUpperCase()}
+                        {form.english_test_score ? ` (${form.english_test_score})` : ''}
+                      </strong>
                     </div>
                     <div>
                       <span className="text-muted">Target Degree:</span>
                       <strong className="block text-capitalize" style={{ color: 'var(--color-charcoal)' }}>{form.preferred_degree}</strong>
                     </div>
                     <div style={{ gridColumn: '1 / -1' }}>
-                      <span className="text-muted">Selected Subjects:</span>
+                      <span className="text-muted">Primary Academic Discipline:</span>
+                      <strong className="block" style={{ color: 'var(--color-forest)' }}>{activeCategory}</strong>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <span className="text-muted">Selected Specializations:</span>
                       <strong className="block" style={{ color: 'var(--color-forest)' }}>
                         {form.preferred_subjects.map((s) => SUBJECT_VALUE_TO_LABEL[s] || s).join(', ')}
                       </strong>
@@ -944,7 +1093,7 @@ export default function RecommendationWizard() {
                 <ArrowLeft size={15} /> Back
               </button>
 
-              {step < 5 ? (
+              {step < 6 ? (
                 <button
                   type="button"
                   onClick={handleNext}

@@ -31,7 +31,21 @@ class StudentProfileRequest extends FormRequest
 
             'graduation_year' => ['nullable', 'integer', 'min:1900', 'max:'.(int) date('Y')],
             'previous_degree_country' => ['nullable', 'string', 'max:100'],
-            'english_test_type' => ['nullable', Rule::in(['ielts', 'toefl', 'moi'])],
+            'english_test_type' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    $allowed = ['ielts', 'toefl', 'moi'];
+                    if (is_array($value)) {
+                        foreach ($value as $item) {
+                            if (! in_array($item, $allowed, true)) {
+                                $fail("Invalid English test type: {$item}.");
+                            }
+                        }
+                    } elseif (! in_array($value, $allowed, true)) {
+                        $fail('The selected English test type is invalid.');
+                    }
+                },
+            ],
             'english_test_score' => ['nullable', 'numeric', 'min:0'],
             'moi_certificate' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,doc,docx', 'max:10240'],
             'german_level' => ['nullable', Rule::in(['none', 'a1', 'a2', 'b1', 'b2', 'c1', 'c2'])],

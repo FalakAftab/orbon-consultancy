@@ -416,10 +416,10 @@ export default function ProgramDetailPage() {
                 <p className="text-sm font-semibold mt-1" style={{ color: 'var(--color-charcoal)' }}>{formatDate(program.deadline_summer)}</p>
               </div>
             )}
-            {program.subject_category && (
+            {(program.subject_category || program.field) && (
               <div>
                 <span className="text-xs uppercase tracking-wide text-muted font-semibold">Field</span>
-                <p className="text-sm font-semibold mt-1" style={{ color: 'var(--color-charcoal)' }}>{formatDisplayValue(program.subject_category)}</p>
+                <p className="text-sm font-semibold mt-1" style={{ color: 'var(--color-charcoal)' }}>{formatDisplayValue(program.subject_category || program.field)}</p>
               </div>
             )}
           </div>

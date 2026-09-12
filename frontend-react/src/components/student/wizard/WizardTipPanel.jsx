@@ -18,21 +18,27 @@ const TIPS = {
     image: '/assets/wizard/step-photo.jpg',
   },
   3: {
-    title: 'Intake Deadlines',
+    title: 'Degree & Discipline',
     body:
-      'Most English-taught Master\u2019s programs start in the Winter semester. Application portals usually close between April 15 and July 15. Planning ahead is key to securing a spot.',
+      'Selecting your target degree and primary discipline sets the foundation. German universities evaluate consecutive study backgrounds strictly.',
     image: '/assets/wizard/step-photo.jpg',
   },
   4: {
-    title: 'Blocked Account',
+    title: 'Specializations',
     body:
-      'To acquire a German student visa, you must provide proof of financial resources. The required blocked account amount is reviewed annually — budget realistically for living costs.',
+      'Selecting specific subcategories refines your recommendations. You can also pick "All" to broaden your matching scope across the entire academic field.',
     image: '/assets/wizard/step-photo.jpg',
   },
   5: {
+    title: 'Intake & Deadlines',
+    body:
+      'Most English-taught Master\u2019s programs start in the Winter semester. Application portals usually close between April 15 and July 15. Planning ahead is key.',
+    image: '/assets/wizard/step-photo.jpg',
+  },
+  6: {
     title: 'Instant Matching',
     body:
-      'Clicking submit evaluates your specific credit hours, GPA scale equivalents (via the Bavarian Formula), and language levels to output real, verified matches.',
+      'Clicking submit evaluates your GPA scale equivalents (via Bavarian Formula), language levels, and subject eligibility against the live dataset.',
     image: '/assets/wizard/step-photo.jpg',
   },
 };

@@ -25,6 +25,13 @@ class StudentProfileService
             );
         }
 
+        if (isset($data['english_test_type']) && is_array($data['english_test_type'])) {
+            $types = $data['english_test_type'];
+            $data['english_test_type'] = in_array('ielts', $types, true)
+                ? 'ielts'
+                : (in_array('toefl', $types, true) ? 'toefl' : ($types[0] ?? null));
+        }
+
         if ($moiCertificate !== null) {
             $data['moi_certificate_path'] = $moiCertificate->store('moi-certificates', 'public');
         }
