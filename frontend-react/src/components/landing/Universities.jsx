@@ -8,7 +8,7 @@ const universities = [
     name: 'Ludwig-Maximilians-Universität München',
     location: 'Munich, Germany',
     description: "Germany's top-ranked public research university, globally celebrated for Computer Science, Business Administration, Medicine, and AI research.",
-    photo: '/figma_assets/studypath-landing-page___Rectangle-1.png',
+    photo: '/images/universities/campus-lmu.jpg',
     tuition: '€0 / Semester (Public)',
     tags: ['Computer Science', 'Business', 'Engineering'],
     intake: 'Winter & Summer',
@@ -21,7 +21,7 @@ const universities = [
     name: 'Technical University of Munich',
     location: 'Munich, Germany',
     description: "Germany's #1 technical university, world-famous for Automotive Engineering, Robotics, Artificial Intelligence, and Data Science.",
-    photo: '/figma_assets/studypath-landing-page___Rectangle-2.png',
+    photo: '/images/universities/campus-tum.jpg',
     tuition: '€0 / Semester (Public)',
     tags: ['Engineering', 'Computer Science', 'Natural Sciences'],
     intake: 'Winter Intake',
@@ -34,7 +34,7 @@ const universities = [
     name: 'Humboldt-Universität zu Berlin',
     location: 'Berlin, Germany',
     description: "A world-celebrated center of academic excellence in Humanities, Social Sciences, Artificial Intelligence, and International Policy.",
-    photo: '/figma_assets/studypath-landing-page___Rectangle-3.png',
+    photo: '/images/universities/campus-humboldt.jpg',
     tuition: '€0 / Semester (Public)',
     tags: ['Humanities', 'Social Sciences', 'Natural Sciences'],
     intake: 'Winter & Summer',
@@ -169,7 +169,6 @@ export function Universities() {
                     : '0 8px 24px rgba(0, 0, 0, 0.04)',
                   display: 'flex',
                   flexDirection: 'column',
-                  transition: 'all 300ms ease',
                   position: 'relative',
                 }}
               >
@@ -178,12 +177,12 @@ export function Universities() {
                   <img
                     src={uni.photo}
                     alt={uni.name}
+                    className="lp-uni-card-img"
                     style={{
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                      transition: 'transform 500ms ease',
-                      transform: isExpanded ? 'scale(1.04)' : 'scale(1)',
+                      transform: isExpanded ? 'scale(1.06)' : undefined,
                     }}
                   />
 

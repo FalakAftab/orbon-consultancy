@@ -616,6 +616,12 @@
   overflow: hidden;
   background: var(--lp-cream, #fff);
   padding: 0;
+  transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 380ms ease;
+}
+
+.lp-uni-card-photo:hover {
+  transform: scale(1.03) translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
 }
 
 .lp-uni-card-photo-wrap {
@@ -628,11 +634,11 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 1.4s ease-out;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lp-uni-card-photo:hover .lp-uni-card-photo-wrap img {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .lp-uni-card-body {
@@ -737,12 +743,33 @@
 .lp-uni-interactive-card {
   cursor: pointer;
   user-select: none;
-  transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 380ms cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 280ms ease;
+  will-change: transform, box-shadow;
 }
 
 .lp-uni-interactive-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+  transform: scale(1.038) translateY(-6px);
+  box-shadow: 0 22px 42px rgba(22, 29, 43, 0.12), 0 0 0 1px rgba(196, 151, 70, 0.28) !important;
+  z-index: 5;
+}
+
+.lp-uni-interactive-card:active {
+  transform: scale(1.01) translateY(-2px);
+  transition-duration: 150ms;
+}
+
+.lp-uni-interactive-card .lp-uni-card-img,
+.lp-uni-interactive-card img {
+  transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.lp-uni-interactive-card:hover .lp-uni-card-img,
+.lp-uni-interactive-card:hover img {
+  transform: scale(1.09) !important;
 }
 
 
