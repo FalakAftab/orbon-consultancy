@@ -123,7 +123,7 @@ export default function AdminImport() {
           alignItems: 'center',
           textAlign: 'center',
           border: dragOver ? '2px dashed var(--color-forest)' : '2px dashed var(--color-border-strong)',
-          background: dragOver ? 'rgba(11, 59, 54, 0.04)' : 'var(--color-surface)',
+          background: dragOver ? 'rgba(15, 23, 42, 0.04)' : 'var(--color-surface)',
           gap: '1rem',
           cursor: 'pointer',
         }}
@@ -155,7 +155,7 @@ export default function AdminImport() {
             width: 60,
             height: 60,
             borderRadius: 'var(--radius-2xl)',
-            background: 'rgba(11, 59, 54, 0.08)',
+            background: 'rgba(15, 23, 42, 0.08)',
             color: 'var(--color-forest)',
           }}
         >

@@ -13,19 +13,21 @@ export function WelcomeCard({ profile }) {
       <h1
         style={{
           fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(1.75rem, 3.4vw, 2.5rem)',
+          fontSize: 'clamp(1.35rem, 4vw, 2.25rem)',
           fontWeight: 600,
           letterSpacing: 'var(--letter-spacing-tight)',
           color: 'var(--color-charcoal)',
+          lineHeight: 1.25,
         }}
       >
         Welcome back, {firstName}
       </h1>
       <p
         style={{
-          marginTop: '0.5rem',
-          fontSize: '0.9375rem',
+          marginTop: '0.25rem',
+          fontSize: '0.875rem',
           color: 'var(--color-text-muted)',
+          lineHeight: 1.4,
         }}
       >
         Keep an eye on your matches, shortlist, and upcoming application deadlines.

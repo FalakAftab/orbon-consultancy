@@ -74,7 +74,11 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
 
   const fetchNotifs = async () => {
@@ -315,43 +319,31 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
 
         {/* POPOVER PANEL */}
         {showNotifications && (
-          <div
-            style={{
-              position: 'absolute',
-              right: 0,
-              top: 'calc(100% + 8px)',
-              width: '360px',
-              maxWidth: '90vw',
-              background: '#ffffff',
-              borderRadius: '16px',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
-              border: '1px solid rgba(0, 0, 0, 0.08)',
-              zIndex: 500,
-              overflow: 'hidden',
-            }}
-          >
+          <div className="topbar-notifications-popover">
             {/* Header */}
             <div
               style={{
-                padding: '1rem 1.25rem',
+                padding: '0.85rem 1.1rem',
                 background: '#FAF7F2',
                 borderBottom: '1px solid rgba(0,0,0,0.06)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                gap: '0.5rem',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <strong style={{ fontSize: '0.95rem', color: '#161D2B' }}>Notifications</strong>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', minWidth: 0 }}>
+                <strong style={{ fontSize: '0.92rem', color: '#161D2B' }}>Notifications</strong>
                 {unreadCount > 0 && (
                   <span
                     style={{
                       background: '#FEF3C7',
                       color: '#B45309',
-                      fontSize: '0.725rem',
+                      fontSize: '0.7rem',
                       fontWeight: 700,
-                      padding: '0.15rem 0.5rem',
+                      padding: '0.12rem 0.45rem',
                       borderRadius: '999px',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {unreadCount} Unread
@@ -359,29 +351,50 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
                 )}
               </div>
 
-              {unreadCount > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+                {unreadCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleMarkAllRead}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#0F172A',
+                      fontSize: '0.76rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      padding: '0.2rem 0.4rem',
+                    }}
+                  >
+                    <CheckCheck size={14} /> Mark all read
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={handleMarkAllRead}
+                  onClick={() => setShowNotifications(false)}
+                  aria-label="Close Notifications"
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    color: '#0F172A',
-                    fontSize: '0.78rem',
-                    fontWeight: 600,
+                    color: '#64748B',
                     cursor: 'pointer',
+                    padding: '0.25rem',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.3rem',
+                    justifyContent: 'center',
+                    borderRadius: '6px',
                   }}
                 >
-                  <CheckCheck size={14} /> Mark all as read
+                  <X size={18} />
                 </button>
-              )}
+              </div>
             </div>
 
             {/* List */}
-            <div style={{ maxHeight: '340px', overflowY: 'auto' }}>
+            <div style={{ maxHeight: 'min(360px, 60vh)', overflowY: 'auto' }}>
               {notifications.length === 0 ? (
                 <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: '#718096', fontSize: '0.85rem' }}>
                   <Bell size={28} style={{ opacity: 0.3, margin: '0 auto 0.5rem' }} />
@@ -481,7 +494,7 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
         onClick={() => navigate(user?.role === 'admin' ? '/admin/settings' : '/student/profile')}
         title="View Profile"
       >
-        <div className="hidden sm:block text-right">
+        <div className="topbar-user-info text-right">
           <p className="text-sm font-semibold leading-tight" style={{ color: '#161D2B' }}>{user?.name}</p>
           <p className="text-xs" style={{ color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
             {user?.role === 'admin' ? 'Consultancy Admin' : 'Student Account'}

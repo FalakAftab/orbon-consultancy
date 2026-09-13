@@ -10,28 +10,76 @@ const actions = [
   {
     icon: Sparkles,
     label: 'Build a Recommendation',
+    shortLabel: 'Recommend',
     desc: 'Get matched with programs',
     to: '/student/wizard',
     active: true,
   },
   {
-    icon: History,
-    label: 'Recommendation History',
-    desc: 'Your past searches',
-    to: '/student/history',
-    active: true,
-  },
-  {
     icon: BookmarkCheck,
     label: 'My Shortlist',
+    shortLabel: 'Shortlist',
     desc: 'Saved programs',
     to: '/student/shortlist',
     active: true,
   },
+  {
+    icon: History,
+    label: 'Recommendation History',
+    shortLabel: 'History',
+    desc: 'Your past searches',
+    to: '/student/history',
+    active: true,
+  },
 ];
 
-export function QuickActions() {
+export function QuickActions({ compact = false }) {
   const navigate = useNavigate();
+
+  if (compact) {
+    return (
+      <div className="quick-actions-mobile-grid" aria-label="Quick Actions">
+        {actions.map((action) => {
+          const Icon = action.icon;
+          return (
+            <button
+              key={action.label}
+              type="button"
+              disabled={!action.active}
+              onClick={() => action.to && navigate(action.to)}
+              className="quick-action-mobile-btn"
+              id={`quick-action-mobile-${action.shortLabel.toLowerCase()}`}
+            >
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '10px',
+                  background: 'rgba(15, 23, 42, 0.08)',
+                  color: 'var(--color-forest)',
+                }}
+              >
+                <Icon size={18} aria-hidden="true" />
+              </span>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  color: 'var(--color-charcoal)',
+                  lineHeight: 1.2,
+                }}
+              >
+                {action.shortLabel}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -106,7 +154,7 @@ export function QuickActions() {
                   height: '34px',
                   borderRadius: '10px',
                   background: action.active
-                    ? 'rgba(11, 59, 54, 0.08)'
+                    ? 'rgba(15, 23, 42, 0.08)'
                     : 'var(--color-surface-subtle)',
                   color: action.active ? 'var(--color-forest)' : 'var(--color-muted)',
                   flexShrink: 0,

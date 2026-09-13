@@ -34,6 +34,7 @@ import {
   Printer,
   GraduationCap,
   Lightbulb,
+  MapPin,
 } from 'lucide-react';
 import {
   getStudentPremiumStatus,
@@ -341,7 +342,7 @@ export default function ApplyForMePage() {
   return (
     <div style={{ padding: '0.75rem 0.5rem', maxWidth: '1240px', margin: '0 auto', color: '#161D2B' }}>
       
-      {/* EXECUTIVE NAVY BLUE & CARAMEL HERO BANNER */}
+      {/* EXECUTIVE NAVY BLUE & ROYAL GOLD HERO BANNER */}
       <div className="apply-for-me-hero">
         <div className="apply-for-me-hero-inner">
           <div
@@ -349,10 +350,10 @@ export default function ApplyForMePage() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              padding: '0.35rem 0.9rem',
+              padding: '0.35rem 0.95rem',
               borderRadius: '999px',
               background: 'rgba(196, 151, 70, 0.15)',
-              border: '1px solid rgba(196, 151, 70, 0.35)',
+              border: '1px solid rgba(196, 151, 70, 0.4)',
               color: '#C49746',
               fontSize: '0.78rem',
               fontWeight: 700,
@@ -360,7 +361,7 @@ export default function ApplyForMePage() {
               marginBottom: '1.15rem',
             }}
           >
-            <Sparkles size={15} /> GERMAN CONSULTANCY SERVICE
+            <Sparkles size={15} /> GERMAN ADMISSIONS ASSISTANCE
           </div>
 
           <h1
@@ -383,10 +384,11 @@ export default function ApplyForMePage() {
 
           <div style={{ marginTop: '1.75rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button
+              type="button"
               onClick={() => setShowApplyModal(true)}
               style={{
                 background: 'linear-gradient(135deg, #C49746 0%, #B45309 100%)',
-                color: '#FFFFFF',
+                color: '#ffffff',
                 border: 'none',
                 padding: '0.85rem 1.85rem',
                 borderRadius: '12px',
@@ -397,11 +399,31 @@ export default function ApplyForMePage() {
                 alignItems: 'center',
                 gap: '0.6rem',
                 boxShadow: '0 8px 24px rgba(196, 151, 70, 0.35)',
-                transition: 'transform 150ms ease, boxShadow 150ms ease',
+                transition: 'transform 150ms ease, box-shadow 150ms ease',
               }}
             >
               <Send size={18} /> Initiate Application Request
             </button>
+          </div>
+
+          {/* Executive Trust Badges */}
+          <div className="apply-for-me-trust-grid">
+            <div className="apply-for-me-trust-item">
+              <div className="apply-for-me-trust-icon"><ShieldCheck size={16} /></div>
+              <span>uni-assist & Direct Submission</span>
+            </div>
+            <div className="apply-for-me-trust-item">
+              <div className="apply-for-me-trust-icon"><Award size={16} /></div>
+              <span>Bavarian Formula Conversion</span>
+            </div>
+            <div className="apply-for-me-trust-item">
+              <div className="apply-for-me-trust-icon"><FileCheck size={16} /></div>
+              <span>Certified German Document Check</span>
+            </div>
+            <div className="apply-for-me-trust-item">
+              <div className="apply-for-me-trust-icon"><UserCheck size={16} /></div>
+              <span>1-on-1 Dedicated Advisor Chat</span>
+            </div>
           </div>
         </div>
 
@@ -411,7 +433,7 @@ export default function ApplyForMePage() {
             position: 'absolute',
             right: '-20px',
             bottom: '-30px',
-            opacity: 0.06,
+            opacity: 0.05,
             pointerEvents: 'none',
             color: '#FFFFFF',
           }}
@@ -420,46 +442,26 @@ export default function ApplyForMePage() {
         </div>
       </div>
 
-      {/* MINIMAL CLEAN SUB-NAV TAB SELECTORS */}
-      <div className="apply-for-me-subnav">
+      {/* SEGMENTED TAB SELECTORS */}
+      <div className="apply-for-me-segmented-nav">
         <button
+          type="button"
           onClick={() => setActiveTab('applications')}
-          style={{
-            background: activeTab === 'applications' ? '#0F172A' : '#ffffff',
-            color: activeTab === 'applications' ? '#FFFFFF' : '#4A5568',
-            border: activeTab === 'applications' ? '1px solid #0F172A' : '1px solid rgba(0,0,0,0.1)',
-            padding: '0.65rem 1.4rem',
-            borderRadius: '10px',
-            fontWeight: 700,
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            boxShadow: activeTab === 'applications' ? '0 4px 12px rgba(15, 23, 42, 0.15)' : 'none',
-          }}
+          className={`apply-for-me-seg-btn ${activeTab === 'applications' ? 'active' : ''}`}
         >
-          <FileText size={16} /> Application Requests ({applications.length})
+          <FileText size={16} />
+          <span>Application Requests</span>
+          <span className="apply-for-me-seg-badge">{applications.length} Active</span>
         </button>
 
         <button
+          type="button"
           onClick={() => setActiveTab('vault')}
-          style={{
-            background: activeTab === 'vault' ? '#0F172A' : '#ffffff',
-            color: activeTab === 'vault' ? '#FFFFFF' : '#4A5568',
-            border: activeTab === 'vault' ? '1px solid #0F172A' : '1px solid rgba(0,0,0,0.1)',
-            padding: '0.65rem 1.4rem',
-            borderRadius: '10px',
-            fontWeight: 700,
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            boxShadow: activeTab === 'vault' ? '0 4px 12px rgba(15, 23, 42, 0.15)' : 'none',
-          }}
+          className={`apply-for-me-seg-btn ${activeTab === 'vault' ? 'active' : ''}`}
         >
-          <FolderLock size={16} /> PRO Document Vault ({uploadedDocsCount}/9)
+          <FolderLock size={16} />
+          <span>PRO Document Vault</span>
+          <span className="apply-for-me-seg-badge">{uploadedDocsCount}/9 Ready</span>
         </button>
       </div>
 
@@ -471,23 +473,23 @@ export default function ApplyForMePage() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#161D2B', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0F172A', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>
                   Your Application Requests & Live Communication
                 </h2>
-                <p style={{ fontSize: '0.85rem', color: '#5B6578', marginTop: '0.25rem', margin: 0 }}>
-                  Track status updates, documents, and chat directly with your assigned consultancy advisor.
+                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem', margin: 0 }}>
+                  Track milestone stages, document verification, and live chat directly with your assigned German education consultant.
                 </p>
               </div>
 
               <span
                 style={{
-                  background: '#FAF7F2',
-                  border: '1px solid rgba(0,0,0,0.08)',
+                  background: '#F1F5F9',
+                  border: '1px solid #E2E8F0',
                   padding: '0.35rem 0.85rem',
                   borderRadius: '999px',
                   fontSize: '0.78rem',
                   fontWeight: 700,
-                  color: '#161D2B',
+                  color: '#0F172A',
                 }}
               >
                 {applications.length} Active Requests
@@ -495,14 +497,14 @@ export default function ApplyForMePage() {
             </div>
 
             {loading ? (
-              <div style={{ padding: '4rem 2rem', textAlign: 'center', color: '#5B6578', background: '#ffffff', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.08)' }}>
+              <div style={{ padding: '4rem 2rem', textAlign: 'center', color: '#64748B', background: '#ffffff', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
                 Loading application requests...
               </div>
             ) : applications.length === 0 ? (
               <div
                 style={{
-                  background: '#ffffff',
-                  border: '2px dashed rgba(0,0,0,0.12)',
+                  background: '#FFFFFF',
+                  border: '2px dashed #CBD5E1',
                   borderRadius: '16px',
                   padding: '4rem 2rem',
                   textAlign: 'center',
@@ -513,30 +515,32 @@ export default function ApplyForMePage() {
                     width: 56,
                     height: 56,
                     borderRadius: '50%',
-                    background: '#FAF7F2',
-                    border: '1px solid rgba(196,151,70,0.3)',
+                    background: '#F8FAFC',
+                    border: '1px solid rgba(196, 151, 70, 0.4)',
                     color: '#C49746',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 1.25rem',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                   }}
                 >
                   <FileText size={26} />
                 </div>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.5rem' }}>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem', fontFamily: "'Playfair Display', Georgia, serif" }}>
                   No Application Requests Yet
                 </h3>
-                <p style={{ fontSize: '0.875rem', color: '#5B6578', maxWidth: '440px', margin: '0 auto 1.75rem', lineHeight: 1.6 }}>
+                <p style={{ fontSize: '0.875rem', color: '#64748B', maxWidth: '460px', margin: '0 auto 1.75rem', lineHeight: 1.6 }}>
                   Click below to initiate your application request. Select your desired field of study (Computer Science, Business, IT, Engineering, etc.) and let our consultancy team manage the rest.
                 </p>
                 <button
+                  type="button"
                   onClick={() => setShowApplyModal(true)}
                   style={{
-                    background: '#161D2B',
+                    background: '#0F172A',
                     color: '#ffffff',
                     border: 'none',
-                    padding: '0.75rem 1.5rem',
+                    padding: '0.75rem 1.6rem',
                     borderRadius: '10px',
                     fontWeight: 700,
                     fontSize: '0.9rem',
@@ -544,7 +548,8 @@ export default function ApplyForMePage() {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '0.5rem',
-                    boxShadow: '0 4px 14px rgba(22, 29, 43, 0.2)',
+                    boxShadow: '0 4px 14px rgba(15, 23, 42, 0.2)',
+                    transition: 'all 180ms ease',
                   }}
                 >
                   <Plus size={16} /> Initiate Application Request
@@ -558,39 +563,32 @@ export default function ApplyForMePage() {
                   return (
                     <div
                       key={app.id}
-                      style={{
-                        background: '#ffffff',
-                        border: '1px solid rgba(22, 29, 43, 0.1)',
-                        borderRadius: '16px',
-                        padding: '1.65rem',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
-                        transition: 'all 200ms ease',
-                      }}
+                      className="apply-request-card"
                     >
                       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                           <div
                             style={{
-                              width: 46,
-                              height: 46,
+                              width: 48,
+                              height: 48,
                               borderRadius: '12px',
-                              background: '#FAF7F2',
-                              border: '1px solid rgba(196,151,70,0.3)',
-                              color: '#C49746',
+                              background: '#F8FAFC',
+                              border: '1px solid #E2E8F0',
+                              color: '#0F172A',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               flexShrink: 0,
                             }}
                           >
-                            <Building2 size={22} />
+                            <Building2 size={24} />
                           </div>
                           <div>
-                            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#161D2B', margin: 0, lineHeight: 1.25 }}>
+                            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A', margin: 0, lineHeight: 1.25 }}>
                               {app.program?.name || app.student_notes?.split('\n')?.[0] || 'University Application'}
                             </h3>
-                            <div style={{ fontSize: '0.825rem', color: '#5B6578', marginTop: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                              <MapPin size={12} style={{ color: '#C49746' }} />
+                            <div style={{ fontSize: '0.825rem', color: '#64748B', marginTop: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                              <MapPin size={13} style={{ color: '#C49746' }} />
                               {app.program?.university?.name || 'German University Track'} &bull; {app.program?.university?.city || 'Germany'}
                             </div>
                           </div>
@@ -606,82 +604,90 @@ export default function ApplyForMePage() {
                               color: conf.color,
                               fontSize: '0.75rem',
                               fontWeight: 700,
+                              border: `1px solid ${conf.color}25`,
                             }}
                           >
                             {conf.label}
                           </span>
-                          <div style={{ fontSize: '0.725rem', color: '#A0AEC0', marginTop: '0.35rem' }}>
+                          <div style={{ fontSize: '0.725rem', color: '#94A3B8', marginTop: '0.35rem' }}>
                             Updated {new Date(app.updated_at).toLocaleDateString()}
                           </div>
                         </div>
                       </div>
 
-                      {/* Professional Clean Timeline Progress */}
-                      <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', position: 'relative' }}>
-                          {['Requested', 'Under Review', 'Docs Verified', 'Submitted'].map((stepName, sIdx) => {
-                            const isCurrent = conf.step === sIdx + 1;
-                            const isPassed = conf.step > sIdx + 1;
-                            return (
-                              <div key={stepName} style={{ textAlign: 'center', position: 'relative' }}>
-                                <div
-                                  style={{
-                                    height: '3px',
-                                    borderRadius: '999px',
-                                    background: isPassed ? '#047857' : isCurrent ? '#C49746' : '#E2E8F0',
-                                    marginBottom: '0.5rem',
-                                    transition: 'all 300ms ease',
-                                  }}
-                                />
-                                <div
-                                  style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '0.3rem',
-                                    fontSize: '0.75rem',
-                                    fontWeight: isCurrent || isPassed ? 700 : 500,
-                                    color: isPassed ? '#047857' : isCurrent ? '#C49746' : '#94A3B8',
-                                  }}
-                                >
-                                  {isPassed && <Check size={12} style={{ color: '#047857' }} />}
-                                  {stepName}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                      {/* Stepper Track */}
+                      <div className="apply-stepper-track">
+                        {[
+                          { name: 'Requested', step: 1 },
+                          { name: 'Under Review', step: 2 },
+                          { name: 'Docs Verified', step: 3 },
+                          { name: 'Submitted', step: 4 },
+                        ].map((s) => {
+                          const isPassed = conf.step > s.step;
+                          const isCurrent = conf.step === s.step;
+                          return (
+                            <div key={s.name} className="apply-stepper-node">
+                              <div
+                                className="apply-stepper-line"
+                                style={{
+                                  background: isPassed
+                                    ? '#0F172A'
+                                    : isCurrent
+                                    ? '#C49746'
+                                    : '#E2E8F0',
+                                }}
+                              />
+                              <span
+                                className="apply-stepper-label"
+                                style={{
+                                  fontWeight: isPassed || isCurrent ? 700 : 500,
+                                  color: isPassed
+                                    ? '#0F172A'
+                                    : isCurrent
+                                    ? '#C49746'
+                                    : '#94A3B8',
+                                }}
+                              >
+                                {isPassed && <Check size={12} style={{ color: '#0F172A' }} />}
+                                {isCurrent && <Clock size={12} style={{ color: '#C49746' }} />}
+                                {s.name}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
 
                       {/* Action Footer */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid rgba(0,0,0,0.04)', flexWrap: 'wrap', gap: '0.75rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #F1F5F9', flexWrap: 'wrap', gap: '0.75rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.8rem' }}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', background: '#FAF7F2', border: '1px solid rgba(0,0,0,0.06)', padding: '0.35rem 0.75rem', borderRadius: '8px', fontWeight: 600, color: '#5B6578' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.35rem 0.75rem', borderRadius: '8px', fontWeight: 600, color: '#475569' }}>
                             <FileText size={14} /> {app.documents?.length || 0} Attachment(s)
                           </span>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', background: msgCount ? '#FEF3C7' : '#FAF7F2', border: msgCount ? '1px solid #FDE68A' : '1px solid rgba(0,0,0,0.06)', padding: '0.35rem 0.75rem', borderRadius: '8px', fontWeight: 600, color: msgCount ? '#B45309' : '#5B6578' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', background: msgCount ? '#FEF3C7' : '#F8FAFC', border: msgCount ? '1px solid #FDE68A' : '1px solid #E2E8F0', padding: '0.35rem 0.75rem', borderRadius: '8px', fontWeight: 600, color: msgCount ? '#B45309' : '#64748B' }}>
                             <MessageSquare size={14} /> {msgCount} Message(s)
                           </span>
                         </div>
 
                         <button
+                          type="button"
                           onClick={() => setDetailApp(app)}
                           style={{
-                            background: '#161D2B',
+                            background: '#0F172A',
                             border: 'none',
                             color: '#ffffff',
-                            padding: '0.65rem 1.25rem',
-                            borderRadius: '8px',
+                            padding: '0.65rem 1.35rem',
+                            borderRadius: '10px',
                             fontSize: '0.825rem',
                             fontWeight: 700,
                             cursor: 'pointer',
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '0.4rem',
-                            boxShadow: '0 2px 10px rgba(22, 29, 43, 0.15)',
+                            boxShadow: '0 2px 10px rgba(15, 23, 42, 0.15)',
                             transition: 'all 150ms ease',
                           }}
                         >
-                          Open Request & Advisor Chat <ChevronRight size={15} />
+                          Open Request & Advisor Chat <ChevronRight size={15} style={{ color: '#C49746' }} />
                         </button>
                       </div>
 
@@ -695,25 +701,26 @@ export default function ApplyForMePage() {
 
         {/* TAB 2: PRO DOCUMENT VAULT */}
         {activeTab === 'vault' && (
-          <div style={{ background: '#ffffff', borderRadius: '16px', padding: '2rem', border: '1px solid rgba(0,0,0,0.07)', boxShadow: '0 4px 16px rgba(0,0,0,0.02)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+          <div style={{ background: '#ffffff', borderRadius: '16px', padding: '2rem 1.75rem', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid #F1F5F9', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#161D2B', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <FolderLock size={22} style={{ color: '#0F172A' }} /> PRO Document Vault
+                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0F172A', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  <FolderLock size={22} style={{ color: '#C49746' }} /> PRO Document Vault
                 </h2>
-                <p style={{ fontSize: '0.85rem', color: '#718096', marginTop: '0.25rem', margin: 0 }}>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem', margin: 0 }}>
                   Upload your official academic documents (CV, Degree, Transcripts, CNIC, IELTS, Passport) directly from your computer.
                 </p>
               </div>
 
               <button
+                type="button"
                 onClick={handleSaveVault}
                 disabled={savingVault}
                 style={{
-                  background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+                  background: '#0F172A',
                   color: '#ffffff',
                   border: 'none',
-                  padding: '0.7rem 1.5rem',
+                  padding: '0.7rem 1.6rem',
                   borderRadius: '10px',
                   fontWeight: 700,
                   fontSize: '0.875rem',
@@ -722,9 +729,10 @@ export default function ApplyForMePage() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
+                  transition: 'all 180ms ease',
                 }}
               >
-                <UploadCloud size={16} /> {savingVault ? 'Submitting...' : 'Submit Documents'}
+                <UploadCloud size={16} style={{ color: '#C49746' }} /> {savingVault ? 'Submitting...' : 'Submit Documents'}
               </button>
             </div>
 
@@ -734,8 +742,35 @@ export default function ApplyForMePage() {
               </div>
             )}
 
-            {/* Document Upload Slots */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1.25rem' }}>
+            {/* Document Vault Progress Readiness Meter */}
+            <div className="vault-meter-card">
+              <div style={{ flex: 1, minWidth: '220px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 600 }}>
+                  <span style={{ color: '#0F172A' }}>
+                    Application Readiness: {Math.round((uploadedDocsCount / 9) * 100)}%
+                  </span>
+                  <span style={{ color: '#64748B' }}>
+                    {uploadedDocsCount} of 9 Documents Prepared
+                  </span>
+                </div>
+                <div className="vault-progress-bar-bg">
+                  <div
+                    className="vault-progress-bar-fill"
+                    style={{ width: `${Math.round((uploadedDocsCount / 9) * 100)}%` }}
+                  />
+                </div>
+              </div>
+              <div style={{ fontSize: '0.8rem', color: '#64748B', maxWidth: '300px', lineHeight: 1.5 }}>
+                {uploadedDocsCount >= 6 ? (
+                  <span style={{ color: '#047857', fontWeight: 600 }}>✓ Key academic documents ready for German university processing.</span>
+                ) : (
+                  <span>Upload your required certificates and transcripts so our advisor can begin Bavarian formula conversion.</span>
+                )}
+              </div>
+            </div>
+
+            {/* Document Upload Slots Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.25rem' }}>
               {VAULT_CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
                 const currentDoc = vaultData[cat.key] || {};
@@ -744,26 +779,19 @@ export default function ApplyForMePage() {
                 return (
                   <div
                     key={cat.key}
-                    style={{
-                      background: '#FAF7F2',
-                      border: isUploaded ? '1.5.px solid #0F172A' : '1px solid rgba(0,0,0,0.08)',
-                      borderRadius: '12px',
-                      padding: '1.25rem',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                    }}
+                    className={`vault-doc-tile ${isUploaded ? 'uploaded' : ''}`}
                   >
                     <div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.75rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
                           <div
                             style={{
-                              width: 36,
-                              height: 36,
-                              borderRadius: '8px',
-                              background: isUploaded ? '#0F172A' : 'rgba(0,0,0,0.06)',
-                              color: isUploaded ? '#C49746' : '#718096',
+                              width: 38,
+                              height: 38,
+                              borderRadius: '10px',
+                              background: '#F1F5F9',
+                              color: '#0F172A',
+                              border: '1px solid #E2E8F0',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -773,10 +801,10 @@ export default function ApplyForMePage() {
                             <Icon size={18} />
                           </div>
                           <div>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#161D2B' }}>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0F172A' }}>
                               {cat.label} {cat.required && <span style={{ color: '#DC2626' }}>*</span>}
                             </div>
-                            <div style={{ fontSize: '0.75rem', color: '#718096', marginTop: '0.1rem' }}>
+                            <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.1rem' }}>
                               {cat.desc}
                             </div>
                           </div>
@@ -799,12 +827,19 @@ export default function ApplyForMePage() {
                     </div>
 
                     {isUploaded ? (
-                      <div style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px', padding: '0.75rem', marginTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '0.75rem', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
                           <FileCheck size={18} style={{ color: '#0F172A', flexShrink: 0 }} />
-                          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#161D2B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>
-                            {currentDoc.name}
-                          </span>
+                          <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>
+                              {currentDoc.name}
+                            </span>
+                            {currentDoc.size && (
+                              <span style={{ fontSize: '0.7rem', color: '#64748B' }}>
+                                {currentDoc.size}
+                              </span>
+                            )}
+                          </div>
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
@@ -813,7 +848,7 @@ export default function ApplyForMePage() {
                               href={currentDoc.url}
                               target="_blank"
                               rel="noreferrer"
-                              style={{ background: '#FAF7F2', border: '1px solid rgba(0,0,0,0.1)', padding: '0.35rem 0.6rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, color: '#0F172A', textDecoration: 'none' }}
+                              style={{ background: '#ffffff', border: '1px solid #E2E8F0', padding: '0.35rem 0.65rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, color: '#0F172A', textDecoration: 'none' }}
                             >
                               View
                             </a>
@@ -821,14 +856,14 @@ export default function ApplyForMePage() {
                           <button
                             type="button"
                             onClick={() => handleRemoveVaultFile(cat.key)}
-                            style={{ background: '#FEE2E2', border: 'none', color: '#DC2626', padding: '0.35rem 0.5rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}
+                            style={{ background: '#FEE2E2', border: 'none', color: '#DC2626', padding: '0.35rem 0.55rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}
                           >
-                            Remove
+                            <Trash2 size={13} /> Remove
                           </button>
                         </div>
                       </div>
                     ) : (
-                      <div style={{ position: 'relative', marginTop: '0.75rem' }}>
+                      <div style={{ position: 'relative', marginTop: '0.5rem' }}>
                         <label
                           style={{
                             display: 'flex',
@@ -836,14 +871,15 @@ export default function ApplyForMePage() {
                             justifyContent: 'center',
                             gap: '0.5rem',
                             background: '#ffffff',
-                            border: '1.5px dashed rgba(15, 23, 42, 0.25)',
-                            borderRadius: '8px',
+                            border: '1.5px dashed #CBD5E1',
+                            borderRadius: '10px',
                             padding: '0.85rem',
                             cursor: 'pointer',
                             textAlign: 'center',
+                            transition: 'all 150ms ease',
                           }}
                         >
-                          <Upload size={16} style={{ color: '#0F172A' }} />
+                          <UploadCloud size={16} style={{ color: '#0F172A' }} />
                           <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#0F172A' }}>
                             Upload Document (.pdf, .doc, .jpg)
                           </span>
@@ -862,12 +898,13 @@ export default function ApplyForMePage() {
             </div>
 
             {/* Bottom Submit Documents Button */}
-            <div style={{ marginTop: '2rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ marginTop: '2rem', paddingTop: '1.25rem', borderTop: '1px solid #F1F5F9', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem' }}>
               <button
+                type="button"
                 onClick={handleSaveVault}
                 disabled={savingVault}
                 style={{
-                  background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+                  background: '#0F172A',
                   color: '#ffffff',
                   border: 'none',
                   padding: '0.85rem 2rem',
@@ -875,13 +912,14 @@ export default function ApplyForMePage() {
                   fontWeight: 700,
                   fontSize: '0.9rem',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(15, 23, 42, 0.25)',
+                  boxShadow: '0 4px 14px rgba(15, 23, 42, 0.2)',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
+                  transition: 'all 180ms ease',
                 }}
               >
-                <UploadCloud size={18} /> {savingVault ? 'Submitting Documents...' : 'Submit Documents'}
+                <UploadCloud size={18} style={{ color: '#C49746' }} /> {savingVault ? 'Submitting Documents...' : 'Submit Documents'}
               </button>
             </div>
 
@@ -897,7 +935,7 @@ export default function ApplyForMePage() {
             position: 'fixed',
             inset: 0,
             zIndex: 300,
-            background: 'rgba(15, 23, 42, 0.7)',
+            background: 'rgba(15, 23, 42, 0.75)',
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
@@ -913,33 +951,34 @@ export default function ApplyForMePage() {
               maxWidth: '520px',
               padding: '2.25rem',
               textAlign: 'center',
-              boxShadow: '0 25px 50px rgba(0,0,0,0.3)',
-              border: '1px solid rgba(196, 151, 70, 0.3)',
+              boxShadow: '0 25px 50px rgba(15, 23, 42, 0.25)',
+              border: '1px solid rgba(196, 151, 70, 0.35)',
             }}
           >
-            <div style={{ width: 68, height: 68, borderRadius: '50%', background: '#D1FAE5', color: '#047857', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
+            <div style={{ width: 68, height: 68, borderRadius: '50%', background: '#F8FAFC', border: '1px solid rgba(196, 151, 70, 0.4)', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
               <CheckCircle2 size={36} />
             </div>
 
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.75rem' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.75rem', fontFamily: "'Playfair Display', Georgia, serif" }}>
               Application Request Submitted!
             </h3>
 
-            <p style={{ fontSize: '0.95rem', color: '#4A5568', lineHeight: 1.6, marginBottom: '1.75rem' }}>
+            <p style={{ fontSize: '0.95rem', color: '#64748B', lineHeight: 1.6, marginBottom: '1.75rem' }}>
               Your request is submitted. Our consultancy advisor will contact you shortly.
             </p>
 
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
               <button
+                type="button"
                 onClick={() => {
                   setShowReqSuccessModal(false);
                   setActiveTab('vault');
                 }}
                 style={{
-                  background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+                  background: '#0F172A',
                   color: '#ffffff',
                   border: 'none',
-                  padding: '0.75rem 1.5rem',
+                  padding: '0.75rem 1.65rem',
                   borderRadius: '10px',
                   fontWeight: 700,
                   fontSize: '0.875rem',
@@ -948,9 +987,10 @@ export default function ApplyForMePage() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
+                  transition: 'all 180ms ease',
                 }}
               >
-                <FolderLock size={16} /> Proceed to Upload Documents
+                <FolderLock size={16} style={{ color: '#C49746' }} /> Proceed to Upload Documents
               </button>
             </div>
           </div>
@@ -964,7 +1004,7 @@ export default function ApplyForMePage() {
             position: 'fixed',
             inset: 0,
             zIndex: 300,
-            background: 'rgba(15, 23, 42, 0.7)',
+            background: 'rgba(15, 23, 42, 0.75)',
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
@@ -980,34 +1020,35 @@ export default function ApplyForMePage() {
               maxWidth: '560px',
               padding: '2.25rem',
               textAlign: 'center',
-              boxShadow: '0 25px 50px rgba(0,0,0,0.3)',
-              border: feeStatus === 'paid' ? '1.5px solid #10B981' : '1.5px solid rgba(196, 151, 70, 0.4)',
+              boxShadow: '0 25px 50px rgba(15, 23, 42, 0.25)',
+              border: feeStatus === 'paid' ? '1.5px solid #10B981' : '1.5px solid rgba(196, 151, 70, 0.45)',
             }}
           >
             {feeStatus === 'paid' ? (
               <>
-                <div style={{ width: 68, height: 68, borderRadius: '50%', background: '#D1FAE5', color: '#047857', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
+                <div style={{ width: 68, height: 68, borderRadius: '50%', background: '#F8FAFC', border: '1px solid rgba(196, 151, 70, 0.4)', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
                   <CheckCircle2 size={36} />
                 </div>
 
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.75rem' }}>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.75rem', fontFamily: "'Playfair Display', Georgia, serif" }}>
                   Documents Uploaded Successfully
                 </h3>
 
-                <div style={{ background: '#FAF7F2', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.75rem', textAlign: 'left' }}>
-                  <p style={{ fontSize: '0.925rem', color: '#161D2B', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
+                <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.75rem', textAlign: 'left' }}>
+                  <p style={{ fontSize: '0.925rem', color: '#0F172A', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
                     Your documents are uploaded successfully. Our team will evaluate them and let you know shortly.
                   </p>
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
                   <button
+                    type="button"
                     onClick={() => setShowDocsSubmittedModal(false)}
                     style={{
-                      background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+                      background: '#0F172A',
                       color: '#ffffff',
                       border: 'none',
-                      padding: '0.75rem 1.75rem',
+                      padding: '0.75rem 1.85rem',
                       borderRadius: '10px',
                       fontWeight: 700,
                       fontSize: '0.875rem',
@@ -1025,34 +1066,36 @@ export default function ApplyForMePage() {
                   <ShieldCheck size={36} />
                 </div>
 
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.75rem' }}>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.75rem', fontFamily: "'Playfair Display', Georgia, serif" }}>
                   Documents Submitted
                 </h3>
 
-                <div style={{ background: '#FAF7F2', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.75rem', textAlign: 'left' }}>
-                  <p style={{ fontSize: '0.925rem', color: '#161D2B', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
+                <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.75rem', textAlign: 'left' }}>
+                  <p style={{ fontSize: '0.925rem', color: '#0F172A', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
                     Thank you! Your documents are submitted, but your application will be started only when payment will be confirmed.
                   </p>
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
                   <button
+                    type="button"
                     onClick={() => setShowDocsSubmittedModal(false)}
                     style={{
                       background: 'transparent',
-                      border: '1px solid rgba(0,0,0,0.15)',
+                      border: '1px solid #E2E8F0',
                       padding: '0.75rem 1.25rem',
                       borderRadius: '10px',
                       fontWeight: 600,
                       fontSize: '0.875rem',
                       cursor: 'pointer',
-                      color: '#4A5568',
+                      color: '#475569',
                     }}
                   >
                     Close
                   </button>
 
                   <button
+                    type="button"
                     onClick={() => {
                       setShowDocsSubmittedModal(false);
                       setShowPaymentModal(true);
@@ -1061,7 +1104,7 @@ export default function ApplyForMePage() {
                       background: 'linear-gradient(135deg, #C49746 0%, #B45309 100%)',
                       color: '#ffffff',
                       border: 'none',
-                      padding: '0.75rem 1.5rem',
+                      padding: '0.75rem 1.65rem',
                       borderRadius: '10px',
                       fontWeight: 700,
                       fontSize: '0.875rem',
@@ -1088,7 +1131,7 @@ export default function ApplyForMePage() {
             position: 'fixed',
             inset: 0,
             zIndex: 250,
-            background: 'rgba(15, 23, 42, 0.65)',
+            background: 'rgba(15, 23, 42, 0.75)',
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
@@ -1104,14 +1147,14 @@ export default function ApplyForMePage() {
               maxWidth: '600px',
               maxHeight: '90vh',
               overflowY: 'auto',
-              boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
-              border: '1px solid rgba(0,0,0,0.1)',
+              boxShadow: '0 25px 50px rgba(15, 23, 42, 0.25)',
+              border: '1px solid rgba(196, 151, 70, 0.35)',
             }}
           >
             {/* Header */}
-            <div style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', color: '#ffffff', padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ background: 'linear-gradient(135deg, #070D1B 0%, #0F172A 60%, #1E293B 100%)', color: '#ffffff', padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>
                   Initiate Application Request
                 </h3>
                 <p style={{ fontSize: '0.825rem', color: 'rgba(255, 255, 255, 0.85)', margin: '0.2rem 0 0' }}>
@@ -1136,7 +1179,7 @@ export default function ApplyForMePage() {
 
               <form onSubmit={handleSubmitApplication} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.4rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.4rem' }}>
                     Target Field of Study *
                   </label>
                   
@@ -1148,11 +1191,11 @@ export default function ApplyForMePage() {
                       width: '100%',
                       padding: '0.8rem 1rem',
                       borderRadius: '10px',
-                      border: '1px solid rgba(0,0,0,0.15)',
+                      border: '1px solid #E2E8F0',
                       fontSize: '0.9rem',
                       fontWeight: 500,
-                      color: '#161D2B',
-                      background: '#FAF7F2',
+                      color: '#0F172A',
+                      background: '#F8FAFC',
                       outline: 'none',
                     }}
                   >
@@ -1166,7 +1209,7 @@ export default function ApplyForMePage() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.4rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.4rem' }}>
                     Field Description & Special Notes *
                   </label>
                   <textarea
@@ -1183,10 +1226,10 @@ export default function ApplyForMePage() {
                       width: '100%',
                       padding: '0.8rem 1rem',
                       borderRadius: '10px',
-                      border: '1px solid rgba(0,0,0,0.15)',
+                      border: '1px solid #E2E8F0',
                       fontSize: '0.875rem',
-                      color: '#161D2B',
-                      background: '#FAF7F2',
+                      color: '#0F172A',
+                      background: '#F8FAFC',
                       outline: 'none',
                       resize: 'vertical',
                     }}
@@ -1197,7 +1240,7 @@ export default function ApplyForMePage() {
                   <button
                     type="button"
                     onClick={() => setShowApplyModal(false)}
-                    style={{ background: 'transparent', border: '1px solid rgba(0,0,0,0.15)', padding: '0.75rem 1.25rem', borderRadius: '10px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', color: '#4A5568' }}
+                    style={{ background: 'transparent', border: '1px solid #E2E8F0', padding: '0.75rem 1.25rem', borderRadius: '10px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', color: '#475569' }}
                   >
                     Cancel
                   </button>
@@ -1205,7 +1248,7 @@ export default function ApplyForMePage() {
                     type="submit"
                     disabled={submittingApp}
                     style={{
-                      background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+                      background: '#0F172A',
                       color: '#ffffff',
                       border: 'none',
                       padding: '0.75rem 1.65rem',
@@ -1213,7 +1256,7 @@ export default function ApplyForMePage() {
                       fontWeight: 700,
                       fontSize: '0.875rem',
                       cursor: 'pointer',
-                      boxShadow: '0 4px 14px rgba(15, 23, 42, 0.25)',
+                      boxShadow: '0 4px 14px rgba(15, 23, 42, 0.2)',
                     }}
                   >
                     {submittingApp ? 'Submitting...' : 'Submit Application Request'}
@@ -1232,7 +1275,7 @@ export default function ApplyForMePage() {
             position: 'fixed',
             inset: 0,
             zIndex: 350,
-            background: 'rgba(15, 23, 42, 0.7)',
+            background: 'rgba(15, 23, 42, 0.75)',
             backdropFilter: 'blur(10px)',
             display: 'flex',
             alignItems: 'center',
@@ -1248,14 +1291,14 @@ export default function ApplyForMePage() {
               maxWidth: '660px',
               maxHeight: '92vh',
               overflowY: 'auto',
-              boxShadow: '0 30px 70px rgba(15, 23, 42, 0.4), 0 0 35px rgba(196, 151, 70, 0.25)',
-              border: '2px solid rgba(196, 151, 70, 0.5)',
+              boxShadow: '0 30px 70px rgba(15, 23, 42, 0.35), 0 0 35px rgba(196, 151, 70, 0.2)',
+              border: '1.5px solid rgba(196, 151, 70, 0.45)',
             }}
           >
             {/* Header */}
             <div
               style={{
-                background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #0B192C 100%)',
+                background: 'linear-gradient(135deg, #070D1B 0%, #0F172A 60%, #1E293B 100%)',
                 color: '#ffffff',
                 padding: '1.75rem 2rem',
                 display: 'flex',
@@ -1267,7 +1310,7 @@ export default function ApplyForMePage() {
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 700, color: '#C49746', letterSpacing: '0.05em', marginBottom: '0.3rem' }}>
                   <Lock size={13} /> SECURE 256-BIT SSL ENCRYPTED CHECKOUT
                 </div>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#ffffff', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>
                   Online Payment Gateway
                 </h3>
               </div>
@@ -1289,27 +1332,27 @@ export default function ApplyForMePage() {
             </div>
 
             <div style={{ padding: '2rem' }}>
-              <div style={{ background: '#FAF7F2', border: '2px solid #C49746', borderRadius: '14px', padding: '1rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 10px 25px -6px rgba(196, 151, 70, 0.25)' }}>
+              <div style={{ background: '#F8FAFC', border: '1.5px solid #C49746', borderRadius: '14px', padding: '1rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 8px 20px rgba(196, 151, 70, 0.15)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <div style={{ width: 40, height: 40, borderRadius: '10px', background: '#0F172A', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <CreditCard size={20} />
                   </div>
                   <div>
-                    <strong style={{ fontSize: '0.925rem', color: '#161D2B', display: 'block' }}>Credit or Debit Card Checkout</strong>
-                    <span style={{ fontSize: '0.78rem', color: '#718096' }}>Accepting Visa, Mastercard, UnionPay & Local Bank Cards</span>
+                    <strong style={{ fontSize: '0.925rem', color: '#0F172A', display: 'block' }}>Credit or Debit Card Checkout</strong>
+                    <span style={{ fontSize: '0.78rem', color: '#64748B' }}>Accepting Visa, Mastercard, UnionPay & Local Bank Cards</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 800, color: '#0F172A' }}>
-                  <span style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.1)', padding: '0.25rem 0.6rem', borderRadius: '4px' }}>VISA</span>
-                  <span style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.1)', padding: '0.25rem 0.6rem', borderRadius: '4px' }}>MC</span>
-                  <span style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.1)', padding: '0.25rem 0.6rem', borderRadius: '4px' }}>PAYPAK</span>
+                  <span style={{ background: '#ffffff', border: '1px solid #E2E8F0', padding: '0.25rem 0.6rem', borderRadius: '4px' }}>VISA</span>
+                  <span style={{ background: '#ffffff', border: '1px solid #E2E8F0', padding: '0.25rem 0.6rem', borderRadius: '4px' }}>MC</span>
+                  <span style={{ background: '#ffffff', border: '1px solid #E2E8F0', padding: '0.25rem 0.6rem', borderRadius: '4px' }}>PAYPAK</span>
                 </div>
               </div>
 
               <form onSubmit={handleProcessCardPayment} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
                     Cardholder Name *
                   </label>
                   <input
@@ -1318,12 +1361,12 @@ export default function ApplyForMePage() {
                     placeholder="Name as printed on card"
                     value={cardHolderName}
                     onChange={(e) => setCardHolderName(e.target.value.toUpperCase())}
-                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.9rem', background: '#FAF7F2' }}
+                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.9rem', color: '#0F172A', background: '#F8FAFC' }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
                     Card Number *
                   </label>
                   <div style={{ position: 'relative' }}>
@@ -1333,7 +1376,7 @@ export default function ApplyForMePage() {
                       placeholder="4532 8910 2345 8912"
                       value={cardNumber}
                       onChange={handleCardNumberChange}
-                      style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.8rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.95rem', fontFamily: 'monospace', background: '#FAF7F2' }}
+                      style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.8rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.95rem', fontFamily: 'monospace', color: '#0F172A', background: '#F8FAFC' }}
                     />
                     <CreditCard size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#0F172A' }} />
                   </div>
@@ -1341,7 +1384,7 @@ export default function ApplyForMePage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
                       Expiry Date *
                     </label>
                     <input
@@ -1351,12 +1394,12 @@ export default function ApplyForMePage() {
                       maxLength={5}
                       value={cardExpiry}
                       onChange={(e) => setCardExpiry(e.target.value)}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.9rem', textAlign: 'center', background: '#FAF7F2' }}
+                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.9rem', textAlign: 'center', color: '#0F172A', background: '#F8FAFC' }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
                       CVV / CVC *
                     </label>
                     <input
@@ -1366,18 +1409,18 @@ export default function ApplyForMePage() {
                       placeholder="123"
                       value={cardCvv}
                       onChange={(e) => setCardCvv(e.target.value)}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.9rem', textAlign: 'center', background: '#FAF7F2' }}
+                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.9rem', textAlign: 'center', color: '#0F172A', background: '#F8FAFC' }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
                       Country *
                     </label>
                     <select
                       value={billingCountry}
                       onChange={(e) => setBillingCountry(e.target.value)}
-                      style={{ width: '100%', padding: '0.75rem 0.5rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.85rem', background: '#FAF7F2' }}
+                      style={{ width: '100%', padding: '0.75rem 0.5rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.85rem', color: '#0F172A', background: '#F8FAFC' }}
                     >
                       <option value="Pakistan">Pakistan (PK)</option>
                       <option value="Germany">Germany (DE)</option>
@@ -1387,16 +1430,16 @@ export default function ApplyForMePage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-                  <div style={{ fontSize: '0.8rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <Lock size={14} style={{ color: '#047857' }} /> SSL Encrypted & Protected
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem', paddingTop: '1.25rem', borderTop: '1px solid #E2E8F0' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <Lock size={14} style={{ color: '#0F172A' }} /> SSL Encrypted & Protected
                   </div>
 
                   <div style={{ display: 'flex', gap: '0.75rem' }}>
                     <button
                       type="button"
                       onClick={() => setShowPaymentModal(false)}
-                      style={{ background: 'transparent', border: '1px solid rgba(0,0,0,0.15)', padding: '0.75rem 1.25rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', color: '#4A5568' }}
+                      style={{ background: 'transparent', border: '1px solid #E2E8F0', padding: '0.75rem 1.25rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', color: '#475569' }}
                     >
                       Cancel
                     </button>
@@ -1404,7 +1447,7 @@ export default function ApplyForMePage() {
                       type="submit"
                       disabled={processingPayment}
                       style={{
-                        background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+                        background: 'linear-gradient(135deg, #C49746 0%, #B45309 100%)',
                         color: '#ffffff',
                         border: 'none',
                         padding: '0.75rem 1.75rem',
@@ -1412,7 +1455,7 @@ export default function ApplyForMePage() {
                         fontWeight: 700,
                         fontSize: '0.9rem',
                         cursor: 'pointer',
-                        boxShadow: '0 4px 14px rgba(15, 23, 42, 0.3)',
+                        boxShadow: '0 4px 14px rgba(196, 151, 70, 0.35)',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '0.5rem',
@@ -1451,53 +1494,56 @@ export default function ApplyForMePage() {
               width: '100%',
               maxWidth: '520px',
               padding: '2.25rem',
-              boxShadow: '0 30px 60px rgba(0,0,0,0.35)',
+              boxShadow: '0 30px 60px rgba(15, 23, 42, 0.3)',
+              border: '1px solid #E2E8F0',
               textAlign: 'center',
             }}
           >
-            <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#D1FAE5', color: '#047857', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
+            <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#F8FAFC', border: '1px solid rgba(196, 151, 70, 0.4)', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
               <Check size={36} />
             </div>
 
-            <h3 style={{ fontSize: '1.45rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.4rem' }}>
+            <h3 style={{ fontSize: '1.45rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.4rem', fontFamily: "'Playfair Display', Georgia, serif" }}>
               Payment Successful!
             </h3>
 
-            <p style={{ fontSize: '0.9rem', color: '#047857', fontWeight: 600, marginBottom: '1.5rem' }}>
+            <p style={{ fontSize: '0.9rem', color: '#0F172A', fontWeight: 600, marginBottom: '1.5rem' }}>
               Your admission processing has officially started.
             </p>
 
-            <div style={{ background: '#FAF7F2', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '14px', padding: '1.25rem', textAlign: 'left', marginBottom: '1.75rem', fontSize: '0.85rem' }}>
+            <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '1.25rem', textAlign: 'left', marginBottom: '1.75rem', fontSize: '0.85rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
-                <span style={{ color: '#718096' }}>Transaction ID:</span>
-                <strong style={{ color: '#161D2B', fontFamily: 'monospace' }}>{receiptData.trx_id}</strong>
+                <span style={{ color: '#64748B' }}>Transaction ID:</span>
+                <strong style={{ color: '#0F172A', fontFamily: 'monospace' }}>{receiptData.trx_id}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
-                <span style={{ color: '#718096' }}>Card Paid:</span>
-                <strong>•••• {receiptData.card_last4}</strong>
+                <span style={{ color: '#64748B' }}>Card Paid:</span>
+                <strong style={{ color: '#0F172A' }}>•••• {receiptData.card_last4}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
-                <span style={{ color: '#718096' }}>Cardholder Name:</span>
-                <strong>{receiptData.holder}</strong>
+                <span style={{ color: '#64748B' }}>Cardholder Name:</span>
+                <strong style={{ color: '#0F172A' }}>{receiptData.holder}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
-                <span style={{ color: '#718096' }}>Amount Paid:</span>
+                <span style={{ color: '#64748B' }}>Amount Paid:</span>
                 <strong style={{ color: '#0F172A', fontSize: '1rem' }}>{receiptData.amount}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: '#718096' }}>Date & Time:</span>
-                <span>{receiptData.date}</span>
+                <span style={{ color: '#64748B' }}>Date & Time:</span>
+                <span style={{ color: '#0F172A' }}>{receiptData.date}</span>
               </div>
             </div>
 
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
               <button
+                type="button"
                 onClick={() => window.print()}
-                style={{ background: '#FAF7F2', border: '1px solid rgba(0,0,0,0.12)', padding: '0.75rem 1.25rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+                style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', color: '#0F172A', padding: '0.75rem 1.25rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
               >
                 <Printer size={16} /> Print Receipt
               </button>
               <button
+                type="button"
                 onClick={() => setReceiptData(null)}
                 style={{ background: '#0F172A', color: '#ffffff', border: 'none', padding: '0.75rem 1.75rem', borderRadius: '8px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}
               >
@@ -1515,7 +1561,7 @@ export default function ApplyForMePage() {
             position: 'fixed',
             inset: 0,
             zIndex: 200,
-            background: 'rgba(15, 23, 42, 0.65)',
+            background: 'rgba(15, 23, 42, 0.75)',
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
@@ -1532,14 +1578,14 @@ export default function ApplyForMePage() {
               maxHeight: '90vh',
               display: 'flex',
               flexDirection: 'column',
-              boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
-              border: '1px solid rgba(0,0,0,0.1)',
+              boxShadow: '0 25px 50px rgba(15, 23, 42, 0.25)',
+              border: '1px solid rgba(196, 151, 70, 0.35)',
               overflow: 'hidden',
             }}
           >
-            <div style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', color: '#ffffff', padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ background: 'linear-gradient(135deg, #070D1B 0%, #0F172A 60%, #1E293B 100%)', color: '#ffffff', padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>
                   Application Request & Live Advisor Chat
                 </h3>
                 <p style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.85)', margin: '0.2rem 0 0' }}>
@@ -1556,9 +1602,9 @@ export default function ApplyForMePage() {
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div style={{ background: '#FAF7F2', padding: '1.25rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ background: '#F8FAFC', padding: '1.25rem', borderRadius: '12px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <span style={{ fontSize: '0.725rem', fontWeight: 700, color: '#718096', textTransform: 'uppercase' }}>Current Status</span>
+                  <span style={{ fontSize: '0.725rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Current Status</span>
                   <div style={{ marginTop: '0.25rem' }}>
                     <span style={{ padding: '0.35rem 0.85rem', borderRadius: '999px', background: (STATUS_CONFIG[detailApp.status] || STATUS_CONFIG.pending).bg, color: (STATUS_CONFIG[detailApp.status] || STATUS_CONFIG.pending).color, fontWeight: 700, fontSize: '0.825rem' }}>
                       {(STATUS_CONFIG[detailApp.status] || STATUS_CONFIG.pending).label}
@@ -1566,19 +1612,19 @@ export default function ApplyForMePage() {
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '0.725rem', fontWeight: 700, color: '#718096', textTransform: 'uppercase' }}>Target Intake</span>
-                  <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#161D2B', marginTop: '0.2rem' }}>Winter Semester 2026</div>
+                  <span style={{ fontSize: '0.725rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Target Intake</span>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0F172A', marginTop: '0.2rem' }}>Winter Semester 2026</div>
                 </div>
               </div>
 
               <div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#161D2B', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <MessageSquare size={18} style={{ color: '#0F172A' }} /> Live Communication Feed with Advisor
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <MessageSquare size={18} style={{ color: '#C49746' }} /> Live Communication Feed with Advisor
                 </h4>
 
-                <div style={{ background: '#FAF7F2', borderRadius: '12px', padding: '1.25rem', border: '1px solid rgba(0,0,0,0.08)', minHeight: '180px', maxHeight: '260px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '1.25rem', border: '1px solid #E2E8F0', minHeight: '180px', maxHeight: '260px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                   {!detailApp.messages || detailApp.messages.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '2rem 1rem', color: '#718096', fontSize: '0.85rem' }}>
+                    <div style={{ textAlign: 'center', padding: '2rem 1rem', color: '#64748B', fontSize: '0.85rem' }}>
                       No messages exchanged yet. Send a message below to ask your consultancy advisor anything!
                     </div>
                   ) : (
@@ -1591,14 +1637,14 @@ export default function ApplyForMePage() {
                             alignSelf: isStudent ? 'flex-end' : 'flex-start',
                             maxWidth: '82%',
                             background: isStudent ? '#0F172A' : '#ffffff',
-                            color: isStudent ? '#ffffff' : '#161D2B',
+                            color: isStudent ? '#ffffff' : '#0F172A',
                             padding: '0.75rem 1rem',
                             borderRadius: isStudent ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                            border: isStudent ? 'none' : '1px solid rgba(0,0,0,0.08)',
+                            boxShadow: '0 2px 8px rgba(15, 23, 42, 0.05)',
+                            border: isStudent ? 'none' : '1px solid #E2E8F0',
                           }}
                         >
-                          <div style={{ fontSize: '0.7rem', fontWeight: 700, color: isStudent ? '#C49746' : '#C49746', marginBottom: '0.2rem' }}>
+                          <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#C49746', marginBottom: '0.2rem' }}>
                             {m.sender_name || (isStudent ? 'You' : 'Consultancy Advisor')}
                           </div>
                           <div style={{ fontSize: '0.875rem', lineHeight: 1.45 }}>{m.message}</div>
@@ -1614,16 +1660,16 @@ export default function ApplyForMePage() {
                     placeholder="Type your message to consultancy advisor..."
                     value={chatMessage}
                     onChange={(e) => setChatMessage(e.target.value)}
-                    style={{ flex: 1, padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.875rem', outline: 'none' }}
+                    style={{ flex: 1, padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '0.875rem', color: '#0F172A', outline: 'none' }}
                   />
                   <button
                     type="submit"
                     disabled={sendingMsg || !chatMessage.trim()}
                     style={{
-                      background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+                      background: '#0F172A',
                       color: '#ffffff',
                       border: 'none',
-                      padding: '0.75rem 1.25rem',
+                      padding: '0.75rem 1.35rem',
                       borderRadius: '8px',
                       fontWeight: 700,
                       fontSize: '0.85rem',
@@ -1631,6 +1677,7 @@ export default function ApplyForMePage() {
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.4rem',
+                      boxShadow: '0 2px 10px rgba(15, 23, 42, 0.15)',
                     }}
                   >
                     <Send size={15} /> Send
@@ -1639,8 +1686,9 @@ export default function ApplyForMePage() {
               </div>
             </div>
 
-            <div style={{ padding: '1.25rem 1.75rem', borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ padding: '1.25rem 1.75rem', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'flex-end' }}>
               <button
+                type="button"
                 onClick={() => setDetailApp(null)}
                 style={{ background: '#0F172A', color: '#ffffff', border: 'none', padding: '0.6rem 1.5rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}
               >

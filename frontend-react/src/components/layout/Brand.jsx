@@ -9,12 +9,12 @@ export function Brand({ className }) {
           width: '2.25rem',
           height: '2.25rem',
           borderRadius: '8px',
-          background: 'linear-gradient(135deg, #0B3B36 0%, #164E48 100%)',
+          background: 'linear-gradient(135deg, #070D1B 0%, #0F172A 100%)',
           color: '#C49746',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 12px rgba(11, 59, 54, 0.2)',
+          boxShadow: '0 4px 12px rgba(15, 23, 42, 0.2)',
         }}
       >
         <GraduationCap size={20} />

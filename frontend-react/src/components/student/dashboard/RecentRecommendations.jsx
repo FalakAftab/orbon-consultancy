@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription, CardBody, Badge, EmptyState } from '../../ui';
 import { formatDateTime, formatDegreeLevel } from '../../../lib/format';
 
@@ -12,6 +13,23 @@ export function RecentRecommendations({ entries, loading }) {
           <CardTitle>Recent Recommendations</CardTitle>
           <CardDescription>Your latest study matches.</CardDescription>
         </div>
+        {entries && entries.length > 0 && (
+          <Link
+            to="/student/history"
+            style={{
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              color: 'var(--color-forest)',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              flexShrink: 0,
+            }}
+          >
+            View all &rarr;
+          </Link>
+        )}
       </CardHeader>
       <CardBody>
         {loading ? (
@@ -22,16 +40,22 @@ export function RecentRecommendations({ entries, loading }) {
             description="Run your first recommendation to see matches here."
           />
         ) : (
-          <ul className="flex flex-col gap-3">
-            {entries.map((entry) => (
-              <li key={entry.id} className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
+          <ul className="flex flex-col gap-2.5">
+            {entries.slice(0, 3).map((entry) => (
+              <li
+                key={entry.id}
+                className="flex items-center justify-between gap-2"
+                style={{ padding: '0.35rem 0' }}
+              >
+                <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium ellipsis">
                     {entry.preferred_degree ? formatDegreeLevel(entry.preferred_degree) : 'Recommendation'}
                   </p>
-                  <p className="text-xs text-muted">{formatDateTime(entry.created_at)}</p>
+                  <p className="text-xs text-muted mt-0.5">{formatDateTime(entry.created_at)}</p>
                 </div>
-                <Badge tone="primary">{entry.program_match_count} matches</Badge>
+                <Badge tone="primary" className="shrink-0 text-xs">
+                  {entry.program_match_count} matches
+                </Badge>
               </li>
             ))}
           </ul>

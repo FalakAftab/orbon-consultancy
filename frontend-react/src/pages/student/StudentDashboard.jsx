@@ -31,11 +31,11 @@ export default function StudentDashboard() {
   return (
     <div className="dashboard-premium">
       {/* Editorial page title */}
-      <div className="dashboard-header" style={{ marginBottom: 'var(--space-8)' }}>
+      <div className="dashboard-header" style={{ marginBottom: 'var(--space-4)' }}>
         <h1
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
+            fontSize: 'clamp(1.35rem, 3vw, 2rem)',
             fontWeight: 600,
             letterSpacing: 'var(--letter-spacing-tight)',
             color: 'var(--color-charcoal)',
@@ -43,7 +43,7 @@ export default function StudentDashboard() {
         >
           Dashboard
         </h1>
-        <p style={{ color: 'var(--color-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+        <p style={{ color: 'var(--color-muted)', fontSize: '0.8125rem', marginTop: '0.15rem' }}>
           Your study journey overview
         </p>
       </div>
@@ -55,14 +55,24 @@ export default function StudentDashboard() {
           onRetry={retry}
         />
       ) : (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4 sm:gap-6">
           {/* Premium welcome header */}
           <WelcomeCard profile={profile} />
 
-          {/* Stats row */}
+          {/* Stats row (compact 3-column row on mobile) */}
           <DashboardStats stats={stats} profile={profile} loading={loading} />
 
-          {/* Main content: 2 columns */}
+          {/* Quick Actions (prioritized near top on mobile < 960px) */}
+          <div className="dashboard-mobile-quick-actions">
+            <QuickActions compact />
+          </div>
+
+          {/* Upcoming Deadlines (prioritized near top on mobile < 960px) */}
+          <div className="dashboard-mobile-deadlines">
+            <UpcomingDeadlines shortlistEntries={shortlistEntries} loading={loading} />
+          </div>
+
+          {/* Main content: 2 columns on desktop (>= 960px), 1 col on mobile */}
           <div
             className="dashboard-grid-two-col"
             style={{
@@ -71,7 +81,7 @@ export default function StudentDashboard() {
             }}
           >
             {/* Main column */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4 sm:gap-6">
               <RecentRecommendations entries={historyEntries} loading={loading} />
               <LatestPrograms programs={programs} loading={loading} />
               <RecommendedUniversities universities={universities} loading={loading} />
@@ -82,8 +92,8 @@ export default function StudentDashboard() {
               />
             </div>
 
-            {/* Right sidebar */}
-            <aside className="flex flex-col gap-6">
+            {/* Right sidebar (desktop only >= 960px) */}
+            <aside className="dashboard-desktop-sidebar flex flex-col gap-6">
               <UpcomingDeadlines shortlistEntries={shortlistEntries} loading={loading} />
               <QuickActions />
             </aside>

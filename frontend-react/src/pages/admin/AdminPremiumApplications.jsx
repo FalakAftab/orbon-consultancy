@@ -22,7 +22,7 @@ import {
   BadgeEuro,
   FileWarning,
   SlidersHorizontal,
-  Bell
+  Plus
 } from 'lucide-react';
 import {
   getAdminPremiumMetrics,
@@ -183,160 +183,187 @@ export default function AdminPremiumApplications() {
   };
 
   return (
-    <div style={{ padding: '2rem', minHeight: '100vh', background: '#FAFAFA', margin: '-1.5rem', fontFamily: '"Inter", sans-serif' }}>
+    <div className="admin-page-container" style={{ fontFamily: '"Inter", sans-serif' }}>
       
-      {/* Header matching the screenshot */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', borderBottom: '1px solid rgba(0,0,0,0.06)', paddingBottom: '1.5rem' }}>
-        <div>
-          <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '2rem', fontWeight: 700, color: '#161D2B', margin: 0 }}>
+      {/* Header */}
+      <div className="admin-header-responsive">
+        <div className="admin-header-titles">
+          <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: '#0F172A', margin: 0, letterSpacing: '-0.01em' }}>
             Subscription Management
           </h1>
-          <p style={{ fontSize: '0.9rem', color: '#718096', margin: '0.25rem 0 0' }}>
+          <p style={{ fontSize: '0.875rem', color: '#64748B', margin: '0.25rem 0 0', lineHeight: 1.5 }}>
             Manage student subscription plans and active applications to German Universities
           </p>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button style={{ background: '#C49746', color: '#ffffff', border: 'none', padding: '0.65rem 1.25rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 4px 12px rgba(196, 151, 70, 0.2)' }}>
-            + Apply on Behalf
+        <div className="admin-header-actions">
+          <button
+            type="button"
+            className="admin-btn-cta"
+            onClick={() => setActiveTab('applications')}
+          >
+            <Plus size={16} /> Apply on Behalf
           </button>
-          <div style={{ width: 40, height: 40, borderRadius: '50%', border: '1px solid rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4A5568', background: '#fff', cursor: 'pointer' }}>
-            <Bell size={18} />
-          </div>
         </div>
       </div>
 
-      {/* Tab Navigation (Styled minimally to not detract from main UI) */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-        <button onClick={() => setActiveTab('subscriptions')} style={{ background: activeTab === 'subscriptions' ? '#0F172A' : '#ffffff', color: activeTab === 'subscriptions' ? '#ffffff' : '#4A5568', border: '1px solid', borderColor: activeTab === 'subscriptions' ? '#0F172A' : '#E2E8F0', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>
+      {/* Tab Navigation */}
+      <div className="admin-tabs-nav">
+        <button
+          type="button"
+          onClick={() => setActiveTab('subscriptions')}
+          className={`admin-tab-btn ${activeTab === 'subscriptions' ? 'active' : ''}`}
+        >
           Subscriptions
         </button>
-        <button onClick={() => setActiveTab('applications')} style={{ background: activeTab === 'applications' ? '#0F172A' : '#ffffff', color: activeTab === 'applications' ? '#ffffff' : '#4A5568', border: '1px solid', borderColor: activeTab === 'applications' ? '#0F172A' : '#E2E8F0', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>
+        <button
+          type="button"
+          onClick={() => setActiveTab('applications')}
+          className={`admin-tab-btn ${activeTab === 'applications' ? 'active' : ''}`}
+        >
           Applications ({metrics?.total_application_requests || 0})
         </button>
-        <button onClick={() => setActiveTab('admins')} style={{ background: activeTab === 'admins' ? '#0F172A' : '#ffffff', color: activeTab === 'admins' ? '#ffffff' : '#4A5568', border: '1px solid', borderColor: activeTab === 'admins' ? '#0F172A' : '#E2E8F0', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>
+        <button
+          type="button"
+          onClick={() => setActiveTab('admins')}
+          className={`admin-tab-btn ${activeTab === 'admins' ? 'active' : ''}`}
+        >
           Admins
         </button>
       </div>
 
       {activeTab === 'subscriptions' && (
         <>
-          {/* Stats Cards (Mocked values for exact visual match of screenshot) */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#4A5568' }}>Total Subscribers</span>
-                <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#F8FAFC', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={16} /></div>
+          {/* Stats Cards (2x2 on mobile, 4-col on desktop) */}
+          <div className="admin-stats-grid">
+            <div className="admin-stat-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                <span className="admin-stat-card-title">Total Subscribers</span>
+                <div className="admin-stat-card-icon">
+                  <Users size={15} />
+                </div>
               </div>
-              <div style={{ fontSize: '2.25rem', fontWeight: 700, fontFamily: 'Playfair Display, serif', color: '#161D2B', lineHeight: 1 }}>
+              <div className="admin-stat-card-value">
                 {subscriptions.length > 0 ? subscriptions.length : 247}
               </div>
-              <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#718096' }}>
+              <div className="admin-stat-card-sub">
                 <span style={{ color: '#C49746', fontWeight: 600 }}>+12%</span> from last month
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#4A5568' }}>Active Plans</span>
-                <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#F8FAFC', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircle2 size={16} /></div>
+            <div className="admin-stat-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                <span className="admin-stat-card-title">Active Plans</span>
+                <div className="admin-stat-card-icon">
+                  <CheckCircle2 size={15} />
+                </div>
               </div>
-              <div style={{ fontSize: '2.25rem', fontWeight: 700, fontFamily: 'Playfair Display, serif', color: '#161D2B', lineHeight: 1 }}>
+              <div className="admin-stat-card-value">
                 {subscriptions.filter(s => s.subscription_status === 'active').length || 189}
               </div>
-              <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#718096' }}>
+              <div className="admin-stat-card-sub">
                 84% active rate
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#4A5568' }}>Revenue This Month</span>
-                <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#F8FAFC', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BadgeEuro size={16} /></div>
+            <div className="admin-stat-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                <span className="admin-stat-card-title">Revenue (Month)</span>
+                <div className="admin-stat-card-icon">
+                  <BadgeEuro size={15} />
+                </div>
               </div>
-              <div style={{ fontSize: '2.25rem', fontWeight: 700, fontFamily: 'Playfair Display, serif', color: '#161D2B', lineHeight: 1 }}>
+              <div className="admin-stat-card-value">
                 €34,500
               </div>
-              <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#718096' }}>
+              <div className="admin-stat-card-sub">
                 <span style={{ color: '#C49746', fontWeight: 600 }}>+€4,200</span> this week
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#4A5568' }}>Pending Applications</span>
-                <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#F8FAFC', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FileWarning size={16} /></div>
+            <div className="admin-stat-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                <span className="admin-stat-card-title">Pending Apps</span>
+                <div className="admin-stat-card-icon">
+                  <FileWarning size={15} />
+                </div>
               </div>
-              <div style={{ fontSize: '2.25rem', fontWeight: 700, fontFamily: 'Playfair Display, serif', color: '#161D2B', lineHeight: 1 }}>
+              <div className="admin-stat-card-value">
                 23
               </div>
-              <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#718096' }}>
-                5 requiring urgent action
+              <div className="admin-stat-card-sub">
+                5 requiring action
               </div>
             </div>
           </div>
 
           {/* Filters & Search Table Header */}
-          <div style={{ background: '#ffffff', borderRadius: '16px 16px 0 0', border: '1px solid rgba(0,0,0,0.08)', borderBottom: 'none', padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ position: 'relative' }}>
-                <Search size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
+          <div className="admin-filters-bar">
+            <div className="admin-filters-group">
+              <div className="admin-search-input-wrap">
+                <Search size={16} className="admin-search-icon" />
                 <input
                   type="text"
                   placeholder="Search by name or email..."
                   value={subSearch}
                   onChange={(e) => setSubSearch(e.target.value)}
-                  style={{ width: '280px', padding: '0.65rem 1rem 0.65rem 2.5rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.12)', fontSize: '0.85rem', background: '#F8FAFC' }}
+                  className="admin-filter-input"
                 />
               </div>
               
-              <select style={{ padding: '0.65rem 1rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.12)', fontSize: '0.85rem', background: '#ffffff', color: '#4A5568', fontWeight: 500 }}>
-                <option>Plan: All</option>
-                <option>Enterprise</option>
-                <option>Professional</option>
-                <option>Starter</option>
-              </select>
+              <div className="admin-filters-selects">
+                <select className="admin-filter-select">
+                  <option>Plan: All</option>
+                  <option>Enterprise</option>
+                  <option>Professional</option>
+                  <option>Starter</option>
+                </select>
 
-              <select
-                value={subStatusFilter}
-                onChange={(e) => setSubStatusFilter(e.target.value)}
-                style={{ padding: '0.65rem 1rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.12)', fontSize: '0.85rem', background: '#ffffff', color: '#4A5568', fontWeight: 500 }}
-              >
-                <option value="">Status: All Statuses</option>
-                <option value="active">Active</option>
-                <option value="expired">Expired</option>
-                <option value="pending">Pending</option>
-              </select>
+                <select
+                  value={subStatusFilter}
+                  onChange={(e) => setSubStatusFilter(e.target.value)}
+                  className="admin-filter-select"
+                >
+                  <option value="">Status: All Statuses</option>
+                  <option value="active">Active</option>
+                  <option value="expired">Expired</option>
+                  <option value="pending">Pending</option>
+                </select>
+              </div>
             </div>
 
-            <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'transparent', border: 'none', color: '#4A5568', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>
-              <SlidersHorizontal size={16} /> Advanced Filters
+            <button type="button" className="admin-filter-btn-advanced">
+              <SlidersHorizontal size={15} /> Advanced Filters
             </button>
           </div>
 
+          {/* Mobile Table Swipe Cue */}
+          <div className="table-scroll-cue">
+            <span>← Swipe horizontally to view full table →</span>
+          </div>
+
           {/* Subscriptions Table */}
-          <div style={{ background: '#ffffff', borderRadius: '0 0 16px 16px', border: '1px solid rgba(0,0,0,0.08)', overflowX: 'auto', marginBottom: '2rem' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', textAlign: 'left' }}>
+          <div className="admin-table-card">
+            <table style={{ width: '100%', minWidth: '760px', borderCollapse: 'collapse', fontSize: '0.85rem', textAlign: 'left' }}>
               <thead>
-                <tr style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
-                  <th style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#4A5568', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>Student Name</th>
-                  <th style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#4A5568', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>Email</th>
-                  <th style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#4A5568', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>Plan</th>
-                  <th style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#4A5568', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>Status</th>
-                  <th style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#4A5568', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>Apps Used</th>
-                  <th style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#4A5568', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>Start Date</th>
-                  <th style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#4A5568', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>Expiry Date</th>
-                  <th style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#4A5568', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em', textAlign: 'right' }}>Actions</th>
+                <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
+                  <th style={{ padding: '0.85rem 1.25rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', fontSize: '0.725rem', letterSpacing: '0.05em' }}>Student Name</th>
+                  <th style={{ padding: '0.85rem 1.25rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', fontSize: '0.725rem', letterSpacing: '0.05em' }}>Email</th>
+                  <th style={{ padding: '0.85rem 1.25rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', fontSize: '0.725rem', letterSpacing: '0.05em' }}>Plan</th>
+                  <th style={{ padding: '0.85rem 1.25rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', fontSize: '0.725rem', letterSpacing: '0.05em' }}>Status</th>
+                  <th style={{ padding: '0.85rem 1.25rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', fontSize: '0.725rem', letterSpacing: '0.05em' }}>Apps Used</th>
+                  <th style={{ padding: '0.85rem 1.25rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', fontSize: '0.725rem', letterSpacing: '0.05em' }}>Start Date</th>
+                  <th style={{ padding: '0.85rem 1.25rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', fontSize: '0.725rem', letterSpacing: '0.05em' }}>Expiry Date</th>
+                  <th style={{ padding: '0.85rem 1.25rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', fontSize: '0.725rem', letterSpacing: '0.05em', textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={8} style={{ padding: '3rem', textAlign: 'center', color: '#718096' }}>Loading data...</td></tr>
+                  <tr><td colSpan={8} style={{ padding: '3rem', textAlign: 'center', color: '#64748B' }}>Loading data...</td></tr>
                 ) : subscriptions.length === 0 ? (
-                  <tr><td colSpan={8} style={{ padding: '3rem', textAlign: 'center', color: '#718096' }}>No records found.</td></tr>
+                  <tr><td colSpan={8} style={{ padding: '3rem', textAlign: 'center', color: '#64748B' }}>No records found.</td></tr>
                 ) : (
                   subscriptions.map((sub, idx) => {
-                    // Fallback mocked visual details if real ones are missing for perfect UI match
                     const planType = ['Enterprise', 'Professional', 'Starter'][idx % 3];
                     const appUsed = planType === 'Starter' ? '2 / 2' : planType === 'Professional' ? '3 / 5' : '5 / 8';
                     const startDate = '12.01.2024';
@@ -344,42 +371,42 @@ export default function AdminPremiumApplications() {
                     const statusText = sub.subscription_status === 'active' ? 'Active' : (sub.fee_status === 'submitted' ? 'Pending' : 'Expired');
                     
                     return (
-                      <tr key={sub.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.04)', transition: 'background 0.2s' }}>
-                        <td style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#161D2B' }}>
+                      <tr key={sub.id} style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.2s' }}>
+                        <td style={{ padding: '0.9rem 1.25rem', fontWeight: 700, color: '#0F172A', whiteSpace: 'nowrap' }}>
                           {sub.name}
                         </td>
-                        <td style={{ padding: '1rem 1.5rem', color: '#4A5568' }}>
+                        <td style={{ padding: '0.9rem 1.25rem', color: '#475569', whiteSpace: 'nowrap' }}>
                           {sub.email}
                         </td>
-                        <td style={{ padding: '1rem 1.5rem', fontWeight: 700, color: '#161D2B' }}>
+                        <td style={{ padding: '0.9rem 1.25rem', fontWeight: 700, color: '#0F172A' }}>
                           {planType}
                         </td>
-                        <td style={{ padding: '1rem 1.5rem' }}>
+                        <td style={{ padding: '0.9rem 1.25rem', whiteSpace: 'nowrap' }}>
                           <span style={{ 
                             padding: '0.25rem 0.75rem', 
                             borderRadius: '999px', 
-                            fontSize: '0.75rem', 
+                            fontSize: '0.725rem', 
                             fontWeight: 700, 
                             background: statusText === 'Active' ? '#FFFBEB' : (statusText === 'Pending' ? '#F8FAFC' : '#FEE2E2'),
-                            color: statusText === 'Active' ? '#C49746' : (statusText === 'Pending' ? '#4A5568' : '#B91C1C'),
+                            color: statusText === 'Active' ? '#C49746' : (statusText === 'Pending' ? '#475569' : '#B91C1C'),
                             border: statusText === 'Active' ? '1px solid #FDE68A' : 'none'
                           }}>
                             {statusText}
                           </span>
                         </td>
-                        <td style={{ padding: '1rem 1.5rem', color: '#4A5568' }}>
+                        <td style={{ padding: '0.9rem 1.25rem', color: '#475569', whiteSpace: 'nowrap' }}>
                           {appUsed}
                         </td>
-                        <td style={{ padding: '1rem 1.5rem', color: '#4A5568' }}>
+                        <td style={{ padding: '0.9rem 1.25rem', color: '#64748B', whiteSpace: 'nowrap' }}>
                           {startDate}
                         </td>
-                        <td style={{ padding: '1rem 1.5rem', color: '#4A5568' }}>
+                        <td style={{ padding: '0.9rem 1.25rem', color: '#64748B', whiteSpace: 'nowrap' }}>
                           {expiryDate}
                         </td>
-                        <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
+                        <td style={{ padding: '0.9rem 1.25rem', textAlign: 'right', whiteSpace: 'nowrap' }}>
                           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', fontWeight: 600, fontSize: '0.8rem' }}>
-                            <button style={{ background: 'transparent', border: 'none', color: '#C49746', cursor: 'pointer', padding: 0 }}>Manage</button>
-                            <button style={{ background: 'transparent', border: 'none', color: '#4A5568', cursor: 'pointer', padding: 0 }}>View</button>
+                            <button type="button" style={{ background: 'transparent', border: 'none', color: '#C49746', cursor: 'pointer', padding: '0.35rem 0.6rem', borderRadius: '4px', whiteSpace: 'nowrap' }}>Manage</button>
+                            <button type="button" style={{ background: 'transparent', border: 'none', color: '#64748B', cursor: 'pointer', padding: '0.35rem 0.6rem', borderRadius: '4px', whiteSpace: 'nowrap' }}>View</button>
                           </div>
                         </td>
                       </tr>
@@ -390,65 +417,80 @@ export default function AdminPremiumApplications() {
             </table>
             
             {/* Table Footer */}
-            <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#718096', fontSize: '0.85rem' }}>
+            <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748B', fontSize: '0.85rem', flexWrap: 'wrap', gap: '0.75rem' }}>
               <div>Showing 1-{subscriptions.length} of 247 students</div>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.15)', padding: '0.4rem 1rem', borderRadius: '6px', fontSize: '0.85rem', cursor: 'pointer' }}>Previous</button>
-                <button style={{ background: '#0F172A', color: '#ffffff', border: 'none', padding: '0.4rem 1rem', borderRadius: '6px', fontSize: '0.85rem', cursor: 'pointer' }}>Next</button>
+                <button type="button" style={{ background: '#ffffff', border: '1px solid #E2E8F0', padding: '0.4rem 1rem', borderRadius: '6px', fontSize: '0.85rem', cursor: 'pointer' }}>Previous</button>
+                <button type="button" style={{ background: '#0F172A', color: '#ffffff', border: 'none', padding: '0.4rem 1rem', borderRadius: '6px', fontSize: '0.85rem', cursor: 'pointer' }}>Next</button>
               </div>
             </div>
           </div>
         </>
       )}
 
-      {/* OTHER TABS: Keep existing logic but adapted minimal UI */}
+      {/* OTHER TABS */}
       {activeTab === 'applications' && (
-        <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.08)', padding: '1.5rem' }}>
-           <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', marginBottom: '1rem' }}>Application Requests</h3>
-           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem', textAlign: 'left' }}>
-              <thead>
-                <tr style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
-                  <th style={{ padding: '0.85rem 1rem', fontWeight: 700 }}>Student Info</th>
-                  <th style={{ padding: '0.85rem 1rem', fontWeight: 700 }}>Target Program</th>
-                  <th style={{ padding: '0.85rem 1rem', fontWeight: 700 }}>Fee Status</th>
-                  <th style={{ padding: '0.85rem 1rem', fontWeight: 700 }}>Stage</th>
-                  <th style={{ padding: '0.85rem 1rem', fontWeight: 700, textAlign: 'right' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {applications.map((app) => (
-                  <tr key={app.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-                    <td style={{ padding: '1rem' }}>
-                      <strong style={{ display: 'block', color: '#161D2B' }}>{app.user?.name}</strong>
-                      <span style={{ fontSize: '0.78rem', color: '#718096' }}>{app.user?.email}</span>
-                    </td>
-                    <td style={{ padding: '1rem' }}>
-                      <div style={{ fontWeight: 600, color: '#161D2B' }}>{app.program?.name}</div>
-                      <div style={{ fontSize: '0.78rem', color: '#718096' }}>{app.program?.university?.name}</div>
-                    </td>
-                    <td style={{ padding: '1rem' }}>
-                      <span style={{ background: '#F1F5F9', padding: '0.3rem 0.65rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 700 }}>{app.user?.fee_status || 'unpaid'}</span>
-                    </td>
-                    <td style={{ padding: '1rem' }}>{app.status}</td>
-                    <td style={{ padding: '1rem', textAlign: 'right' }}>
-                      <button onClick={() => handleOpenEditModal(app)} style={{ background: '#0F172A', color: '#fff', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>Manage</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-           </table>
-        </div>
+        <>
+          <div className="table-scroll-cue">
+            <span>← Swipe horizontally to view full table →</span>
+          </div>
+          <div className="admin-table-card-standalone" style={{ padding: '1.25rem' }}>
+             <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#0F172A', marginBottom: '1rem', fontFamily: 'Playfair Display, Georgia, serif' }}>Application Requests</h3>
+             <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+               <table style={{ width: '100%', minWidth: '680px', borderCollapse: 'collapse', fontSize: '0.875rem', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
+                      <th style={{ padding: '0.85rem 1rem', fontWeight: 700, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>Student Info</th>
+                      <th style={{ padding: '0.85rem 1rem', fontWeight: 700, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>Target Program</th>
+                      <th style={{ padding: '0.85rem 1rem', fontWeight: 700, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>Fee Status</th>
+                      <th style={{ padding: '0.85rem 1rem', fontWeight: 700, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase' }}>Stage</th>
+                      <th style={{ padding: '0.85rem 1rem', fontWeight: 700, color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase', textAlign: 'right' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {applications.map((app) => (
+                      <tr key={app.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                        <td style={{ padding: '0.9rem 1rem' }}>
+                          <strong style={{ display: 'block', color: '#0F172A' }}>{app.user?.name}</strong>
+                          <span style={{ fontSize: '0.78rem', color: '#64748B' }}>{app.user?.email}</span>
+                        </td>
+                        <td style={{ padding: '0.9rem 1rem' }}>
+                          <div style={{ fontWeight: 600, color: '#0F172A' }}>{app.program?.name}</div>
+                          <div style={{ fontSize: '0.78rem', color: '#64748B' }}>{app.program?.university?.name}</div>
+                        </td>
+                        <td style={{ padding: '0.9rem 1rem' }}>
+                          <span style={{ background: app.user?.fee_status === 'paid' ? '#D1FAE5' : '#FEF3C7', color: app.user?.fee_status === 'paid' ? '#047857' : '#B45309', padding: '0.25rem 0.65rem', borderRadius: '999px', fontSize: '0.725rem', fontWeight: 700 }}>
+                            {app.user?.fee_status || 'unpaid'}
+                          </span>
+                        </td>
+                        <td style={{ padding: '0.9rem 1rem', color: '#0F172A', fontWeight: 500 }}>{app.status}</td>
+                        <td style={{ padding: '0.9rem 1rem', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(app)}
+                            style={{ background: '#0F172A', color: '#ffffff', border: 'none', padding: '0.45rem 0.95rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                          >
+                            Manage
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+               </table>
+             </div>
+          </div>
+        </>
       )}
 
       {activeTab === 'admins' && (
-        <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.08)', padding: '1.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#161D2B' }}>Admin Accounts</h3>
-            <button onClick={() => setShowAddAdminModal(true)} style={{ background: '#0F172A', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>+ Add Admin</button>
+        <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', margin: 0 }}>Admin Accounts</h3>
+            <button onClick={() => setShowAddAdminModal(true)} className="admin-btn-cta" style={{ minHeight: '38px', padding: '0.5rem 1rem' }}>+ Add Admin</button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
             {adminsList.map(adm => (
-              <div key={adm.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#F8FAFC', borderRadius: '12px' }}>
+              <div key={adm.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
                 <div>
                   <div style={{ fontWeight: 600, color: '#1E293B', fontSize: '0.95rem' }}>{adm.name}</div>
                   <div style={{ color: '#64748B', fontSize: '0.8rem', marginTop: '0.2rem' }}>{adm.email}</div>
@@ -461,16 +503,16 @@ export default function AdminPremiumApplications() {
 
       {/* Edit App Modal */}
       {editApp && (
-         <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-           <div style={{ background: '#fff', padding: '2rem', borderRadius: '16px', width: '500px' }}>
-             <h3>Manage {editApp.user?.name}</h3>
+         <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+           <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '16px', maxWidth: '500px', width: '100%', boxSizing: 'border-box' }}>
+             <h3 style={{ marginTop: 0, color: '#0F172A' }}>Manage {editApp.user?.name}</h3>
              <form onSubmit={handleSaveApplicationStatus}>
-               <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} style={{ width: '100%', padding: '0.75rem', marginBottom: '1rem' }}>
+               <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} style={{ width: '100%', padding: '0.75rem', marginBottom: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                   {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
                </select>
-               <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                 <button type="button" onClick={() => setEditApp(null)} style={{ padding: '0.5rem 1rem' }}>Cancel</button>
-                 <button type="submit" style={{ padding: '0.5rem 1rem', background: '#0F172A', color: '#fff' }}>Save</button>
+               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                 <button type="button" onClick={() => setEditApp(null)} style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid #E2E8F0', background: '#fff', cursor: 'pointer' }}>Cancel</button>
+                 <button type="submit" style={{ padding: '0.5rem 1rem', background: '#0F172A', color: '#fff', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Save</button>
                </div>
              </form>
            </div>

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription, CardBody, Badge, EmptyState, Avatar } from '../../ui';
 import { formatTuitionType } from '../../../lib/format';
 
@@ -13,6 +14,23 @@ export function RecommendedUniversities({ universities, loading }) {
           <CardTitle>Recommended Universities</CardTitle>
           <CardDescription>Explore top German universities.</CardDescription>
         </div>
+        {universities && universities.length > 0 && (
+          <Link
+            to="/student/universities"
+            style={{
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              color: 'var(--color-forest)',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              flexShrink: 0,
+            }}
+          >
+            Explore all &rarr;
+          </Link>
+        )}
       </CardHeader>
       <CardBody>
         {loading ? (
@@ -23,18 +41,18 @@ export function RecommendedUniversities({ universities, loading }) {
             description="Universities will appear here once available."
           />
         ) : (
-          <ul className="flex flex-col gap-3">
-            {universities.slice(0, 5).map((uni) => (
-              <li key={uni.id} className="flex items-center gap-3">
-                <Avatar name={uni.name} size="md" />
+          <ul className="flex flex-col gap-2.5">
+            {universities.slice(0, 3).map((uni) => (
+              <li key={uni.id} className="flex items-center gap-2.5" style={{ padding: '0.35rem 0' }}>
+                <Avatar name={uni.name} size="sm" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium ellipsis">{uni.name}</p>
-                  <p className="text-xs text-muted">
+                  <p className="text-sm font-medium ellipsis" title={uni.name}>{uni.name}</p>
+                  <p className="text-xs text-muted ellipsis mt-0.5">
                     {uni.city || 'Germany'}
                     {uni.ranking ? ` · Rank #${uni.ranking}` : ''}
                   </p>
                 </div>
-                <Badge tone={uni.tuition_type === 'free' ? 'success' : 'neutral'}>
+                <Badge tone={uni.tuition_type === 'free' ? 'success' : 'neutral'} className="shrink-0 text-xs">
                   {formatTuitionType(uni.tuition_type)}
                 </Badge>
               </li>

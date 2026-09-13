@@ -381,7 +381,7 @@ export function Universities() {
                         </div>
 
                         {/* Key Strengths */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', color: '#0B3B36', fontWeight: 600 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', color: '#0F172A', fontWeight: 600 }}>
                           <Sparkles size={14} style={{ color: '#C49746' }} />
                           <span>{uni.highlights}</span>
                         </div>

@@ -32,7 +32,7 @@ function buildTimeline(historyEntries, shortlistEntries) {
     });
   });
 
-  return events.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
+  return events.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
 }
 
 export function ActivityTimeline({ historyEntries, shortlistEntries, loading }) {
@@ -55,9 +55,9 @@ export function ActivityTimeline({ historyEntries, shortlistEntries, loading }) 
             description="Your recommendations and status updates will appear here."
           />
         ) : (
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col gap-2.5">
             {events.map((event) => (
-              <li key={event.id} className="flex items-start gap-3">
+              <li key={event.id} className="flex items-start gap-2.5" style={{ padding: '0.25rem 0' }}>
                 <span
                   className="mt-1"
                   style={{

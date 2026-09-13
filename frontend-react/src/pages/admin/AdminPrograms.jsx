@@ -165,9 +165,9 @@ const res = await fetchAdminPrograms({ search: debouncedSearch, per_page: 50, pa
   const update = (field, value) => setForm((p) => ({ ...p, [field]: value }));
 
   return (
-    <div className="admin-programs flex flex-col gap-6">
-      <div className="admin-page-header">
-        <div>
+    <div className="admin-page-container flex flex-col gap-6">
+      <div className="admin-header-responsive">
+        <div className="admin-header-titles">
           <h1
             style={{
               fontFamily: 'var(--font-display)',
@@ -183,13 +183,13 @@ const res = await fetchAdminPrograms({ search: debouncedSearch, per_page: 50, pa
             Create, edit, and remove degree programs in the catalogue
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="admin-header-actions">
           <Button variant="secondary" onClick={load}><RefreshCw size={15} /> Refresh</Button>
           <Button variant="primary" onClick={openCreate}><Plus size={15} /> Add Program</Button>
         </div>
       </div>
 
-      <div className="search-bar" style={{ maxWidth: 360 }}>
+      <div className="search-bar" style={{ maxWidth: 420, width: '100%' }}>
         <Search size={16} className="search-icon" />
         <Input placeholder="Search programs..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
       </div>
@@ -205,8 +205,8 @@ const res = await fetchAdminPrograms({ search: debouncedSearch, per_page: 50, pa
       ) : programs.length === 0 ? (
         <EmptyState icon={GraduationCap} title="No programs found" description="Try adjusting your search or add a new program." />
       ) : (
-        <div className="table-wrap">
-          <table className="table">
+        <div className="admin-table-card-standalone">
+          <table className="table" style={{ minWidth: 780 }}>
             <thead>
               <tr>
                 <th>Program</th>

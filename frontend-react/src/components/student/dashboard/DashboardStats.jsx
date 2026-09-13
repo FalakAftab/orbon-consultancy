@@ -23,9 +23,10 @@ const PROFILE_FIELD_KEYS = [
  */
 export function DashboardStats({ stats, loading }) {
   return (
-    <div className="grid grid-3">
+    <div className="dashboard-stats-grid">
       <StatisticCard
         label="Matches Found"
+        shortLabel="Matches"
         value={stats.recommendedPrograms}
         icon={Sparkles}
         tone="primary"
@@ -33,6 +34,7 @@ export function DashboardStats({ stats, loading }) {
       />
       <StatisticCard
         label="Programs Shortlisted"
+        shortLabel="Shortlist"
         value={stats.shortlistedPrograms}
         icon={BookmarkCheck}
         tone="accent"
@@ -40,6 +42,7 @@ export function DashboardStats({ stats, loading }) {
       />
       <StatisticCard
         label="Searches Made"
+        shortLabel="Searches"
         value={stats.applications}
         icon={Search}
         tone="success"

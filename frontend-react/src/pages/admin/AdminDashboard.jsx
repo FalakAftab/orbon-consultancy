@@ -55,10 +55,10 @@ export default function AdminDashboard() {
     : [];
 
   return (
-    <div className="admin-dashboard flex flex-col gap-8">
+    <div className="admin-page-container flex flex-col gap-8">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
+      <div className="admin-header-responsive">
+        <div className="admin-header-titles">
           <h1
             style={{
               fontFamily: 'var(--font-display)',
@@ -75,16 +75,18 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        <Button variant="primary" onClick={() => navigate('/admin/imports')}>
-          <FileSpreadsheet size={15} />
-          Import DAAD Data
-        </Button>
+        <div className="admin-header-actions">
+          <Button variant="primary" onClick={() => navigate('/admin/imports')}>
+            <FileSpreadsheet size={15} />
+            Import DAAD Data
+          </Button>
+        </div>
       </div>
 
       {error ? (
         <ErrorState title="Could not load dashboard" description={error} onRetry={load} />
       ) : loading ? (
-        <div className="grid grid-4" style={{ gap: 'var(--space-4)' }}>
+        <div className="admin-stats-grid">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="skeleton" style={{ height: 120, borderRadius: 'var(--radius-xl)' }} />
           ))}
@@ -92,17 +94,16 @@ export default function AdminDashboard() {
       ) : (
         <>
           {/* Stat tiles */}
-          <div className="grid grid-4" style={{ gap: 'var(--space-4)' }}>
+          <div className="admin-stats-grid">
             {stats.map((item) => {
               const Icon = item.icon;
               return (
                 <div
                   key={item.label}
+                  className="admin-stat-card"
                   style={{
                     background: 'var(--color-surface)',
                     border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-xl)',
-                    padding: '1.35rem 1.5rem',
                     boxShadow: 'var(--shadow-sm)',
                   }}
                 >
@@ -116,7 +117,7 @@ export default function AdminDashboard() {
                       borderRadius: 10,
                       background:
                         item.tone === 'forest'
-                          ? 'rgba(11, 59, 54, 0.08)'
+                          ? 'rgba(15, 23, 42, 0.08)'
                           : item.tone === 'blue'
                           ? 'rgba(23, 59, 87, 0.08)'
                           : 'rgba(199, 164, 91, 0.12)',
@@ -130,11 +131,11 @@ export default function AdminDashboard() {
                   >
                     <Icon size={18} />
                   </span>
-                  <div style={{ marginTop: '1.1rem' }}>
+                  <div style={{ marginTop: '0.9rem' }}>
                     <p
+                      className="admin-stat-card-value"
                       style={{
                         fontFamily: 'var(--font-display)',
-                        fontSize: '2rem',
                         fontWeight: 600,
                         lineHeight: 1,
                         letterSpacing: 'var(--letter-spacing-tight)',
@@ -144,8 +145,8 @@ export default function AdminDashboard() {
                       {item.value}
                     </p>
                     <p
+                      className="admin-stat-card-title"
                       style={{
-                        fontSize: '0.8125rem',
                         color: 'var(--color-muted)',
                         marginTop: '0.35rem',
                       }}
@@ -159,7 +160,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quick management links */}
-          <div className="grid grid-4" style={{ gap: 'var(--space-4)' }}>
+          <div className="admin-stats-grid">
             {[
               { label: 'Universities', to: '/admin/universities', icon: Building2 },
               { label: 'Programs', to: '/admin/programs', icon: GraduationCap },
@@ -186,7 +187,7 @@ export default function AdminDashboard() {
                         width: 40,
                         height: 40,
                         borderRadius: 12,
-                        background: 'rgba(11, 59, 54, 0.08)',
+                        background: 'rgba(15, 23, 42, 0.08)',
                         color: 'var(--color-forest)',
                       }}
                     >

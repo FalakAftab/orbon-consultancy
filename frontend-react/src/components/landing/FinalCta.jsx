@@ -19,7 +19,7 @@ export function FinalCta() {
           <Link
             to="/register"
             style={{
-              background: '#0B3B36',
+              background: '#0F172A',
               color: '#ffffff',
               padding: '0.85rem 1.65rem',
               borderRadius: '999px',
@@ -29,7 +29,7 @@ export function FinalCta() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              boxShadow: '0 8px 24px -6px rgba(11,59,54,0.3)',
+              boxShadow: '0 8px 24px -6px rgba(15,23,42,0.25)',
             }}
           >
             Find My Recommendations <ArrowRight size={16} />

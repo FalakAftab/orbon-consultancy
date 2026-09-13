@@ -608,7 +608,7 @@ export default function RecommendationWizard() {
                           padding: '0.65rem 1.1rem',
                           borderRadius: 'var(--radius-md)',
                           border: `1px solid ${isSelected ? 'var(--color-forest)' : 'var(--color-border)'}`,
-                          background: isSelected ? 'rgba(11, 59, 54, 0.08)' : 'var(--color-surface)',
+                          background: isSelected ? 'rgba(15, 23, 42, 0.08)' : 'var(--color-surface)',
                           color: isSelected ? 'var(--color-forest)' : 'var(--color-charcoal)',
                           fontSize: '0.875rem',
                           fontWeight: isSelected ? 600 : 400,
@@ -718,8 +718,8 @@ export default function RecommendationWizard() {
                           textAlign: 'left',
                           padding: '0.95rem 1.1rem',
                           borderRadius: 'var(--radius-lg)',
-                          border: `1.5px solid ${isActive ? 'var(--color-forest)' : 'rgba(31,41,39,0.12)'}`,
-                          background: isActive ? 'rgba(11, 59, 54, 0.08)' : 'rgba(255,255,255,0.7)',
+                          border: `1.5px solid ${isActive ? 'var(--color-forest)' : '#E2E8F0'}`,
+                          background: isActive ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.7)',
                           color: isActive ? 'var(--color-forest)' : 'var(--color-charcoal)',
                           fontSize: '0.92rem',
                           fontWeight: isActive ? 600 : 500,
@@ -728,7 +728,7 @@ export default function RecommendationWizard() {
                           alignItems: 'center',
                           justifyContent: 'space-between',
                           gap: '0.5rem',
-                          boxShadow: isActive ? '0 2px 8px rgba(11, 59, 54, 0.08)' : 'none',
+                          boxShadow: isActive ? '0 2px 8px rgba(15, 23, 42, 0.08)' : 'none',
                           transition: 'all 0.15s ease',
                         }}
                       >
@@ -795,8 +795,8 @@ export default function RecommendationWizard() {
                       style={{
                         padding: '0.95rem 1.1rem',
                         borderRadius: 'var(--radius-lg)',
-                        border: `1.5px solid ${isParentSelected ? 'var(--color-forest)' : 'rgba(31,41,39,0.12)'}`,
-                        background: isParentSelected ? 'rgba(11, 59, 54, 0.08)' : 'rgba(255,255,255,0.7)',
+                        border: `1.5px solid ${isParentSelected ? 'var(--color-forest)' : '#E2E8F0'}`,
+                        background: isParentSelected ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.7)',
                         color: isParentSelected ? 'var(--color-forest)' : 'var(--color-charcoal)',
                         fontSize: '0.92rem',
                         fontWeight: isParentSelected ? 600 : 500,
@@ -805,7 +805,7 @@ export default function RecommendationWizard() {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: '0.5rem',
-                        boxShadow: isParentSelected ? '0 2px 8px rgba(11, 59, 54, 0.08)' : 'none',
+                        boxShadow: isParentSelected ? '0 2px 8px rgba(15, 23, 42, 0.08)' : 'none',
                         transition: 'all 0.15s ease',
                       }}
                     >
@@ -841,8 +841,8 @@ export default function RecommendationWizard() {
                       style={{
                         padding: '0.95rem 1.1rem',
                         borderRadius: 'var(--radius-lg)',
-                        border: `1.5px solid ${selected ? 'var(--color-forest)' : 'rgba(31,41,39,0.12)'}`,
-                        background: selected ? 'rgba(11, 59, 54, 0.08)' : 'rgba(255,255,255,0.7)',
+                        border: `1.5px solid ${selected ? 'var(--color-forest)' : '#E2E8F0'}`,
+                        background: selected ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.7)',
                         color: selected ? 'var(--color-forest)' : 'var(--color-charcoal)',
                         fontSize: '0.92rem',
                         fontWeight: selected ? 600 : 400,
@@ -851,7 +851,7 @@ export default function RecommendationWizard() {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: '0.5rem',
-                        boxShadow: selected ? '0 2px 8px rgba(11, 59, 54, 0.08)' : 'none',
+                        boxShadow: selected ? '0 2px 8px rgba(15, 23, 42, 0.08)' : 'none',
                         transition: 'all 0.15s ease',
                       }}
                     >
@@ -976,7 +976,7 @@ export default function RecommendationWizard() {
                         position: 'absolute',
                         inset: 0,
                         borderRadius: '50%',
-                        border: '1px solid rgba(11, 59, 54, 0.2)',
+                        border: '1px solid rgba(15, 23, 42, 0.2)',
                         animation: 'orbitSpin 6s linear infinite',
                       }}
                     />

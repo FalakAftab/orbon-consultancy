@@ -182,9 +182,9 @@ export default function AdminStudents() {
   };
 
   return (
-    <div className="admin-students flex flex-col gap-6">
-      <div className="admin-page-header">
-        <div>
+    <div className="admin-page-container flex flex-col gap-6">
+      <div className="admin-header-responsive">
+        <div className="admin-header-titles">
           <h1
             style={{
               fontFamily: 'var(--font-display)',
@@ -200,13 +200,13 @@ export default function AdminStudents() {
             View and manage registered student accounts
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="admin-header-actions">
           <Button variant="secondary" onClick={load}><RefreshCw size={15} /> Refresh</Button>
           <Button variant="primary" onClick={openAddModal}><UserPlus size={15} /> Add Student</Button>
         </div>
       </div>
 
-      <div className="search-bar" style={{ maxWidth: 360 }}>
+      <div className="search-bar admin-search-bar">
         <Search size={16} className="search-icon" />
         <Input placeholder="Search by name or email..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
       </div>
@@ -222,45 +222,50 @@ export default function AdminStudents() {
       ) : students.length === 0 ? (
         <EmptyState icon={GraduationCap} title="No students found" description="No student accounts match your search." />
       ) : (
-        <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>Email</th>
-                <th>Country</th>
-                <th>Target Degree</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((s) => {
-                const profile = s.student_profile || {};
-                return (
-                  <tr key={s.id}>
-                    <td>
-                      <p className="font-medium" style={{ color: 'var(--color-charcoal)' }}>{s.name}</p>
-                    </td>
-                    <td className="text-muted">{s.email}</td>
-                    <td className="text-muted">{s.country || profile.country || '—'}</td>
-                    <td>
-                      {profile.preferred_degree ? (
-                        <span className="badge badge-neutral">{formatDegreeLevel(profile.preferred_degree)}</span>
-                      ) : (
-                        <span className="text-muted">—</span>
-                      )}
-                    </td>
-                    <td>
-                      <div className="flex items-center justify-end gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => openView(s)}>View</Button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <div className="table-scroll-cue">
+            <span>← Swipe horizontally to view full table →</span>
+          </div>
+          <div className="admin-table-card-standalone">
+            <table className="table" style={{ minWidth: 680 }}>
+              <thead>
+                <tr>
+                  <th style={{ whiteSpace: 'nowrap' }}>Student</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Email</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Country</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Target Degree</th>
+                  <th style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((s) => {
+                  const profile = s.student_profile || {};
+                  return (
+                    <tr key={s.id}>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <p className="font-medium" style={{ color: 'var(--color-charcoal)' }}>{s.name}</p>
+                      </td>
+                      <td className="text-muted" style={{ whiteSpace: 'nowrap' }}>{s.email}</td>
+                      <td className="text-muted" style={{ whiteSpace: 'nowrap' }}>{s.country || profile.country || '—'}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        {profile.preferred_degree ? (
+                          <span className="badge badge-neutral">{formatDegreeLevel(profile.preferred_degree)}</span>
+                        ) : (
+                          <span className="text-muted">—</span>
+                        )}
+                      </td>
+                      <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        <div className="flex items-center justify-end gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => openView(s)}>View</Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {meta && meta.lastPage > 1 && (

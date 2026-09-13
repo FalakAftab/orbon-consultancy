@@ -511,6 +511,30 @@ export default function NotificationsPage() {
     (acc, a) => acc + (a.messages?.length || 0),
     0
   );
+  const unreadCount = notifications.filter((item) => !item.is_read).length;
+
+  const filterTabs = [
+    {
+      id: 'all',
+      label: `All Updates (${notifications.length})`,
+      shortLabel: `All (${notifications.length})`,
+    },
+    {
+      id: 'messages',
+      label: `Advisor Messages (${totalAdvisorMessages})`,
+      shortLabel: `Messages (${totalAdvisorMessages})`,
+    },
+    {
+      id: 'unread',
+      label: unreadCount > 0 ? `Unread (${unreadCount})` : 'Unread',
+      shortLabel: unreadCount > 0 ? `Unread (${unreadCount})` : 'Unread',
+    },
+    {
+      id: 'applications',
+      label: 'Application Status',
+      shortLabel: 'Status Updates',
+    },
+  ];
 
   return (
     <div style={{ maxWidth: '940px', margin: '0 auto', padding: '1.5rem 0', color: '#161D2B', position: 'relative' }}>
@@ -598,12 +622,7 @@ export default function NotificationsPage() {
       {!activeThread && (
         <div className="notifications-filter-bar">
           <div className="notifications-filter-pills">
-            {[
-              { id: 'all', label: 'All Updates' },
-              { id: 'messages', label: `Advisor Messages (${totalAdvisorMessages})` },
-              { id: 'unread', label: 'Unread' },
-              { id: 'applications', label: 'Application Status' },
-            ].map((tab) => (
+            {filterTabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => {
@@ -614,17 +633,17 @@ export default function NotificationsPage() {
                   background: filterType === tab.id ? '#161D2B' : '#FAF7F2',
                   color: filterType === tab.id ? '#FFFFFF' : '#4A5568',
                   border: filterType === tab.id ? 'none' : '1px solid rgba(0,0,0,0.06)',
-                  padding: '0.5rem 1rem',
+                  padding: '0.5rem 0.65rem',
                   borderRadius: '8px',
                   fontSize: '0.825rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 150ms ease',
-                  whiteSpace: 'nowrap',
                   boxShadow: filterType === tab.id ? '0 2px 8px rgba(22, 29, 43, 0.18)' : 'none',
                 }}
               >
-                {tab.label}
+                <span className="tab-label-full">{tab.label}</span>
+                <span className="tab-label-short">{tab.shortLabel}</span>
               </button>
             ))}
           </div>
@@ -1125,14 +1144,11 @@ export default function NotificationsPage() {
                   <div
                     key={notif.id}
                     onClick={() => handleNotifClick(notif)}
+                    className="notification-item-row"
                     style={{
-                      padding: '1.25rem 1.5rem',
                       borderBottom: idx !== filteredNotifs.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
                       background: notif.is_read ? '#FFFFFF' : 'rgba(196, 151, 70, 0.04)',
                       cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '1.1rem',
                       transition: 'background 150ms ease',
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.background = notif.is_read ? '#FAF7F2' : 'rgba(196, 151, 70, 0.07)'}

@@ -11,6 +11,7 @@ const toneStyles = {
 
 export function StatisticCard({
   label,
+  shortLabel,
   value,
   icon: Icon,
   tone = 'primary',
@@ -33,7 +34,16 @@ export function StatisticCard({
         ) : (
           <div className="stat-value">{value}</div>
         )}
-        <div className="stat-label">{label}</div>
+        <div className="stat-label">
+          {shortLabel ? (
+            <>
+              <span className="stat-label-full">{label}</span>
+              <span className="stat-label-short">{shortLabel}</span>
+            </>
+          ) : (
+            label
+          )}
+        </div>
         {hint && <div className="text-xs text-faint mt-1">{hint}</div>}
       </div>
     </div>

@@ -54,17 +54,30 @@ export default function AdminAnalytics() {
   const monthlyGrowth = data?.monthlyGrowth || [];
 
   return (
-    <div className="admin-analytics flex flex-col gap-6" style={{ paddingBottom: '3rem', background: '#FAFAFA', minHeight: '100vh', margin: '-1.5rem', padding: '2rem' }}>
+    <div className="admin-page-container flex flex-col gap-6" style={{ paddingBottom: '3rem' }}>
       
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.06)', paddingBottom: '1.5rem', marginBottom: '1rem' }}>
-        <div>
-          <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', fontWeight: 700, color: '#161D2B', margin: 0 }}>
+      <div className="admin-header-responsive">
+        <div className="admin-header-titles">
+          <h1
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
+              fontWeight: 600,
+              letterSpacing: 'var(--letter-spacing-tight)',
+              color: 'var(--color-charcoal)',
+            }}
+          >
             Platform Analytics
           </h1>
-          <p style={{ color: '#718096', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+          <p style={{ color: 'var(--color-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
             Track user queries, match statistics, and geographic distribution
           </p>
+        </div>
+        <div className="admin-header-actions">
+          <div style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', padding: '0.5rem 1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 600, color: '#4A5568', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Calendar size={14} /> Last 30 Days (Oct 1 - Oct 30, 2026)
+          </div>
         </div>
       </div>
 
@@ -78,74 +91,65 @@ export default function AdminAnalytics() {
         </div>
       ) : (
         <>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.35rem', fontWeight: 700, color: '#161D2B', margin: 0 }}>
-              System Performance Metrics
-            </h2>
-            <div style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', padding: '0.4rem 1rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600, color: '#4A5568', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Calendar size={14} /> Last 30 Days (Oct 1 - Oct 30, 2026)
-            </div>
-          </div>
-
           {/* Metric Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '1rem' }}>
+          <div className="admin-stats-grid">
             
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Students</span>
+            <div className="admin-stat-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <span className="admin-stat-card-title" style={{ fontWeight: 700, color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Students</span>
                 <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#FFF7ED', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Users size={16} />
                 </div>
               </div>
-              <div style={{ fontSize: '2.25rem', fontWeight: 700, fontFamily: 'Playfair Display, serif', color: '#161D2B', lineHeight: 1 }}>
+              <div className="admin-stat-card-value" style={{ fontWeight: 700, fontFamily: 'var(--font-display)', color: '#161D2B', lineHeight: 1 }}>
                 {(data?.students || 11847).toLocaleString()}
               </div>
-              <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 <span style={{ color: '#C49746', fontWeight: 600 }}>↑ +12.4%</span> vs last month
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Universities</span>
+            <div className="admin-stat-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <span className="admin-stat-card-title" style={{ fontWeight: 700, color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Universities</span>
                 <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#F0FDF4', color: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Building2 size={16} />
                 </div>
               </div>
-              <div style={{ fontSize: '2.25rem', fontWeight: 700, fontFamily: 'Playfair Display, serif', color: '#161D2B', lineHeight: 1 }}>
+              <div className="admin-stat-card-value" style={{ fontWeight: 700, fontFamily: 'var(--font-display)', color: '#161D2B', lineHeight: 1 }}>
                 {(data?.universities || 243).toLocaleString()}
               </div>
-              <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 <span style={{ color: '#C49746', fontWeight: 600 }}>↑ +2.1%</span> vs last month
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Avg Match Score</span>
+            <div className="admin-stat-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <span className="admin-stat-card-title" style={{ fontWeight: 700, color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Avg Match Score</span>
                 <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#FEFCE8', color: '#EAB308', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Star size={16} />
                 </div>
               </div>
-              <div style={{ fontSize: '2.25rem', fontWeight: 700, fontFamily: 'Playfair Display, serif', color: '#161D2B', lineHeight: 1 }}>
+              <div className="admin-stat-card-value" style={{ fontWeight: 700, fontFamily: 'var(--font-display)', color: '#161D2B', lineHeight: 1 }}>
                 88.4%
               </div>
-              <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 <span style={{ color: '#C49746', fontWeight: 600 }}>↑ +5.2%</span> vs last month
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Programs</span>
+            <div className="admin-stat-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <span className="admin-stat-card-title" style={{ fontWeight: 700, color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Programs</span>
                 <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#F8FAFC', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <GraduationCap size={16} />
                 </div>
               </div>
-              <div style={{ fontSize: '2.25rem', fontWeight: 700, fontFamily: 'Playfair Display, serif', color: '#161D2B', lineHeight: 1 }}>
+              <div className="admin-stat-card-value" style={{ fontWeight: 700, fontFamily: 'var(--font-display)', color: '#161D2B', lineHeight: 1 }}>
                 {(data?.programs || 48294).toLocaleString()}
               </div>
-              <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#718096', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 <span style={{ color: '#C49746', fontWeight: 600 }}>↑ +18.9%</span> vs last month
               </div>
             </div>
@@ -153,11 +157,11 @@ export default function AdminAnalytics() {
           </div>
 
           {/* Charts Row 1 */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.25rem' }}>
+          <div className="admin-chart-grid">
             
             {/* Search Trends */}
             <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', margin: '0 0 2rem 0' }}>Search Trends over Time</h3>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', margin: '0 0 1.5rem 0' }}>Search Trends over Time</h3>
               <div style={{ width: '100%', height: 240 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trendData}>
@@ -171,7 +175,7 @@ export default function AdminAnalytics() {
 
             {/* Top Enrolled */}
             <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', margin: '0 0 2rem 0' }}>Top Enrolled Subject Areas</h3>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', margin: '0 0 1.5rem 0' }}>Top Enrolled Subject Areas</h3>
               <div style={{ width: '100%', height: 240 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={subjectData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }} barSize={36}>
@@ -190,16 +194,16 @@ export default function AdminAnalytics() {
           </div>
 
           {/* Charts Row 2 */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.25rem', marginTop: '1.25rem' }}>
+          <div className="admin-chart-grid" style={{ marginTop: '1.25rem' }}>
             
             {/* Geographic Origin */}
             <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', margin: '0 0 1rem 0' }}>Geographic Origin of Applicants</h3>
-              <div style={{ display: 'flex', alignItems: 'center', height: 240 }}>
-                <div style={{ width: '50%', height: '100%' }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', margin: '0 0 1rem 0' }}>Geographic Origin of Applicants</h3>
+              <div className="admin-pie-row" style={{ display: 'flex', alignItems: 'center', minHeight: 240 }}>
+                <div style={{ width: '100%', minWidth: 160, height: 220 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={geoData} innerRadius={60} outerRadius={85} paddingAngle={2} dataKey="value" stroke="none">
+                      <Pie data={geoData} innerRadius={55} outerRadius={80} paddingAngle={2} dataKey="value" stroke="none">
                         {geoData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.fill} />
                         ))}
@@ -208,10 +212,10 @@ export default function AdminAnalytics() {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div style={{ width: '50%', paddingLeft: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="admin-pie-col" style={{ width: '100%', paddingLeft: '1rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                   {geoData.map(item => (
                     <div key={item.name} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <div style={{ width: 12, height: 12, borderRadius: '2px', background: item.fill }}></div>
+                      <div style={{ width: 12, height: 12, borderRadius: '2px', background: item.fill, flexShrink: 0 }}></div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '0.85rem', fontWeight: 600, color: '#4A5568' }}>
                         <span>{item.name}</span>
                         <span style={{ color: '#161D2B' }}>{item.value}%</span>
@@ -224,7 +228,7 @@ export default function AdminAnalytics() {
 
             {/* Monthly Registrations */}
             <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-              <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', margin: '0 0 2rem 0' }}>Monthly Registrations Growth</h3>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', fontWeight: 700, color: '#161D2B', margin: '0 0 1.5rem 0' }}>Monthly Registrations Growth</h3>
               <div style={{ width: '100%', height: 240 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyGrowth} barSize={20} margin={{ bottom: -10 }}>
