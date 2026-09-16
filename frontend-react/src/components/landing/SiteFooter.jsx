@@ -15,7 +15,7 @@ export function SiteFooter() {
               Your personal admission companion for German higher education. We simplify the evaluation, planning, and match strategy so you can apply with confidence.
             </p>
             <div style={{ marginTop: '0.75rem', fontSize: '0.825rem', color: '#C49746' }}>
-              Email: <a href="mailto:info@germanconsultancy.info" style={{ color: '#C49746', textDecoration: 'none' }}>info@germanconsultancy.info</a>
+              Email: <a href="mailto:germanconsultancy.info@gmail.com" style={{ color: '#C49746', textDecoration: 'none' }}>germanconsultancy.info@gmail.com</a>
             </div>
           </div>
 

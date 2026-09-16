@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { CreditCard, UploadCloud, Send, GraduationCap, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 const steps = [
   {
@@ -34,9 +35,10 @@ const steps = [
 
 export function Process() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
-    <section id="how-it-works" style={{ background: '#FAF7F2', padding: '5.5rem 0', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative' }}>
+    <section id="how-it-works" style={{ background: '#FFFFFF', padding: '5.5rem 0', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative' }}>
       <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem' }}>
         
         {/* Header */}
@@ -78,52 +80,24 @@ export function Process() {
         {/* Timeline Representation Container */}
         <div style={{ position: 'relative', marginTop: '2.5rem' }}>
           
-          {/* Horizontal Connecting Timeline Bar (Desktop line running across nodes) */}
-          <div
-            className="lp-process-line"
-            style={{
-              position: 'absolute',
-              top: '40px',
-              left: '10%',
-              right: '10%',
-              height: '3px',
-              background: 'linear-gradient(90deg, #C49746 0%, #38BDF8 33%, #34D399 66%, #F59E0B 100%)',
-              zIndex: 1,
-              borderRadius: '999px',
-              opacity: 0.35,
-            }}
-          />
+
 
           {/* 4 Connected Timeline Step Nodes */}
           <div className="lp-process-steps-grid" style={{ gap: '1.5rem', position: 'relative', zIndex: 2 }}>
-            {steps.map((step, idx) => {
+            {steps.map((step) => {
               const Icon = step.icon;
               return (
                 <div
                   key={step.n}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                  }}
+                  className="lp-process-step-item"
                 >
                   {/* Timeline Node Badge Pill */}
                   <div
+                    className="lp-process-node"
                     style={{
-                      width: '80px',
-                      height: '80px',
-                      borderRadius: '24px',
+                      border: `2.5px solid ${step.accent}`,
                       background: '#FFFFFF',
-                      border: `2px solid ${step.accent}`,
-                      boxShadow: `0 10px 25px rgba(0,0,0,0.06), 0 0 15px ${step.accent}20`,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: '1.75rem',
-                      position: 'relative',
-                      transition: 'transform 200ms ease, boxShadow 200ms ease',
+                      boxShadow: `0 10px 24px rgba(0,0,0,0.06), 0 0 16px ${step.accent}25`,
                     }}
                   >
                     <Icon size={26} style={{ color: step.accent }} />
@@ -146,21 +120,7 @@ export function Process() {
                   </div>
 
                   {/* Step Card Content */}
-                  <div
-                    style={{
-                      background: '#FFFFFF',
-                      borderRadius: '16px',
-                      padding: '1.75rem 1.35rem',
-                      border: '1px solid rgba(0,0,0,0.08)',
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.03)',
-                      width: '100%',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'flex-start',
-                      transition: 'transform 200ms ease, boxShadow 200ms ease',
-                    }}
-                  >
+                  <div className="lp-process-step-card">
                     <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', color: step.accent, textTransform: 'uppercase', marginBottom: '0.4rem' }}>
                       STEP {step.n}
                     </div>
@@ -181,47 +141,46 @@ export function Process() {
 
         </div>
 
-        {/* Bottom Callout Banner */}
+        {/* Bottom Callout Banner (Navy Blue) */}
         <div
           className="lp-process-callout-banner"
           style={{
             marginTop: '4rem',
-            background: '#FFFFFF',
-            borderRadius: '16px',
-            padding: '1.75rem',
-            border: '1px solid rgba(196, 151, 70, 0.2)',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.03)',
-            gap: '1.5rem',
+            background: '#161D2B',
+            borderRadius: '18px',
+            padding: '2rem 2.5rem',
+            border: '1px solid rgba(196, 151, 70, 0.35)',
+            boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.45), 0 0 30px rgba(196, 151, 70, 0.12)',
             maxWidth: '960px',
             margin: '4rem auto 0',
           }}
         >
           <div style={{ textAlign: 'left' }}>
-            <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#161D2B', margin: 0 }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#FFFFFF', margin: 0, letterSpacing: '-0.01em' }}>
               Ready to start your German university applications?
             </h4>
-            <p style={{ fontSize: '0.875rem', color: '#5B6578', marginTop: '0.25rem', margin: 0 }}>
+            <p style={{ fontSize: '0.9rem', color: '#94A3B8', marginTop: '0.35rem', margin: 0, lineHeight: 1.5 }}>
               Select Pro Plan or test your eligibility instantly with our free AI matcher.
             </p>
           </div>
 
           <button
-            onClick={() => navigate('/wizard')}
+            onClick={() => navigate(user ? '/student/wizard' : '/register')}
             style={{
               background: '#C49746',
               color: '#ffffff',
               border: 'none',
               borderRadius: '8px',
-              padding: '0.85rem 1.75rem',
+              padding: '0.9rem 2rem',
               fontWeight: 700,
-              fontSize: '0.9rem',
+              fontSize: '0.925rem',
               cursor: 'pointer',
-              boxShadow: '0 6px 20px rgba(196, 151, 70, 0.3)',
+              boxShadow: '0 8px 24px rgba(196, 151, 70, 0.4)',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
               whiteSpace: 'nowrap',
-              transition: 'all 150ms ease',
+              transition: 'all 200ms ease',
             }}
           >
             <span>Get Started Today</span>

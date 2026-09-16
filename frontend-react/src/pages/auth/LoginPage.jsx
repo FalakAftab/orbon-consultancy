@@ -136,7 +136,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-shell">
+    <div className="auth-shell login-bg">
       {/* ===== LEFT: HERO ===== */}
       <section className="auth-hero">
         <div className="auth-hero-top">
@@ -169,13 +169,13 @@ export default function LoginPage() {
       {/* ===== RIGHT: LOGIN CARD ===== */}
       <section className="auth-form-side">
         <div className="auth-form-wrap">
-          {/* Mobile-only brand */}
-          <div className="auth-mobile-brand">
+          {/* Brand header */}
+          <Link to="/" className="auth-mobile-brand" aria-label="Orbon Consultancy Home">
             <span className="auth-hero-brand-mark">
               <GraduationCap size={20} />
             </span>
             <span className="auth-hero-brand-name">Orbon Consultancy</span>
-          </div>
+          </Link>
 
           <div className="auth-card">
             <div className="auth-card-heading">
@@ -214,15 +214,12 @@ export default function LoginPage() {
 
             <form onSubmit={onSubmit} noValidate>
               <div className="auth-field">
+                <label className="field-label" htmlFor="email">Email address</label>
                 <div className="auth-input-w-icon">
-                  <span className="auth-field-icon" aria-hidden="true">
-                    <Mail size={18} />
-                  </span>
                   <Input
                     id="email"
                     type="email"
                     name="email"
-                    label="Email address"
                     placeholder="Enter your email"
                     autoComplete="email"
                     value={form.email}
@@ -240,15 +237,12 @@ export default function LoginPage() {
               </div>
 
               <div className="auth-field">
+                <label className="field-label" htmlFor="password">Password</label>
                 <div className="auth-input-w-icon">
-                  <span className="auth-field-icon" aria-hidden="true">
-                    <Lock size={18} />
-                  </span>
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     name="password"
-                    label="Password"
                     placeholder="Enter your password"
                     autoComplete="current-password"
                     value={form.password}

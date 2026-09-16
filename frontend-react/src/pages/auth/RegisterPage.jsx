@@ -143,7 +143,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="auth-shell">
+    <div className="auth-shell register-bg">
       {/* ===== LEFT: HERO ===== */}
       <section className="auth-hero">
         <div className="auth-hero-top">
@@ -176,13 +176,13 @@ export default function RegisterPage() {
       {/* ===== RIGHT: REGISTER CARD ===== */}
       <section className="auth-form-side">
         <div className="auth-form-wrap">
-          {/* Mobile-only brand */}
-          <div className="auth-mobile-brand">
+          {/* Brand header */}
+          <Link to="/" className="auth-mobile-brand" aria-label="Orbon Consultancy Home">
             <span className="auth-hero-brand-mark">
               <GraduationCap size={20} />
             </span>
             <span className="auth-hero-brand-name">Orbon Consultancy</span>
-          </div>
+          </Link>
 
           <div className="auth-card">
             {registeredEmail ? (
@@ -234,15 +234,12 @@ export default function RegisterPage() {
 
                 <form onSubmit={onSubmit} noValidate>
                   <div className="auth-field">
+                    <label className="field-label" htmlFor="name">Full Name</label>
                     <div className="auth-input-w-icon">
-                      <span className="auth-field-icon" aria-hidden="true">
-                        <User size={18} />
-                      </span>
                       <Input
                         id="name"
                         type="text"
                         name="name"
-                        label="Full Name"
                         placeholder="Enter your full name"
                         autoComplete="name"
                         value={form.name}
@@ -255,15 +252,12 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="auth-field">
+                    <label className="field-label" htmlFor="email">Email address</label>
                     <div className="auth-input-w-icon">
-                      <span className="auth-field-icon" aria-hidden="true">
-                        <Mail size={18} />
-                      </span>
                       <Input
                         id="email"
                         type="email"
                         name="email"
-                        label="Email address"
                         placeholder="Enter your email"
                         autoComplete="email"
                         value={form.email}
@@ -276,15 +270,12 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="auth-field">
+                    <label className="field-label" htmlFor="password">Password</label>
                     <div className="auth-input-w-icon">
-                      <span className="auth-field-icon" aria-hidden="true">
-                        <Lock size={18} />
-                      </span>
                       <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
                         name="password"
-                        label="Password"
                         placeholder="Create a password"
                         autoComplete="new-password"
                         value={form.password}
@@ -316,15 +307,12 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="auth-field">
+                    <label className="field-label" htmlFor="password_confirmation">Confirm Password</label>
                     <div className="auth-input-w-icon">
-                      <span className="auth-field-icon" aria-hidden="true">
-                        <Lock size={18} />
-                      </span>
                       <Input
                         id="password_confirmation"
                         type={showPassword ? 'text' : 'password'}
                         name="password_confirmation"
-                        label="Confirm Password"
                         placeholder="Confirm your password"
                         autoComplete="new-password"
                         value={form.password_confirmation}

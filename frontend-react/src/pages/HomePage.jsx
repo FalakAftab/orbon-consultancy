@@ -7,6 +7,7 @@ import { ComparisonTable } from '../components/landing/ComparisonTable';
 import { Process } from '../components/landing/Process';
 import { Faq } from '../components/landing/Faq';
 import { SiteFooter } from '../components/landing/SiteFooter';
+import { Reveal } from '../components/landing/Reveal';
 
 /**
  * Orbon Consultancy public landing page — clean reference design with accordion FAQ.
@@ -17,12 +18,12 @@ export default function HomePage() {
       <Navbar />
       <main>
         <Hero />
-        <Stats />
-        <Signals />
-        <Universities />
-        <ComparisonTable />
-        <Process />
-        <Faq />
+        <Reveal><Stats /></Reveal>
+        <Reveal><Signals /></Reveal>
+        <Reveal><Universities /></Reveal>
+        <Reveal><ComparisonTable /></Reveal>
+        <Reveal><Process /></Reveal>
+        <Reveal><Faq /></Reveal>
       </main>
       <SiteFooter />
     </div>

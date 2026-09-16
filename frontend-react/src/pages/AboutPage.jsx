@@ -1,6 +1,6 @@
 import { Navbar } from '../components/landing/Navbar';
 import { SiteFooter } from '../components/landing/SiteFooter';
-import { Award, GraduationCap, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Award, GraduationCap, CheckCircle2, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function AboutPage() {
@@ -10,6 +10,25 @@ export default function AboutPage() {
       <main style={{ padding: '4.5rem 0' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 1.5rem' }}>
           
+          <Link
+            to="/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              color: '#5B6578',
+              textDecoration: 'none',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              marginBottom: '1.5rem',
+              transition: 'color 0.2s',
+            }}
+            onMouseOver={(e) => (e.target.style.color = '#161D2B')}
+            onMouseOut={(e) => (e.target.style.color = '#5B6578')}
+          >
+            <ArrowLeft size={16} /> Back to Home
+          </Link>
+
           {/* Header */}
           <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 4rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', color: '#C49746', textTransform: 'uppercase', background: 'rgba(196,151,70,0.12)', padding: '0.35rem 0.85rem', borderRadius: '999px', display: 'inline-block', marginBottom: '0.85rem' }}>

@@ -167,55 +167,88 @@ export function Hero() {
           </form>
         </div>
 
-        {/* Right Column: 6-Image Grid Collage Exactly Aligned as in Mockup Screenshot */}
-        <div className="lp-hero-collage-grid" style={{ gap: '0.85rem' }}>
-          {/* Top Row: 3 Cards */}
-          <div style={{ height: '150px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
+        {/* Right Column: 9-Image University Collage Grid (3x3) - Completely Static */}
+        <div
+          className="lp-hero-collage-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '0.65rem',
+            width: '100%',
+          }}
+        >
+          {/* Row 1 */}
+          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: '#FAF7F2' }}>
             <img
-              src="/figma_assets/studypath-landing-page___Rectangle-4.png"
-              alt="Lab & Research"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              src="/images/universities/uni-wuerzburg-1.jpg"
+              alt="German University Palace Gardens"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
           </div>
 
-          <div style={{ height: '150px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
+          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: '#FAF7F2' }}>
             <img
               src="/library-interior.jpg"
-              alt="Modern Academic Library"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              alt="Academic Library"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
           </div>
 
-          <div style={{ height: '150px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
+          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: '#FAF7F2' }}>
             <img
-              src="/figma_assets/studypath-landing-page___Rectangle-6.png"
-              alt="Microscope Research"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              src="/figma_assets/studypath-landing-page___Rectangle-4.png"
+              alt="Historic University Neoclassical Facade"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
           </div>
 
-          {/* Bottom Row: 3 Cards */}
-          <div style={{ height: '150px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
+          {/* Row 2 */}
+          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: '#FAF7F2' }}>
             <img
-              src="/figma_assets/studypath-landing-page___Rectangle-7.png"
-              alt="Circuit Board Tech"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              src="/images/universities/campus-tum.jpg"
+              alt="Technical University of Munich Campus & Alps"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
           </div>
 
-          <div style={{ height: '150px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
+          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: '#FAF7F2' }}>
             <img
-              src="/figma_assets/studypath-landing-page___Rectangle-8.png"
-              alt="Digital Tech Network"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              src="/images/universities/uni-wuerzburg-2.png"
+              alt="German University Historic Palace"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
           </div>
 
-          <div style={{ height: '150px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
+          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: '#FAF7F2' }}>
             <img
-              src="/academic-world.jpg"
-              alt="Grand Historic Lecture Hall"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              src="/figma_assets/studypath-landing-page___Rectangle-2.png"
+              alt="Modern University Campus Library & Students"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+
+          {/* Row 3 */}
+          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: '#FAF7F2' }}>
+            <img
+              src="/figma_assets/studypath-landing-page___Rectangle-3.png"
+              alt="Historic University Courtyard & Students"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+
+          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: '#FAF7F2' }}>
+            <img
+              src="/hero-university.jpg"
+              alt="Historic German University Architecture & Students"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+
+          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: '#FAF7F2' }}>
+            <img
+              src="/images/universities/uni-wuerzburg-3.png"
+              alt="University Palace in Autumn"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
           </div>
         </div>

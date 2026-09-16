@@ -9,37 +9,37 @@ const TIPS = {
     title: 'Did you know?',
     body:
       'German universities have strict credit requirements. Having a degree with sufficient credits in your subject area is crucial for admission to German Master\u2019s programs.',
-    image: '/assets/wizard/step-photo.jpg',
+    image: '/images/universities/campus-lmu.jpg',
   },
   2: {
     title: 'Language Rules',
     body:
       'Even if your course is entirely in English, basic German skills (A1/A2) are highly recommended for daily life and may be required for visa registration.',
-    image: '/assets/wizard/step-photo.jpg',
+    image: '/images/universities/campus-tum.jpg',
   },
   3: {
     title: 'Degree & Discipline',
     body:
       'Selecting your target degree and primary discipline sets the foundation. German universities evaluate consecutive study backgrounds strictly.',
-    image: '/assets/wizard/step-photo.jpg',
+    image: '/images/universities/campus-heidelberg.jpg',
   },
   4: {
     title: 'Specializations',
     body:
       'Selecting specific subcategories refines your recommendations. You can also pick "All" to broaden your matching scope across the entire academic field.',
-    image: '/assets/wizard/step-photo.jpg',
+    image: '/images/universities/campus-humboldt.jpg',
   },
   5: {
     title: 'Intake & Deadlines',
     body:
       'Most English-taught Master\u2019s programs start in the Winter semester. Application portals usually close between April 15 and July 15. Planning ahead is key.',
-    image: '/assets/wizard/step-photo.jpg',
+    image: '/images/universities/campus-rwth.jpg',
   },
   6: {
     title: 'Instant Matching',
     body:
       'Clicking submit evaluates your GPA scale equivalents (via Bavarian Formula), language levels, and subject eligibility against the live dataset.',
-    image: '/assets/wizard/step-photo.jpg',
+    image: '/images/contact_hero.jpg',
   },
 };
 

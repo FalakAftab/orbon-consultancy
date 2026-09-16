@@ -15,6 +15,7 @@ import {
   Globe,
   CheckCircle2,
   ExternalLink,
+  ArrowLeft,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -113,6 +114,26 @@ export function ContactPage() {
               
               {/* Left Column: Text & Feature Pills */}
               <div>
+                <Link
+                  to="/"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    color: '#5B6578',
+                    textDecoration: 'none',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    marginBottom: '1.5rem',
+                    transition: 'color 0.2s',
+                  }}
+                  onMouseOver={(e) => (e.target.style.color = '#161D2B')}
+                  onMouseOut={(e) => (e.target.style.color = '#5B6578')}
+                >
+                  <ArrowLeft size={16} /> Back to Home
+                </Link>
+                <br />
+
                 <span
                   style={{
                     fontSize: '0.75rem',
@@ -193,7 +214,7 @@ export function ContactPage() {
                   }}
                 >
                   <img
-                    src="/figma_assets/studypath-landing-page___Rectangle-1.png"
+                    src="/images/contact_hero.jpg"
                     alt="Study in Germany"
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
@@ -297,8 +318,8 @@ export function ContactPage() {
                     </div>
                     <div>
                       <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#718096', textTransform: 'uppercase' }}>Email</span>
-                      <a href="mailto:info@germanconsultancy.info" style={{ fontSize: '0.875rem', fontWeight: 700, color: '#161D2B', textDecoration: 'none', display: 'block', marginTop: '0.15rem' }}>
-                        info@germanconsultancy.info
+                      <a href="mailto:germanconsultancy.info@gmail.com" style={{ fontSize: '0.875rem', fontWeight: 700, color: '#161D2B', textDecoration: 'none', display: 'block', marginTop: '0.15rem' }}>
+                        germanconsultancy.info@gmail.com
                       </a>
                       <span style={{ fontSize: '0.725rem', color: '#A0AEC0' }}>We reply within 24 hours</span>
                     </div>

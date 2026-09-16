@@ -46,7 +46,7 @@ export function Navbar() {
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        background: scrolled ? 'rgba(250, 247, 242, 0.95)' : '#FAF7F2',
+        background: scrolled ? 'rgba(255, 255, 255, 0.95)' : '#FFFFFF',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
         borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
@@ -159,7 +159,7 @@ export function Navbar() {
         <div
           className="lp-mobile-menu"
           style={{
-            background: '#FAF7F2',
+            background: '#FFFFFF',
             borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
             padding: '1.25rem 1.5rem 1.75rem',
             display: 'flex',
