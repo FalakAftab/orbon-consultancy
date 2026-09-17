@@ -770,7 +770,7 @@ export default function ApplyForMePage() {
             </div>
 
             {/* Document Upload Slots Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.25rem' }}>
+            <div className="vault-doc-grid">
               {VAULT_CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
                 const currentDoc = vaultData[cat.key] || {};
@@ -782,8 +782,8 @@ export default function ApplyForMePage() {
                     className={`vault-doc-tile ${isUploaded ? 'uploaded' : ''}`}
                   >
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                      <div className="vault-tile-header">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flex: 1, minWidth: 0 }}>
                           <div
                             style={{
                               width: 38,
@@ -800,17 +800,18 @@ export default function ApplyForMePage() {
                           >
                             <Icon size={18} />
                           </div>
-                          <div>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0F172A' }}>
+                          <div style={{ minWidth: 0, flex: 1 }}>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0F172A', lineHeight: 1.3 }}>
                               {cat.label} {cat.required && <span style={{ color: '#DC2626' }}>*</span>}
                             </div>
-                            <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.1rem' }}>
+                            <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.15rem', lineHeight: 1.4 }}>
                               {cat.desc}
                             </div>
                           </div>
                         </div>
 
                         <span
+                          className="vault-status-badge"
                           style={{
                             padding: '0.25rem 0.65rem',
                             borderRadius: '999px',
@@ -819,6 +820,8 @@ export default function ApplyForMePage() {
                             background: isUploaded ? '#D1FAE5' : '#FEF3C7',
                             color: isUploaded ? '#047857' : '#B45309',
                             whiteSpace: 'nowrap',
+                            flexShrink: 0,
+                            alignSelf: 'flex-start',
                           }}
                         >
                           {isUploaded ? '✓ Uploaded' : 'Pending'}

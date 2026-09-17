@@ -720,30 +720,48 @@ export default function NotificationsPage() {
                 <User size={22} />
               </div>
 
-              <div style={{ minWidth: 0 }}>
-                <h3
-                  style={{
-                    fontSize: '1.05rem',
-                    fontWeight: 700,
-                    color: '#161D2B',
-                    margin: 0,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {getFieldTitle(activeThread)}
-                </h3>
-                <div style={{ fontSize: '0.78rem', color: '#64748B', marginTop: '0.15rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <h3
+                    style={{
+                      fontSize: '1.05rem',
+                      fontWeight: 700,
+                      color: '#161D2B',
+                      margin: 0,
+                      lineHeight: 1.3,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {getFieldTitle(activeThread)}
+                  </h3>
+                  <span
+                    className="chat-status-pill-mobile"
+                    style={{
+                      padding: '0.2rem 0.6rem',
+                      borderRadius: '999px',
+                      background: (STATUS_CONFIG[activeThread.status] || STATUS_CONFIG.pending).bg,
+                      color: (STATUS_CONFIG[activeThread.status] || STATUS_CONFIG.pending).color,
+                      fontWeight: 700,
+                      fontSize: '0.72rem',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {(STATUS_CONFIG[activeThread.status] || STATUS_CONFIG.pending).label}
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.78rem', color: '#64748B', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
                   <span>Application #{activeThread.id}</span>
                   <span>&bull;</span>
-                  <span style={{ color: '#0F172A', fontWeight: 600 }}>German University Admissions Track</span>
+                  <span style={{ color: '#0F172A', fontWeight: 600 }}>German Admissions Track</span>
                 </div>
               </div>
             </div>
 
-            {/* Status Pill Badge */}
-            <div style={{ flexShrink: 0 }}>
+            {/* Status Pill Badge (Desktop) */}
+            <div className="chat-status-pill-desktop" style={{ flexShrink: 0 }}>
               <span
                 style={{
                   padding: '0.35rem 0.85rem',
@@ -862,7 +880,7 @@ export default function NotificationsPage() {
             <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '0.65rem', alignItems: 'center' }}>
               <input
                 type="text"
-                placeholder="Type your message to consultancy advisor..."
+                placeholder="Type a message to advisor..."
                 value={chatMessage}
                 onChange={(e) => setChatMessage(e.target.value)}
                 style={{

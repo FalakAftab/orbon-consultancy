@@ -1759,8 +1759,15 @@ textarea.input {
     gap: 0.75rem !important;
   }
   .chat-thread-header {
-    padding: 0.85rem 1rem;
+    padding: 0.85rem 0.75rem !important;
+    gap: 0.65rem !important;
     flex-wrap: wrap;
+  }
+  .chat-status-pill-desktop {
+    display: none !important;
+  }
+  .chat-status-pill-mobile {
+    display: inline-block !important;
   }
   .chat-thread-body {
     padding: 1rem 0.85rem;
@@ -2036,6 +2043,34 @@ textarea.input {
 .vault-doc-tile.uploaded {
   border-color: rgba(196, 151, 70, 0.4);
   background: #ffffff;
+}
+
+.vault-doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.vault-tile-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 639px) {
+  .vault-doc-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem !important;
+  }
+  .vault-tile-header {
+    flex-wrap: wrap !important;
+    gap: 0.45rem !important;
+  }
+  .vault-doc-tile {
+    padding: 1rem 0.85rem !important;
+  }
 }
 
 .admin-settings-hero {

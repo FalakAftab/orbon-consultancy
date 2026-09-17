@@ -461,6 +461,22 @@ class RecommendationService
         };
     }
 
+    private function matchesKeyword(string $searchContext, string $keyword): bool
+    {
+        $keyword = trim($keyword);
+        if ($keyword === '') {
+            return false;
+        }
+        
+        // For short keywords (acronyms) or specific ones, enforce word boundaries
+        // to avoid false positives (e.g. 'ai' in 'sustainability', 'iot' in 'physiotherapy')
+        if (strlen($keyword) <= 3 || $keyword === 'ui/ux' || $keyword === 'game') {
+            return preg_match('/\b' . preg_quote($keyword, '/') . '\b/i', $searchContext) === 1;
+        }
+
+        return str_contains($searchContext, $keyword);
+    }
+
     private function subjectMatches(array $preferredSubjects, Program $program): bool
     {
         $preferredSubjects = array_values(array_filter($preferredSubjects, static fn ($v) => $v !== null && $v !== ''));
@@ -505,26 +521,26 @@ class RecommendationService
                 foreach ($parentKeys as $subKey) {
                     if (isset(self::SUBJECT_KEYWORDS[$subKey])) {
                         foreach (self::SUBJECT_KEYWORDS[$subKey] as $keyword) {
-                            if (str_contains($searchContext, $keyword)) {
+                            if ($this->matchesKeyword($searchContext, $keyword)) {
                                 return true;
                             }
                         }
-                    } elseif (str_contains($searchContext, $subKey)) {
+                    } elseif ($this->matchesKeyword($searchContext, $subKey)) {
                         return true;
                     }
                 }
             } else {
-                // 3. Specific subcategory / specialized discipline (e.g. "water engineering", "nanotechnology", etc.)
+                // 3. Specific subcategory / specialized discipline
                 if (isset(self::SUBJECT_KEYWORDS[$prefLower])) {
                     foreach (self::SUBJECT_KEYWORDS[$prefLower] as $keyword) {
-                        if (str_contains($searchContext, $keyword)) {
+                        if ($this->matchesKeyword($searchContext, $keyword)) {
                             return true;
                         }
                     }
                 }
 
                 // Fallback: general substring match against category, field, or title
-                if (str_contains($searchContext, $prefLower)) {
+                if ($this->matchesKeyword($searchContext, $prefLower)) {
                     return true;
                 }
             }
