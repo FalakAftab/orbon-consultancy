@@ -2,7 +2,16 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, GraduationCap, ArrowRight, ChevronDown } from 'lucide-react';
 import { api } from '../../api/client';
-import { DecorativeLineArt } from './DecorativeLineArt';
+
+// Ultra-fast CDN German University Stock Images (Optimized 600px width for fast loading)
+const RANDOM_UNI_IMAGES = [
+  'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=600&q=75',
+  'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=600&q=75',
+  'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=75',
+  'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?auto=format&fit=crop&w=600&q=75',
+  'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?auto=format&fit=crop&w=600&q=75',
+  'https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&w=600&q=75'
+];
 
 export function Universities() {
   const [universities, setUniversities] = useState([]);
@@ -87,7 +96,14 @@ export function Universities() {
     setExpandedIndex((prev) => (prev === index ? null : index));
   };
 
-  if (loading || universities.length === 0) return null; // Or a loading skeleton
+  // Helper to extract image URL safely or return dynamic fallback image
+  const getUniversityImage = (uni, idx) => {
+    const dbImg = uni.image_url || uni.logo_url || uni.cover_image || uni.image || uni.banner;
+    if (dbImg && dbImg.trim() !== '') return dbImg;
+    return RANDOM_UNI_IMAGES[idx % RANDOM_UNI_IMAGES.length];
+  };
+
+  if (loading || universities.length === 0) return null;
 
   return (
     <section
@@ -154,9 +170,7 @@ export function Universities() {
             {[...universities, ...universities, ...universities].map((uni, index) => {
               const originalIdx = index % universities.length;
               const isExpanded = expandedIndex === originalIdx;
-              
-              // Fallback photo
-              const photoUrl = uni.logo_url || "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=600&auto=format&fit=crop";
+              const photoUrl = getUniversityImage(uni, originalIdx);
 
               return (
                 <div
@@ -179,10 +193,12 @@ export function Universities() {
                     cursor: 'pointer'
                   }}
                 >
-                  <div style={{ height: '190px', overflow: 'hidden', position: 'relative' }}>
+                  <div style={{ height: '190px', overflow: 'hidden', position: 'relative', backgroundColor: 'var(--lp-secondary)' }}>
                     <img
                       src={photoUrl}
                       alt={uni.name}
+                      loading="lazy"
+                      decoding="async"
                       style={{
                         width: '100%',
                         height: '100%',
@@ -191,7 +207,8 @@ export function Universities() {
                         transform: isExpanded ? 'scale(1.06)' : 'scale(1)',
                       }}
                       onError={(e) => {
-                        e.target.src = "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=600&auto=format&fit=crop";
+                        e.target.onerror = null;
+                        e.target.src = RANDOM_UNI_IMAGES[originalIdx % RANDOM_UNI_IMAGES.length];
                       }}
                     />
 
