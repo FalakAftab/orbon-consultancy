@@ -14,7 +14,7 @@ import { Reveal } from '../components/landing/Reveal';
  */
 export default function HomePage() {
   return (
-    <div style={{ background: '#FAF7F2', color: '#161D2B', minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
+    <div className="lp-root" style={{ minHeight: '100vh' }}>
       <Navbar />
       <main>
         <Hero />

@@ -7,7 +7,7 @@
 
 /* ---- Root palette (scoped to landing container) ---- */
 .lp-root {
-  --lp-bg: #faf7f0;
+  --lp-bg: #FAF7F2;
   --lp-foreground: #1f2a26;
   --lp-card: #fdfbf5;
   --lp-secondary: #f1ece0;
@@ -117,7 +117,12 @@
 /* Nav link underline */
 .lp-nav-link {
   position: relative;
-  transition: color 0.25s var(--lp-ease);
+  transition: color 0.25s var(--lp-ease), text-shadow 0.25s var(--lp-ease);
+}
+
+.lp-nav-link:hover {
+  color: var(--lp-gold) !important;
+  text-shadow: 0 4px 14px rgba(199, 164, 91, 0.45);
 }
 
 .lp-nav-link::after {
@@ -127,14 +132,96 @@
   bottom: -4px;
   height: 1px;
   width: 100%;
-  background-color: currentColor;
+  background-color: var(--lp-gold);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.35s var(--lp-ease);
 }
 
+.lp-desktop-actions {
+  gap: 1.25rem !important;
+  white-space: nowrap;
+}
+
+@media (min-width: 1024px) {
+  .lp-desktop-actions {
+    display: flex !important;
+    align-items: center;
+  }
+}
+
+@media (max-width: 1023px) {
+  .lp-desktop-actions {
+    display: none !important;
+  }
+}
+
+.lp-auth-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  color: #ffffff !important;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lp-register-button {
+  border: 1px solid #0e1b2e !important;
+  background: #0e1b2e;
+}
+
+.lp-register-button:hover {
+  background: var(--lp-gold) !important;
+  border-color: var(--lp-gold) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 16px rgba(199, 164, 91, 0.28);
+}
+
+.lp-signin-button {
+  border: 1px solid var(--lp-gold) !important;
+  background: var(--lp-gold);
+}
+
+.lp-signin-button:hover {
+  background: #0e1b2e !important;
+  border-color: #0e1b2e !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 16px rgba(14, 27, 46, 0.2);
+}
+
 .lp-nav-link:hover::after {
   transform: scaleX(1);
+}
+
+@media (max-width: 1023px) {
+  .lp-mobile-brand {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1240px) {
+  .lp-navbar-inner {
+    padding-inline: 1rem !important;
+  }
+
+  .lp-navbar-inner > .lp-desktop-nav {
+    gap: 1.15rem !important;
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .lp-navbar-inner > .lp-desktop-actions {
+    gap: 0.5rem !important;
+  }
+
+  .lp-auth-button {
+    padding-inline: 0.75rem;
+  }
 }
 
 /* Ambient float */
@@ -305,8 +392,118 @@
   transition: transform 0.3s;
 }
 
+.lp-how-it-works-cta {
+  background: #0e1b2e;
+  color: #ffffff;
+}
+
+.lp-how-it-works-cta h2 {
+  color: #ffffff;
+}
+
+.lp-how-it-works-cta-copy {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.lp-how-it-works-cta-primary,
+.lp-how-it-works-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.lp-how-it-works-cta-primary {
+  background: #c7a45b;
+  color: #0e1b2e;
+  box-shadow: 0 4px 12px rgba(199, 164, 91, 0.3);
+}
+
+.lp-how-it-works-cta-primary:hover {
+  background: #ffffff;
+  color: #0e1b2e;
+}
+
+.lp-how-it-works-cta-secondary {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.lp-how-it-works-cta-secondary:hover {
+  background: #ffffff;
+  color: #0e1b2e;
+  border-color: #ffffff;
+}
+
 .lp-cta:hover .lp-cta-arrow {
   transform: translateX(4px);
+}
+
+/* ============================================================
+   HERO BUTTONS & TAGS
+   ============================================================ */
+.lp-root .lp-hero-btn-primary {
+  background: #0F172A;
+  color: #FFFFFF !important;
+  padding: 0.875rem 1.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+  border: 1px solid #0F172A;
+}
+
+.lp-root .lp-hero-btn-primary:hover {
+  background: #C49746;
+  border-color: #C49746;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(196, 151, 70, 0.3);
+}
+
+.lp-root .lp-hero-btn-outline {
+  background: transparent;
+  color: #0F172A !important;
+  border: 1px solid #CBD5E1;
+  padding: 0.875rem 1.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.lp-root .lp-hero-btn-outline:hover {
+  background: #C49746;
+  color: #FFFFFF !important;
+  border-color: #C49746;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(196, 151, 70, 0.2);
+}
+
+.lp-popular-tag {
+  font-size: 0.85rem;
+  color: #475569;
+  text-decoration: none;
+  background: #FFFFFF;
+  padding: 0.35rem 0.85rem;
+  border-radius: 100px;
+  border: 1px solid #E2E8F0;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.lp-popular-tag:hover {
+  background: #C49746;
+  color: #FFFFFF;
+  border-color: #C49746;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(196, 151, 70, 0.2);
 }
 
 /* ============================================================
@@ -1274,6 +1471,97 @@
 /* Horizontal overflow guard */
 .lp-root {
   overflow-x: hidden;
+}
+
+/* Landing hero uses inline styles for its desktop composition; these class
+   rules provide the phone layout that inline object media queries cannot. */
+.lp-home-hero-inner {
+  min-width: 0;
+}
+
+.lp-home-hero-copy,
+.lp-home-hero-search,
+.lp-home-hero-search-row,
+.lp-home-hero-collage-grid {
+  min-width: 0;
+}
+
+@media (max-width: 1023px) {
+  .lp-home-hero-inner {
+    grid-template-columns: 1fr !important;
+    gap: 3rem !important;
+    text-align: center;
+  }
+
+  .lp-home-hero-description,
+  .lp-home-hero-search {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .lp-home-hero-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .lp-home-hero {
+    padding: 3rem 0 4rem !important;
+  }
+
+  .lp-home-hero-inner {
+    padding-inline: 1rem !important;
+    gap: 2.5rem !important;
+  }
+
+  .lp-home-hero h1 {
+    font-size: clamp(2.35rem, 12vw, 3.2rem) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  .lp-home-hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.75rem !important;
+    margin-top: 2rem !important;
+  }
+
+  .lp-home-hero-actions a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .lp-home-hero-search {
+    width: 100%;
+    margin-top: 2rem !important;
+  }
+
+  .lp-home-hero-search-row {
+    display: block !important;
+  }
+
+  .lp-home-hero-search-row input {
+    padding-right: 1rem !important;
+  }
+
+  .lp-home-hero-search-button {
+    position: static !important;
+    width: 100%;
+    margin-top: 0.65rem;
+  }
+
+  .lp-home-hero-search > div:last-child {
+    justify-content: center;
+  }
+
+  .lp-hero-collage-grid {
+    gap: 0.45rem !important;
+  }
+
+  .lp-hero-collage-grid > div {
+    height: 105px !important;
+  }
 }
 
 /* ============================================================

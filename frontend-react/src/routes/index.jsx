@@ -13,6 +13,11 @@ const ForgotPasswordPage = lazy(() => import('../pages/auth/ForgotPasswordPage')
 const ResetPasswordPage = lazy(() => import('../pages/auth/ResetPasswordPage'));
 const AboutPage = lazy(() => import('../pages/AboutPage'));
 const ContactPage = lazy(() => import('../pages/ContactPage'));
+const HowItWorksPage = lazy(() => import('../pages/HowItWorksPage'));
+const PublicProgramsPage = lazy(() => import('../pages/PublicProgramsPage'));
+const PublicProgramDetailPage = lazy(() => import('../pages/PublicProgramDetailPage'));
+const PublicUniversitiesPage = lazy(() => import('../pages/PublicUniversitiesPage'));
+const PublicUniversityDetailPage = lazy(() => import('../pages/PublicUniversityDetailPage'));
 
 // Student pages
 const StudentDashboard = lazy(() => import('../pages/student/StudentDashboard'));
@@ -115,6 +120,12 @@ export default function AppRoutes() {
       />
       <Route path="/about" element={withFallback(<AboutPage />)} />
       <Route path="/contact" element={withFallback(<ContactPage />)} />
+      <Route path="/how-it-works" element={withFallback(<HowItWorksPage />)} />
+      <Route path="/check-eligibility" element={withFallback(<RecommendWizard />)} />
+      <Route path="/programs" element={withFallback(<PublicProgramsPage />)} />
+      <Route path="/programs/:id" element={withFallback(<PublicProgramDetailPage />)} />
+      <Route path="/universities" element={withFallback(<PublicUniversitiesPage />)} />
+      <Route path="/universities/:id" element={withFallback(<PublicUniversityDetailPage />)} />
 
       {/* Student portal */}
       <Route

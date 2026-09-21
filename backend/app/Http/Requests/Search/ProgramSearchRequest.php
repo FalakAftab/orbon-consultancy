@@ -18,6 +18,8 @@ class ProgramSearchRequest extends FormRequest
             'search' => ['nullable', 'string', 'max:255'],
             'degree_level' => ['nullable', Rule::in(['bachelor', 'master', 'phd'])],
             'field' => ['nullable', 'string', 'max:255'],
+            'subject_category' => ['nullable', 'array'],
+            'subject_category.*' => ['string', 'max:255'],
             'intake' => ['nullable', Rule::in(['winter', 'summer', 'both'])],
             'language_of_instruction' => ['nullable', Rule::in(['english', 'german', 'mixed'])],
             'admission_method' => ['nullable', Rule::in(['uni_assist', 'direct_portal', 'both'])],
@@ -30,7 +32,9 @@ class ProgramSearchRequest extends FormRequest
             'english_test_score' => ['nullable', 'numeric', 'min:0'],
             'moi' => ['nullable', 'boolean'],
             'german_language_required' => ['nullable', 'boolean'],
+            'university_id' => ['nullable', 'integer', 'exists:universities,id'],
             'maximum_tuition_fee' => ['nullable', 'numeric', 'min:0'],
+            'university_id' => ['nullable', 'integer', 'exists:universities,id'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }

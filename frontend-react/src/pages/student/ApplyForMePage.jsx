@@ -134,13 +134,10 @@ export default function ApplyForMePage() {
   const [chatMessage, setChatMessage] = useState('');
   const [sendingMsg, setSendingMsg] = useState(false);
 
-  // Online Checkout Payment Gateway State
+  // Manual Payment Upload State
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [cardHolderName, setCardHolderName] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvv, setCardCvv] = useState('');
-  const [billingCountry, setBillingCountry] = useState('Pakistan');
+  const [transactionId, setTransactionId] = useState('');
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [receiptData, setReceiptData] = useState(null);
 
@@ -281,43 +278,48 @@ export default function ApplyForMePage() {
     }
   };
 
-  const handleCardNumberChange = (e) => {
-    const val = e.target.value.replace(/\D/g, '').substring(0, 16);
-    const formatted = val.match(/.{1,4}/g)?.join(' ') || val;
-    setCardNumber(formatted);
+  const handleScreenshotSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (uploadEvent) => {
+      setPaymentScreenshot({
+        name: file.name,
+        url: uploadEvent.target.result,
+      });
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleProcessCardPayment = async (e) => {
+  const handleProcessManualPayment = async (e) => {
     e.preventDefault();
+    if (!transactionId || !paymentScreenshot) {
+      alert("Please provide both Transaction ID and a payment screenshot.");
+      return;
+    }
     setProcessingPayment(true);
 
-    const generatedTrx = 'PAY-CARD-' + Math.floor(100000 + Math.random() * 900000);
-    const last4Digits = cardNumber.replace(/\s/g, '').slice(-4) || '8912';
-    const holderName = cardHolderName.trim() || 'STUDENT USER';
+    try {
+      await submitStudentPayment({
+        payment_reference: transactionId,
+        payment_proof: paymentScreenshot.url,
+      });
 
-    setTimeout(async () => {
-      try {
-        await submitStudentPayment({
-          payment_reference: generatedTrx,
-          payment_proof: `Card Payment via VISA/MC | Card: ${last4Digits} | Holder: ${holderName} | Amount: PKR 45,000`,
-        });
-
-        setFeeStatus('paid');
-        setProcessingPayment(false);
-        setShowPaymentModal(false);
-        setReceiptData({
-          trx_id: generatedTrx,
-          card_last4: last4Digits,
-          holder: holderName,
-          amount: 'PKR 45,000',
-          date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(),
-          status: 'SUCCESSFUL / CONFIRMED',
-        });
-      } catch (err) {
-        alert(err.message || 'Payment processing failed');
-        setProcessingPayment(false);
-      }
-    }, 1800);
+      setFeeStatus('submitted');
+      setProcessingPayment(false);
+      setShowPaymentModal(false);
+      setReceiptData({
+        trx_id: transactionId,
+        screenshot_attached: true,
+        amount: 'PKR 45,000',
+        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(),
+        status: 'SUBMITTED FOR VERIFICATION',
+      });
+    } catch (err) {
+      alert(err.message || 'Payment submission failed');
+      setProcessingPayment(false);
+    }
   };
 
   const handleSendChatMessage = async (e) => {
@@ -1271,7 +1273,7 @@ export default function ApplyForMePage() {
         </div>
       )}
 
-      {/* ONLINE CREDIT CARD PAYMENT MODAL */}
+      {/* MANUAL PAYMENT UPLOAD MODAL */}
       {showPaymentModal && (
         <div
           style={{
@@ -1288,188 +1290,155 @@ export default function ApplyForMePage() {
         >
           <div
             style={{
-              background: '#ffffff',
+              background: '#F8FAFC',
               borderRadius: '24px',
               width: '100%',
-              maxWidth: '660px',
+              maxWidth: '850px',
               maxHeight: '92vh',
               overflowY: 'auto',
-              boxShadow: '0 30px 70px rgba(15, 23, 42, 0.35), 0 0 35px rgba(196, 151, 70, 0.2)',
-              border: '1.5px solid rgba(196, 151, 70, 0.45)',
+              boxShadow: '0 30px 70px rgba(15, 23, 42, 0.35)',
+              border: '1px solid #E2E8F0',
             }}
           >
             {/* Header */}
             <div
               style={{
-                background: 'linear-gradient(135deg, #070D1B 0%, #0F172A 60%, #1E293B 100%)',
-                color: '#ffffff',
-                padding: '1.75rem 2rem',
+                background: '#ffffff',
+                padding: '1.25rem 2rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                borderBottom: '1px solid #E2E8F0'
               }}
             >
               <div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 700, color: '#C49746', letterSpacing: '0.05em', marginBottom: '0.3rem' }}>
-                  <Lock size={13} /> SECURE 256-BIT SSL ENCRYPTED CHECKOUT
-                </div>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#ffffff', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>
-                  Online Payment Gateway
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
+                  Premium Subscription
                 </h3>
               </div>
 
               <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.5rem 1rem', borderRadius: '10px', textAlign: 'right' }}>
-                  <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.8)', display: 'block' }}>Consultancy Fee</span>
-                  <strong style={{ fontSize: '1.2rem', color: '#C49746' }}>PKR 45,000</strong>
+                <div style={{ display: 'flex', gap: '1rem', color: '#64748B', fontSize: '0.9rem', marginRight: '1rem' }}>
+                  <span style={{cursor: 'pointer'}}>Upgrade</span>
+                  <span style={{cursor: 'pointer'}}>Plans</span>
+                  <span style={{cursor: 'pointer'}}>Help</span>
                 </div>
-
                 <button
                   type="button"
                   onClick={() => setShowPaymentModal(false)}
-                  style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#ffffff', width: '34px', height: '34px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  style={{ background: '#F1F5F9', border: 'none', color: '#64748B', width: '34px', height: '34px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
                   <X size={18} />
                 </button>
               </div>
             </div>
 
-            <div style={{ padding: '2rem' }}>
-              <div style={{ background: '#F8FAFC', border: '1.5px solid #C49746', borderRadius: '14px', padding: '1rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 8px 20px rgba(196, 151, 70, 0.15)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ width: 40, height: 40, borderRadius: '10px', background: '#0F172A', color: '#C49746', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CreditCard size={20} />
-                  </div>
-                  <div>
-                    <strong style={{ fontSize: '0.925rem', color: '#0F172A', display: 'block' }}>Credit or Debit Card Checkout</strong>
-                    <span style={{ fontSize: '0.78rem', color: '#64748B' }}>Accepting Visa, Mastercard, UnionPay & Local Bank Cards</span>
-                  </div>
+            <div style={{ padding: '2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+              
+              {/* Left Column: Instructions */}
+              <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #E2E8F0' }}>
+                <div style={{ background: '#1C5B3F', color: '#ffffff', padding: '1rem 1.25rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                  <CreditCard size={20} />
+                  <span style={{ fontWeight: 600, fontSize: '1.05rem' }}>Payment Instructions</span>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 800, color: '#0F172A' }}>
-                  <span style={{ background: '#ffffff', border: '1px solid #E2E8F0', padding: '0.25rem 0.6rem', borderRadius: '4px' }}>VISA</span>
-                  <span style={{ background: '#ffffff', border: '1px solid #E2E8F0', padding: '0.25rem 0.6rem', borderRadius: '4px' }}>MC</span>
-                  <span style={{ background: '#ffffff', border: '1px solid #E2E8F0', padding: '0.25rem 0.6rem', borderRadius: '4px' }}>PAYPAK</span>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem', textTransform: 'uppercase' }}>1. BANK TRANSFER (HBL)</h4>
+                  <div style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6, position: 'relative' }}>
+                    Account Holder:<br/>
+                    <strong style={{color: '#0F172A'}}>Orbon Consultancy</strong><br/>
+                    Account Number:<br/>
+                    <strong style={{color: '#0F172A'}}>1234 5678 9012 3456</strong><br/>
+                    IBAN:<br/>
+                    <strong style={{color: '#0F172A'}}>PK72HBL01234567890123456</strong><br/>
+                    Bank: HBL
+                  </div>
+                  <div style={{borderBottom: '1px solid #E2E8F0', margin: '1rem 0'}}></div>
+                </div>
+
+                <div>
+                  <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem', textTransform: 'uppercase' }}>2. EASYPAISA</h4>
+                  <div style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                    Account Name: <strong style={{color: '#0F172A'}}>Orbon Consultancy</strong><br/>
+                    Number: <strong style={{color: '#0F172A'}}>0312-3456789</strong>
+                  </div>
                 </div>
               </div>
 
-              <form onSubmit={handleProcessCardPayment} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
-                    Cardholder Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Name as printed on card"
-                    value={cardHolderName}
-                    onChange={(e) => setCardHolderName(e.target.value.toUpperCase())}
-                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.9rem', color: '#0F172A', background: '#F8FAFC' }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
-                    Card Number *
-                  </label>
-                  <div style={{ position: 'relative' }}>
+              {/* Right Column: Upload Form */}
+              <div style={{ background: '#ffffff', borderRadius: '16px', padding: '2rem 1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #E2E8F0' }}>
+                <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0F172A', marginBottom: '1.5rem' }}>
+                  Submit Payment Receipt
+                </h3>
+                
+                <form onSubmit={handleProcessManualPayment} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.2rem' }}>
+                      Transaction ID
+                    </label>
+                    <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>Enter Transaction ID (10-15 digits)</span>
                     <input
                       type="text"
                       required
-                      placeholder="4532 8910 2345 8912"
-                      value={cardNumber}
-                      onChange={handleCardNumberChange}
-                      style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.8rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.95rem', fontFamily: 'monospace', color: '#0F172A', background: '#F8FAFC' }}
-                    />
-                    <CreditCard size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#0F172A' }} />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
-                      Expiry Date *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="MM/YY"
-                      maxLength={5}
-                      value={cardExpiry}
-                      onChange={(e) => setCardExpiry(e.target.value)}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.9rem', textAlign: 'center', color: '#0F172A', background: '#F8FAFC' }}
+                      placeholder="e.g., ABC123DEF456"
+                      value={transactionId}
+                      onChange={(e) => setTransactionId(e.target.value.toUpperCase())}
+                      style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '8px', border: '2px solid #82A392', fontSize: '0.95rem', color: '#0F172A', background: '#ffffff' }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
-                      CVV / CVC *
+                    <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.2rem' }}>
+                      Payment Screenshot
                     </label>
-                    <input
-                      type="password"
-                      required
-                      maxLength={4}
-                      placeholder="123"
-                      value={cardCvv}
-                      onChange={(e) => setCardCvv(e.target.value)}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.9rem', textAlign: 'center', color: '#0F172A', background: '#F8FAFC' }}
-                    />
+                    <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>Upload Payment Screenshot (JPG, PNG, max 5MB)</span>
+                    
+                    <div style={{ position: 'relative', border: '2px dashed #CBD5E1', borderRadius: '12px', padding: '2rem 1rem', textAlign: 'center', background: '#F8FAFC', transition: 'all 0.2s ease' }}>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        required 
+                        onChange={handleScreenshotSelect}
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} 
+                      />
+                      {paymentScreenshot ? (
+                        <div style={{ color: '#1C5B3F', fontWeight: 600 }}>
+                          <CheckCircle2 size={28} style={{ margin: '0 auto 0.5rem' }} />
+                          {paymentScreenshot.name}
+                        </div>
+                      ) : (
+                        <div>
+                          <UploadCloud size={28} style={{ color: '#64748B', margin: '0 auto 0.5rem' }} />
+                          <div style={{ fontSize: '0.9rem', color: '#0F172A', marginBottom: '0.25rem' }}>
+                            Drag & Drop your screenshot<br/>or <span style={{ color: '#1C5B3F', textDecoration: 'underline' }}>Browse</span>
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: '#64748B' }}>File requirements, file or dire only</div>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
-                      Country *
-                    </label>
-                    <select
-                      value={billingCountry}
-                      onChange={(e) => setBillingCountry(e.target.value)}
-                      style={{ width: '100%', padding: '0.75rem 0.5rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.85rem', color: '#0F172A', background: '#F8FAFC' }}
-                    >
-                      <option value="Pakistan">Pakistan (PK)</option>
-                      <option value="Germany">Germany (DE)</option>
-                      <option value="United Arab Emirates">UAE (AE)</option>
-                      <option value="Saudi Arabia">Saudi Arabia (SA)</option>
-                    </select>
-                  </div>
-                </div>
+                  <button
+                    type="submit"
+                    disabled={processingPayment}
+                    style={{
+                      background: '#1C5B3F',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '0.85rem',
+                      borderRadius: '8px',
+                      fontWeight: 700,
+                      fontSize: '0.95rem',
+                      cursor: 'pointer',
+                      marginTop: '0.5rem',
+                      width: '100%'
+                    }}
+                  >
+                    {processingPayment ? 'Submitting...' : 'Submit Verification'}
+                  </button>
+                </form>
+              </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem', paddingTop: '1.25rem', borderTop: '1px solid #E2E8F0' }}>
-                  <div style={{ fontSize: '0.8rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <Lock size={14} style={{ color: '#0F172A' }} /> SSL Encrypted & Protected
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '0.75rem' }}>
-                    <button
-                      type="button"
-                      onClick={() => setShowPaymentModal(false)}
-                      style={{ background: 'transparent', border: '1px solid #E2E8F0', padding: '0.75rem 1.25rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', color: '#475569' }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={processingPayment}
-                      style={{
-                        background: 'linear-gradient(135deg, #C49746 0%, #B45309 100%)',
-                        color: '#ffffff',
-                        border: 'none',
-                        padding: '0.75rem 1.75rem',
-                        borderRadius: '8px',
-                        fontWeight: 700,
-                        fontSize: '0.9rem',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 14px rgba(196, 151, 70, 0.35)',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                      }}
-                    >
-                      {processingPayment ? 'Processing Payment...' : 'Pay PKR 45,000 & Start Processing'}
-                    </button>
-                  </div>
-                </div>
-
-              </form>
             </div>
           </div>
         </div>
@@ -1511,7 +1480,7 @@ export default function ApplyForMePage() {
             </h3>
 
             <p style={{ fontSize: '0.9rem', color: '#0F172A', fontWeight: 600, marginBottom: '1.5rem' }}>
-              Your admission processing has officially started.
+              Your payment receipt has been submitted for verification.
             </p>
 
             <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '1.25rem', textAlign: 'left', marginBottom: '1.75rem', fontSize: '0.85rem' }}>
@@ -1520,12 +1489,8 @@ export default function ApplyForMePage() {
                 <strong style={{ color: '#0F172A', fontFamily: 'monospace' }}>{receiptData.trx_id}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
-                <span style={{ color: '#64748B' }}>Card Paid:</span>
-                <strong style={{ color: '#0F172A' }}>•••• {receiptData.card_last4}</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
-                <span style={{ color: '#64748B' }}>Cardholder Name:</span>
-                <strong style={{ color: '#0F172A' }}>{receiptData.holder}</strong>
+                <span style={{ color: '#64748B' }}>Screenshot Attached:</span>
+                <strong style={{ color: '#047857' }}>Yes</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
                 <span style={{ color: '#64748B' }}>Amount Paid:</span>

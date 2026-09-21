@@ -387,7 +387,7 @@ export function AnimatedHero() {
             </div>
 
             <button
-              onClick={() => navigate('/student/wizard')}
+              onClick={() => navigate(user ? '/student/wizard' : '/check-eligibility')}
               style={{
                 marginTop: '1.5rem',
                 width: '100%',

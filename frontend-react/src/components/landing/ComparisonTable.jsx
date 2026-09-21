@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Check, Clock } from 'lucide-react';
+import { DecorativeLineArt } from './DecorativeLineArt';
 
 const plans = [
   {
@@ -51,8 +52,8 @@ export function ComparisonTable() {
   const navigate = useNavigate();
 
   return (
-    <section id="pricing" style={{ padding: '5rem 0', background: '#FAF7F2', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem' }}>
+    <section id="pricing" style={{ padding: '3rem 0 5rem', background: 'var(--lp-bg)', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem', position: 'relative', zIndex: 1 }}>
         
         {/* Header */}
         <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 3.5rem' }}>
@@ -73,7 +74,7 @@ export function ComparisonTable() {
             <div
               key={plan.name}
               style={{
-                background: '#ffffff',
+                background: 'var(--lp-card)',
                 borderRadius: '16px',
                 padding: '2.25rem 1.85rem',
                 border: plan.popular ? '2px solid #C49746' : '1.5px solid rgba(15, 23, 42, 0.12)',

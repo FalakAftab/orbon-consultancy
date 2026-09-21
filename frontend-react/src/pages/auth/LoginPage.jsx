@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   CheckCircle2,
@@ -22,6 +22,7 @@ function getDeviceName() {
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { signIn, user, refreshUser, loginWithToken } = useAuth();
 
   const [form, setForm] = useState({ email: '', password: '' });
@@ -107,7 +108,9 @@ export default function LoginPage() {
     try {
       // Device name is sent automatically; the user never sees this field.
       await signIn({ ...form, device_name: getDeviceName() });
-      const target = user?.role === 'admin' ? '/admin' : '/student';
+      const target = location.state?.fromEligibility
+        ? '/student/wizard'
+        : (user?.role === 'admin' ? '/admin' : '/student');
       navigate(target, { replace: true });
     } catch (err) {
       if (err.statusCode === 403 && err.body?.needs_verification) {

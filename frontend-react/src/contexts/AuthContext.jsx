@@ -50,10 +50,13 @@ export function AuthProvider({ children }) {
   };
 
   const signOut = async () => {
-    await logoutRequest();
-    clearSession();
-    setToken('');
-    setUser(null);
+    try {
+      await logoutRequest();
+    } finally {
+      clearSession();
+      setToken('');
+      setUser(null);
+    }
   };
 
   const value = useMemo(

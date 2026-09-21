@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, HelpCircle, Sparkles } from 'lucide-react';
+import { DecorativeLineArt } from './DecorativeLineArt';
 
 const FAQ_ITEMS = [
   {
@@ -36,8 +37,8 @@ export function Faq() {
   };
 
   return (
-    <section id="faq" style={{ padding: '5.5rem 0', background: '#FAF7F2', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-      <div style={{ maxWidth: '840px', margin: '0 auto', padding: '0 2rem' }}>
+    <section id="faq" style={{ padding: '5.5rem 0', background: 'var(--lp-bg)', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ maxWidth: '840px', margin: '0 auto', padding: '0 2rem', position: 'relative', zIndex: 1 }}>
         
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
@@ -86,7 +87,7 @@ export function Faq() {
                   borderRadius: '12px',
                   overflow: 'hidden',
                   transition: 'all 200ms ease',
-                  background: '#FFFFFF',
+                  background: 'var(--lp-card)',
                   boxShadow: isOpen ? '0 8px 25px rgba(196, 151, 70, 0.08)' : '0 2px 8px rgba(0, 0, 0, 0.02)',
                 }}
               >

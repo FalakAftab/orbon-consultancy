@@ -304,6 +304,14 @@ export default function RecommendationWizard() {
         tuition_fee_max: form.tuition_fee_max ? parseFloat(form.tuition_fee_max) : null,
       };
 
+      if (!user && !adminStudentId) {
+        localStorage.setItem(CRITERIA_STORAGE_KEY, JSON.stringify(payload));
+        clearInterval(interval);
+        setSubmitting(false);
+        navigate('/login', { state: { fromEligibility: true } });
+        return;
+      }
+
       const result = adminStudentId
         ? await createRecommendationForStudent(adminStudentId, payload)
         : await submitRecommendation(payload);

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { CreditCard, UploadCloud, Send, GraduationCap, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { DecorativeLineArt } from './DecorativeLineArt';
 
 const steps = [
   {
@@ -38,8 +39,8 @@ export function Process() {
   const { user } = useAuth();
 
   return (
-    <section id="how-it-works" style={{ background: '#FFFFFF', padding: '5.5rem 0', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative' }}>
-      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem' }}>
+    <section id="how-it-works" style={{ background: 'var(--lp-bg)', padding: '5.5rem 0', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem', position: 'relative', zIndex: 1 }}>
         
         {/* Header */}
         <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 4rem' }}>
@@ -96,7 +97,7 @@ export function Process() {
                     className="lp-process-node"
                     style={{
                       border: `2.5px solid ${step.accent}`,
-                      background: '#FFFFFF',
+                      background: 'var(--lp-bg)',
                       boxShadow: `0 10px 24px rgba(0,0,0,0.06), 0 0 16px ${step.accent}25`,
                     }}
                   >
@@ -165,7 +166,7 @@ export function Process() {
           </div>
 
           <button
-            onClick={() => navigate(user ? '/student/wizard' : '/register')}
+            onClick={() => navigate(user ? '/student/wizard' : '/check-eligibility')}
             style={{
               background: '#C49746',
               color: '#ffffff',
