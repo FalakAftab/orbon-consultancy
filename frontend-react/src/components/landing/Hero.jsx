@@ -4,6 +4,46 @@ import { Search } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { DecorativeLineArt } from './DecorativeLineArt';
 
+// High-Speed Compressed CDN Images (Ultra-fast loading < 30KB per image)
+const HERO_GRID_IMAGES = [
+  {
+    src: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=400&q=70",
+    alt: "German University Palace Gardens"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=400&q=70",
+    alt: "Academic Library Interior"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=400&q=70",
+    alt: "Historic University Neoclassical Building"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?auto=format&fit=crop&w=400&q=70",
+    alt: "Technical University Campus"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?auto=format&fit=crop&w=400&q=70",
+    alt: "German Historic University Facade"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&w=400&q=70",
+    alt: "Modern Campus Library & Students"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=400&q=70",
+    alt: "University Courtyard"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=400&q=70",
+    alt: "German University Architecture"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=400&q=70",
+    alt: "University Campus in Autumn"
+  }
+];
+
 export function Hero() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -29,7 +69,7 @@ export function Hero() {
     <section className="lp-home-hero" style={{ background: 'var(--lp-bg)', padding: '5rem 0 7rem', position: 'relative', overflow: 'hidden' }}>
       <div className="lp-home-hero-inner" style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', position: 'relative', zIndex: 1 }}>
         
-        {/* Left Column: Search Widget replacing the old hero copy */}
+        {/* Left Column: Search Widget */}
         <div className="lp-home-hero-copy" style={{ zIndex: 10 }}>
           <div style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--lp-gold)', fontWeight: 700, marginBottom: '1.25rem' }}>
             Study in Germany
@@ -78,7 +118,7 @@ export function Hero() {
           </form>
         </div>
 
-        {/* Right Column: User's original 9-Image University Collage Grid (3x3) */}
+        {/* Right Column: Instant High-Speed 3x3 Image Grid */}
         <div
           className="lp-hero-collage-grid"
           style={{
@@ -88,80 +128,31 @@ export function Hero() {
             width: '100%',
           }}
         >
-          {/* Row 1 */}
-          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: 'var(--lp-card)' }}>
-            <img
-              src="/images/universities/uni-wuerzburg-1.jpg"
-              alt="German University Palace Gardens"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
-
-          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: 'var(--lp-card)' }}>
-            <img
-              src="/library-interior.jpg"
-              alt="Academic Library"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
-
-          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: 'var(--lp-card)' }}>
-            <img
-              src="/figma_assets/studypath-landing-page___Rectangle-4.png"
-              alt="Historic University Neoclassical Facade"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
-
-          {/* Row 2 */}
-          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: 'var(--lp-card)' }}>
-            <img
-              src="/images/universities/campus-tum.jpg"
-              alt="Technical University of Munich Campus & Alps"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
-
-          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: 'var(--lp-card)' }}>
-            <img
-              src="/images/universities/uni-wuerzburg-2.png"
-              alt="German University Historic Palace"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
-
-          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: 'var(--lp-card)' }}>
-            <img
-              src="/figma_assets/studypath-landing-page___Rectangle-2.png"
-              alt="Modern University Campus Library & Students"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
-
-          {/* Row 3 */}
-          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: 'var(--lp-card)' }}>
-            <img
-              src="/figma_assets/studypath-landing-page___Rectangle-3.png"
-              alt="Historic University Courtyard & Students"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
-
-          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: 'var(--lp-card)' }}>
-            <img
-              src="/hero-university.jpg"
-              alt="Historic German University Architecture & Students"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
-
-          <div style={{ height: '138px', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.07)', background: 'var(--lp-card)' }}>
-            <img
-              src="/images/universities/uni-wuerzburg-3.png"
-              alt="University Palace in Autumn"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
+          {HERO_GRID_IMAGES.map((img, idx) => (
+            <div 
+              key={idx} 
+              style={{ 
+                height: '138px', 
+                borderRadius: '10px', 
+                overflow: 'hidden', 
+                boxShadow: '0 4px 12px rgba(0,0,0,0.07)', 
+                background: 'var(--lp-card, #e2e8f0)' 
+              }}
+            >
+              <img
+                src={img.src}
+                alt={img.alt}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=400&q=70";
+                }}
+              />
+            </div>
+          ))}
         </div>
         
       </div>
