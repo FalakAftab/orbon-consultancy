@@ -2,46 +2,18 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { DecorativeLineArt } from './DecorativeLineArt';
 
-// High-Speed Compressed CDN Images (Ultra-fast loading < 30KB per image)
+// High-speed reliable royalty-free CDN images (Fast < 30KB)
 const HERO_GRID_IMAGES = [
-  {
-    src: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=400&q=70",
-    alt: "German University Palace Gardens"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=400&q=70",
-    alt: "Academic Library Interior"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=400&q=70",
-    alt: "Historic University Neoclassical Building"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?auto=format&fit=crop&w=400&q=70",
-    alt: "Technical University Campus"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?auto=format&fit=crop&w=400&q=70",
-    alt: "German Historic University Facade"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&w=400&q=70",
-    alt: "Modern Campus Library & Students"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=400&q=70",
-    alt: "University Courtyard"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=400&q=70",
-    alt: "German University Architecture"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=400&q=70",
-    alt: "University Campus in Autumn"
-  }
+  "https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg?auto=compress&cs=tinysrgb&w=400",
+  "https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=400",
+  "https://images.pexels.com/photos/159775/library-la-trobe-study-students-159775.jpeg?auto=compress&cs=tinysrgb&w=400",
+  "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=400",
+  "https://images.pexels.com/photos/207684/pexels-photo-207684.jpeg?auto=compress&cs=tinysrgb&w=400",
+  "https://images.pexels.com/photos/1205651/pexels-photo-1205651.jpeg?auto=compress&cs=tinysrgb&w=400",
+  "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg?auto=compress&cs=tinysrgb&w=400",
+  "https://images.pexels.com/photos/256455/pexels-photo-256455.jpeg?auto=compress&cs=tinysrgb&w=400",
+  "https://images.pexels.com/photos/2982449/pexels-photo-2982449.jpeg?auto=compress&cs=tinysrgb&w=400"
 ];
 
 export function Hero() {
@@ -69,7 +41,7 @@ export function Hero() {
     <section className="lp-home-hero" style={{ background: 'var(--lp-bg)', padding: '5rem 0 7rem', position: 'relative', overflow: 'hidden' }}>
       <div className="lp-home-hero-inner" style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', position: 'relative', zIndex: 1 }}>
         
-        {/* Left Column: Search Widget */}
+        {/* Left Column */}
         <div className="lp-home-hero-copy" style={{ zIndex: 10 }}>
           <div style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--lp-gold)', fontWeight: 700, marginBottom: '1.25rem' }}>
             Study in Germany
@@ -118,7 +90,7 @@ export function Hero() {
           </form>
         </div>
 
-        {/* Right Column: Instant High-Speed 3x3 Image Grid */}
+        {/* Right Column: 3x3 Image Grid with Reliable Fallbacks */}
         <div
           className="lp-hero-collage-grid"
           style={{
@@ -128,7 +100,7 @@ export function Hero() {
             width: '100%',
           }}
         >
-          {HERO_GRID_IMAGES.map((img, idx) => (
+          {HERO_GRID_IMAGES.map((imgSrc, idx) => (
             <div 
               key={idx} 
               style={{ 
@@ -136,19 +108,19 @@ export function Hero() {
                 borderRadius: '10px', 
                 overflow: 'hidden', 
                 boxShadow: '0 4px 12px rgba(0,0,0,0.07)', 
-                background: 'var(--lp-card, #e2e8f0)' 
+                background: '#0F172A',
+                position: 'relative'
               }}
             >
               <img
-                src={img.src}
-                alt={img.alt}
+                src={imgSrc}
+                alt="German University Campus"
                 loading="eager"
-                fetchpriority="high"
                 decoding="async"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=400&q=70";
+                  e.target.style.display = 'none';
+                  e.target.parentElement.style.background = 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)';
                 }}
               />
             </div>
