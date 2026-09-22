@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   ArrowRight,
   ArrowLeft,
@@ -13,7 +13,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { submitRecommendation } from '../../api/student';
+import { submitRecommendation, submitGuestRecommendation } from '../../api/student';
 import { createRecommendationForStudent } from '../../api/admin';
 import { SUBJECT_CATEGORIES, SUBJECT_VALUE_TO_LABEL, QUALIFICATION_OPTIONS } from '../../constants/options';
 
@@ -115,7 +115,7 @@ export default function RecommendationWizard() {
       );
       if (found) return found.category;
     }
-    return SUBJECT_CATEGORIES[0]?.category || '';
+    return '';
   });
   const [submitting, setSubmitting] = useState(false);
   const [matchingMsgIdx, setMatchingMsgIdx] = useState(0);
@@ -138,14 +138,14 @@ export default function RecommendationWizard() {
 
     english_test_type: Array.isArray(refineCriteria?.english_test_type)
       ? refineCriteria.english_test_type
-      : (refineCriteria?.english_test_type ? [refineCriteria.english_test_type] : ['ielts']),
+      : (refineCriteria?.english_test_type ? [refineCriteria.english_test_type] : []),
     english_test_score: refineCriteria?.english_test_score ?? '',
     german_level: refineCriteria?.german_level || 'none',
 
-    preferred_degree: refineCriteria?.preferred_degree || 'master',
+    preferred_degree: refineCriteria?.preferred_degree || '',
     preferred_subjects: previousSubjects,
 
-    preferred_intake: refineCriteria?.preferred_intake || 'winter',
+    preferred_intake: refineCriteria?.preferred_intake || '',
     admission_preference: refineCriteria?.admission_preference || 'both',
     tuition_preference: refineCriteria?.tuition_preference || 'free_only',
     preferred_language: refineCriteria?.preferred_language || 'english',
@@ -195,17 +195,17 @@ export default function RecommendationWizard() {
   // Selected English test types as array
   const selectedEnglishTypes = Array.isArray(form.english_test_type)
     ? form.english_test_type
-    : (form.english_test_type ? [form.english_test_type] : ['ielts']);
+    : (form.english_test_type ? [form.english_test_type] : []);
 
   const toggleEnglishType = (typeId) => {
     let next;
     if (selectedEnglishTypes.includes(typeId)) {
-      if (selectedEnglishTypes.length === 1) return; // Keep at least one selected
       next = selectedEnglishTypes.filter((t) => t !== typeId);
     } else {
       next = [...selectedEnglishTypes, typeId];
     }
     updateField('english_test_type', next);
+    if (fieldErrors.english_test_type) setFieldErrors((prev) => ({ ...prev, english_test_type: '' }));
     if (fieldErrors.english_test_score) setFieldErrors((prev) => ({ ...prev, english_test_score: '' }));
   };
 
@@ -238,6 +238,9 @@ export default function RecommendationWizard() {
         errs.obtained_gpa = 'Obtained GPA is below minimum passing GPA.';
       }
     } else if (currentStep === 2) {
+      if (!selectedEnglishTypes.length) {
+        errs.english_test_type = 'Select at least one English test type.';
+      }
       const needsScore = selectedEnglishTypes.some((t) => t === 'ielts' || t === 'toefl');
       if (needsScore && !form.english_test_score) {
         errs.english_test_score = 'English score is required for IELTS/TOEFL.';
@@ -252,6 +255,10 @@ export default function RecommendationWizard() {
     } else if (currentStep === 4) {
       if (!form.preferred_subjects.length) {
         errs.preferred_subjects = 'Select at least one specialization or "All" to continue.';
+      }
+    } else if (currentStep === 5) {
+      if (!form.preferred_intake) {
+        errs.preferred_intake = 'Preferred intake semester is required.';
       }
     }
     setFieldErrors(errs);
@@ -304,11 +311,22 @@ export default function RecommendationWizard() {
         tuition_fee_max: form.tuition_fee_max ? parseFloat(form.tuition_fee_max) : null,
       };
 
-      if (!user && !adminStudentId) {
+      // Persist criteria locally so wizard pre-fills when opened directly
+      try {
         localStorage.setItem(CRITERIA_STORAGE_KEY, JSON.stringify(payload));
+      } catch {
+        /* ignore localStorage error */
+      }
+
+      if (!user && !adminStudentId) {
+        // Guest checkout: run the same matching engine without an account
+        // and show full results immediately — login is only required later,
+        // when the visitor tries to save/apply to a specific program.
+        const result = await submitGuestRecommendation(payload);
         clearInterval(interval);
-        setSubmitting(false);
-        navigate('/login', { state: { fromEligibility: true } });
+        navigate('/results', {
+          state: { recommendationResult: result, criteria: payload, guestMode: true },
+        });
         return;
       }
 
@@ -316,13 +334,6 @@ export default function RecommendationWizard() {
         ? await createRecommendationForStudent(adminStudentId, payload)
         : await submitRecommendation(payload);
       clearInterval(interval);
-
-      // Persist criteria locally so wizard pre-fills when opened directly
-      try {
-        localStorage.setItem(CRITERIA_STORAGE_KEY, JSON.stringify(payload));
-      } catch {
-        /* ignore localStorage error */
-      }
 
       // Navigate to results with the real API response AND the exact
       // criteria payload that was just submitted, so "Refine Criteria" on
@@ -349,6 +360,12 @@ export default function RecommendationWizard() {
 
   return (
     <div className="wizard-page">
+      {!user && !adminStudentId && (
+        <Link to="/" className="btn btn-ghost btn-sm" style={{ marginBottom: '1rem', display: 'inline-flex' }}>
+          <ArrowLeft size={15} /> Back to Home
+        </Link>
+      )}
+
       {/* Breadcrumb */}
       <div className="wizard-breadcrumb">
         Recommendations <span>&gt;</span> <strong>{STEPS[step - 1].title}</strong>
@@ -692,6 +709,7 @@ export default function RecommendationWizard() {
                   value={form.preferred_degree}
                   onChange={(e) => updateField('preferred_degree', e.target.value)}
                 >
+                  <option value="" disabled>Select degree level</option>
                   {DEGREE_OPTIONS.map((d) => (
                     <option key={d.value} value={d.value}>
                       {d.label}
@@ -908,18 +926,22 @@ export default function RecommendationWizard() {
 
               <div className="grid grid-2" style={{ gap: '1rem' }}>
                 <div className="field">
-                  <label className="field-label">Preferred Intake Semester</label>
+                  <label className="field-label">Preferred Intake Semester *</label>
                   <select
                     className="input select"
                     value={form.preferred_intake}
                     onChange={(e) => updateField('preferred_intake', e.target.value)}
                   >
+                    <option value="" disabled>Select intake semester</option>
                     {INTAKE_OPTIONS.map((i) => (
                       <option key={i.value} value={i.value}>
                         {i.label}
                       </option>
                     ))}
                   </select>
+                  {fieldErrors.preferred_intake && (
+                    <span className="field-error">{fieldErrors.preferred_intake}</span>
+                  )}
                 </div>
 
                 <div className="field">

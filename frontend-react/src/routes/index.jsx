@@ -122,6 +122,11 @@ export default function AppRoutes() {
       <Route path="/contact" element={withFallback(<ContactPage />)} />
       <Route path="/how-it-works" element={withFallback(<HowItWorksPage />)} />
       <Route path="/check-eligibility" element={withFallback(<RecommendWizard />)} />
+      {/* Guest results: same ResultsPage component, but reached without an
+          account (see RecommendationWizard's guest submit branch). Never put
+          this behind ProtectedRoute or a guest who just answered 6 steps of
+          questions would be bounced to /login before seeing anything. */}
+      <Route path="/results" element={withFallback(<ResultsPage />)} />
       <Route path="/programs" element={withFallback(<PublicProgramsPage />)} />
       <Route path="/programs/:id" element={withFallback(<PublicProgramDetailPage />)} />
       <Route path="/universities" element={withFallback(<PublicUniversitiesPage />)} />

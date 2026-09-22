@@ -47,6 +47,18 @@ export function Universities() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Measures the real rendered card width + gap so scrolling stays correct
+  // at any browser zoom level instead of relying on a hardcoded pixel value.
+  const getCardStep = () => {
+    const container = carouselRef.current;
+    if (!container) return 412;
+    const card = container.querySelector('[data-uni-card]');
+    if (!card) return 412;
+    const style = window.getComputedStyle(container);
+    const gap = parseFloat(style.columnGap || style.gap) || 0;
+    return card.getBoundingClientRect().width + gap;
+  };
+
   // Auto-scroll logic (Infinite loop)
   useEffect(() => {
     if (isHovered || expandedIndex !== null || universities.length === 0) return;
@@ -54,7 +66,7 @@ export function Universities() {
     const interval = setInterval(() => {
       if (carouselRef.current) {
         const container = carouselRef.current;
-        const cardWidth = 412; // 380px + 32px gap
+        const cardWidth = getCardStep();
         
         container.scrollBy({ left: cardWidth, behavior: 'smooth' });
 
@@ -75,7 +87,7 @@ export function Universities() {
   const handleScroll = () => {
     if (carouselRef.current && universities.length > 0) {
       const container = carouselRef.current;
-      const cardWidth = 412;
+      const cardWidth = getCardStep();
       let newIndex = Math.round(container.scrollLeft / cardWidth);
       newIndex = newIndex % universities.length;
       if (newIndex !== activeIndex) {
@@ -86,7 +98,7 @@ export function Universities() {
 
   const scrollToCard = (index) => {
     if (carouselRef.current) {
-      const cardWidth = 412;
+      const cardWidth = getCardStep();
       carouselRef.current.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
       setActiveIndex(index);
     }
@@ -152,7 +164,7 @@ export function Universities() {
             onScroll={handleScroll}
             style={{ 
               display: 'flex',
-              alignItems: 'flex-start',
+              alignItems: 'stretch',
               gap: '2rem',
               overflowX: 'auto',
               paddingBottom: '2rem',
@@ -175,10 +187,11 @@ export function Universities() {
               return (
                 <div
                   key={`${uni.id || uni.name}-${index}`}
+                  data-uni-card
                   onClick={() => toggleCard(originalIdx)}
                   style={{
-                    minWidth: '380px',
-                    maxWidth: '380px',
+                    minWidth: 'min(380px, 82vw)',
+                    maxWidth: 'min(380px, 82vw)',
                     flexShrink: 0,
                     scrollSnapAlign: 'start',
                     background: 'var(--lp-card)',
@@ -197,7 +210,8 @@ export function Universities() {
                     <img
                       src={photoUrl}
                       alt={uni.name}
-                      loading="lazy"
+                      loading={index < universities.length ? 'eager' : 'lazy'}
+                      fetchPriority={index < 3 ? 'high' : 'auto'}
                       decoding="async"
                       style={{
                         width: '100%',

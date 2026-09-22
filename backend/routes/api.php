@@ -34,6 +34,13 @@ Route::prefix('v1')->group(function (): void {
     Route::get('programs', [ProgramController::class, 'index']);
     Route::get('programs/{program}', [ProgramController::class, 'show']);
 
+    // Guest recommendation: lets a visitor run the wizard and see full
+    // results before creating an account. RecommendationService already
+    // supports a null user id (skips profile save/history), so this reuses
+    // the same controller action untouched — only auth is skipped here.
+    Route::post('recommendations/guest', [RecommendationController::class, 'store'])
+        ->middleware('throttle:20,1');
+
     Route::prefix('auth')->group(function (): void {
         Route::post('register', [AuthController::class, 'register'])->middleware('throttle:5,1');
         Route::post('login', [AuthController::class, 'login'])->middleware('throttle:10,1');

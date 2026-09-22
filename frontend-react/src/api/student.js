@@ -46,6 +46,15 @@ export function submitRecommendation(payload) {
   });
 }
 
+/** POST /v1/recommendations/guest -> same engine, no auth, nothing persisted */
+export function submitGuestRecommendation(payload) {
+  return api('/recommendations/guest', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+}
+
 /** GET /v1/shortlist -> { data } */
 export function fetchShortlist() {
   return api('/shortlist');

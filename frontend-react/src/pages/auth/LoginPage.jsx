@@ -108,7 +108,9 @@ export default function LoginPage() {
     try {
       // Device name is sent automatically; the user never sees this field.
       await signIn({ ...form, device_name: getDeviceName() });
-      const target = location.state?.fromEligibility
+      const target = location.state?.fromResults
+        ? '/student/results'
+        : location.state?.fromEligibility
         ? '/student/wizard'
         : (user?.role === 'admin' ? '/admin' : '/student');
       navigate(target, { replace: true });

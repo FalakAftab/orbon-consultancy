@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { MatchRing } from '../../components/shared/PremiumVisuals';
 import { ViewToggle } from '../../components/shared/ViewToggle';
 import {
@@ -14,6 +15,7 @@ import {
   Sparkles,
   CheckCircle2,
   ArrowRight,
+  ArrowLeft,
   Search,
 } from 'lucide-react';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -129,6 +131,13 @@ function extractResultsCriteria(data, locationState) {
 export default function ResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  // A visitor who ran the wizard without an account (see the guest submit
+  // branch in RecommendationWizard) lands here too — they must still see
+  // full results, only Save/Apply-style actions require an account.
+  const isGuest = !user;
+  const wizardPath = isGuest ? '/check-eligibility' : '/student/wizard';
+  const programPath = (id) => (isGuest ? `/programs/${id}` : `/student/programs/${id}`);
 
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
@@ -219,6 +228,12 @@ export default function ResultsPage() {
 
   const handleSaveShortlist = async (programId) => {
     if (!programId) return;
+    if (isGuest) {
+      // Saving requires an account — send them to register/login. The
+      // generated results stay cached in localStorage so they aren't lost.
+      navigate('/login', { state: { fromResults: true } });
+      return;
+    }
     try {
       await saveShortlist(programId);
       setSavedIds((prev) => new Set(prev).add(programId));
@@ -270,6 +285,11 @@ export default function ResultsPage() {
 
   return (
     <div className="results-page flex flex-col gap-6">
+      {isGuest && (
+        <Link to="/" className="btn btn-ghost btn-sm" style={{ alignSelf: 'flex-start' }}>
+          <ArrowLeft size={15} /> Back to Home
+        </Link>
+      )}
       {/* Header */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
@@ -320,7 +340,7 @@ export default function ResultsPage() {
           <Button
             variant="secondary"
             onClick={() =>
-              navigate('/student/wizard', {
+              navigate(wizardPath, {
                 state: criteriaSnapshot
                   ? { criteria: criteriaSnapshot, refining: true, from: 'results' }
                   : { refining: true, from: 'results' },
@@ -359,13 +379,13 @@ export default function ResultsPage() {
           ))}
         </div>
       ) : error ? (
-        <ErrorState title="Could not load results" description={error} onRetry={() => navigate('/student/wizard')} />
+        <ErrorState title="Could not load results" description={error} onRetry={() => navigate(wizardPath)} />
       ) : !Array.isArray(programs) || programs.length === 0 ? (
         <EmptyState
           icon={Sparkles}
           title="No recommendations yet"
           description="Run the Recommendation Wizard to get matched with top German universities."
-          action={<Button variant="primary" onClick={() => navigate('/student/wizard')}>Start Recommendation Wizard <ArrowRight size={15} /></Button>}
+          action={<Button variant="primary" onClick={() => navigate(wizardPath)}>Start Recommendation Wizard <ArrowRight size={15} /></Button>}
         />
 ) : view === 'grid' ? (
         <div className="grid grid-2" style={{ gap: 'var(--space-4)' }}>
@@ -509,7 +529,7 @@ export default function ResultsPage() {
                   style={{ borderTop: '1px solid var(--color-border)', marginTop: 'auto' }}
                 >
                   {p.programId ? (
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => navigate(`/student/programs/${p.programId}`)}>
+                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => navigate(programPath(p.programId))}>
                       View <ExternalLink size={14} />
                     </button>
                   ) : (
@@ -580,7 +600,7 @@ export default function ResultsPage() {
 
                 <div className="flex items-center gap-2 flex-wrap">
                   {p.programId && (
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => navigate(`/student/programs/${p.programId}`)}>
+                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => navigate(programPath(p.programId))}>
                       View <ExternalLink size={14} />
                     </button>
                   )}
