@@ -39,7 +39,7 @@ export function Process() {
   const { user } = useAuth();
 
   return (
-    <section id="how-it-works" style={{ background: 'var(--lp-bg)', padding: '5.5rem 0', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
+    <section id="how-it-works" style={{ background: 'var(--lp-bg)', padding: '5.5rem 0 3rem', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem', position: 'relative', zIndex: 1 }}>
         
         {/* Header */}
@@ -146,14 +146,13 @@ export function Process() {
         <div
           className="lp-process-callout-banner"
           style={{
-            marginTop: '4rem',
             background: '#161D2B',
             borderRadius: '18px',
             padding: '2rem 2.5rem',
             border: '1px solid rgba(196, 151, 70, 0.35)',
             boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.45), 0 0 30px rgba(196, 151, 70, 0.12)',
             maxWidth: '960px',
-            margin: '4rem auto 0',
+            margin: '2.5rem auto 0',
           }}
         >
           <div style={{ textAlign: 'left' }}>

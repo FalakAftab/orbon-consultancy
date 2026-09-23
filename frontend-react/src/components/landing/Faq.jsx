@@ -37,7 +37,7 @@ export function Faq() {
   };
 
   return (
-    <section id="faq" style={{ padding: '5.5rem 0', background: 'var(--lp-bg)', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
+    <section id="faq" style={{ padding: '3rem 0 5.5rem', background: 'var(--lp-bg)', borderTop: '1px solid rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
       <div style={{ maxWidth: '840px', margin: '0 auto', padding: '0 2rem', position: 'relative', zIndex: 1 }}>
         
         {/* Header */}

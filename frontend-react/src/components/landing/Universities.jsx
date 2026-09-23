@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import { MapPin, GraduationCap, ArrowRight, ChevronDown } from 'lucide-react';
 import { api } from '../../api/client';
 
-// Ultra-fast CDN German University Stock Images (Optimized 600px width for fast loading)
+// Locally bundled campus photos — reliable regardless of external network access.
 const RANDOM_UNI_IMAGES = [
-  'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=600&q=75',
-  'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=600&q=75',
-  'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=75',
-  'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?auto=format&fit=crop&w=600&q=75',
-  'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?auto=format&fit=crop&w=600&q=75',
-  'https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&w=600&q=75'
+  '/assets/landing/university-1.jpg',
+  '/assets/landing/university-2.jpg',
+  '/assets/landing/university-3.jpg',
+  '/assets/landing/collage-1.jpg',
+  '/assets/landing/collage-2.jpg',
+  '/assets/landing/collage-3.jpg',
 ];
 
 export function Universities() {
