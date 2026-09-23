@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search,
   Trash2,
+  Pencil,
   RefreshCw,
   Mail,
   MapPin,
@@ -16,6 +17,7 @@ import {
   deleteAdminStudent,
   createAdminStudent,
 } from '../../api/admin';
+import { updateStudentFeeStatus } from '../../api/premium';
 import {
   Button,
   Input,
@@ -55,6 +57,10 @@ export default function AdminStudents() {
   const [newPassword, setNewPassword] = useState('');
   const [resetting, setResetting] = useState(false);
   const [actionMsg, setActionMsg] = useState('');
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [editForm, setEditForm] = useState({ name: '', email: '', phone: '', country: '' });
+  const [editSaving, setEditSaving] = useState(false);
+  const [statusSaving, setStatusSaving] = useState(false);
 
   // Add Student
   const [showAddModal, setShowAddModal] = useState(false);
@@ -86,6 +92,59 @@ export default function AdminStudents() {
   const openView = (student) => {
     setViewTarget(student);
     setActionMsg('');
+  };
+
+  const openEdit = (student) => {
+    setEditingStudent(student);
+    setEditForm({
+      name: student.name || '',
+      email: student.email || '',
+      phone: student.phone || '',
+      country: student.country || '',
+    });
+    setActionMsg('');
+  };
+
+  const handleEditStudent = async () => {
+    if (!editingStudent || !editForm.name.trim() || !editForm.email.trim()) {
+      setActionMsg('Name and email are required.');
+      return;
+    }
+    setEditSaving(true);
+    setActionMsg('');
+    try {
+      const response = await updateAdminStudent(editingStudent.id, editForm);
+      const updated = response?.student;
+      if (updated) {
+        setStudents((prev) => prev.map((student) => (student.id === updated.id ? updated : student)));
+      }
+      setEditingStudent(null);
+      setActionMsg('Student details updated successfully.');
+      await load();
+    } catch (err) {
+      setActionMsg(err.message || 'Could not update student details.');
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  const handleStudentFeeStatus = async (student, feeStatus) => {
+    setStatusSaving(true);
+    setActionMsg('');
+    try {
+      const response = await updateStudentFeeStatus(student.id, feeStatus);
+      const updated = response?.data;
+      if (updated) {
+        setStudents((prev) => prev.map((item) => (item.id === updated.id ? { ...item, ...updated } : item)));
+        setViewTarget((current) => (current?.id === updated.id ? { ...current, ...updated } : current));
+      }
+      setActionMsg('Student status updated successfully.');
+      await load();
+    } catch (err) {
+      setActionMsg(err.message || 'Could not update student status.');
+    } finally {
+      setStatusSaving(false);
+    }
   };
 
   const handleResetPassword = async () => {
@@ -257,6 +316,8 @@ export default function AdminStudents() {
                       <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                         <div className="flex items-center justify-end gap-2">
                           <Button variant="ghost" size="sm" onClick={() => openView(s)}>View</Button>
+                          <Button variant="ghost" size="sm" onClick={() => openEdit(s)} title="Edit student" aria-label={`Edit ${s.name}`}><Pencil size={14} /></Button>
+                          <Button variant="ghost" size="sm" onClick={() => setDeleteTarget(s)} title="Delete student" aria-label={`Delete ${s.name}`} className="text-danger"><Trash2 size={14} /></Button>
                         </div>
                       </td>
                     </tr>
@@ -288,6 +349,26 @@ export default function AdminStudents() {
             </div>
 
             <div className="border-t pt-4">
+              <h4 className="font-medium mb-2" style={{ color: 'var(--color-charcoal)' }}>Student Status</h4>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-sm text-muted">Fee: {viewTarget.fee_status || 'unpaid'}</span>
+                <select
+                  className="input select"
+                  value={viewTarget.fee_status || 'unpaid'}
+                  onChange={(event) => handleStudentFeeStatus(viewTarget, event.target.value)}
+                  disabled={statusSaving}
+                  aria-label="Student fee status"
+                >
+                  <option value="unpaid">Unpaid</option>
+                  <option value="submitted">Submitted</option>
+                  <option value="paid">Paid</option>
+                </select>
+                <span className="text-sm text-muted">Subscription: {viewTarget.subscription_status || 'free'}</span>
+              </div>
+              {actionMsg && <p className="text-xs mt-2" style={{ color: actionMsg.includes('success') ? 'var(--color-success)' : 'var(--color-danger)' }}>{actionMsg}</p>}
+            </div>
+
+            <div className="border-t pt-4">
               <h4 className="font-medium mb-2" style={{ color: 'var(--color-charcoal)' }}>Reset Password</h4>
               <div className="flex items-center gap-2">
                 <Input type="password" placeholder="New password (min 8 chars)" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
@@ -299,6 +380,36 @@ export default function AdminStudents() {
             </div>
           </div>
         )}
+      </Modal>
+
+      <Modal isOpen={!!editingStudent} onClose={() => setEditingStudent(null)} title="Edit Student" size="md">
+        <div className="flex flex-col gap-4">
+          <div>
+            <label className="field-label">Full Name</label>
+            <Input value={editForm.name} onChange={(event) => setEditForm((form) => ({ ...form, name: event.target.value }))} />
+          </div>
+          <div>
+            <label className="field-label">Email</label>
+            <Input type="email" value={editForm.email} onChange={(event) => setEditForm((form) => ({ ...form, email: event.target.value }))} />
+          </div>
+          <div className="grid grid-2 gap-3">
+            <div>
+              <label className="field-label">Phone</label>
+              <Input value={editForm.phone} onChange={(event) => setEditForm((form) => ({ ...form, phone: event.target.value }))} />
+            </div>
+            <div>
+              <label className="field-label">Country</label>
+              <Input value={editForm.country} onChange={(event) => setEditForm((form) => ({ ...form, country: event.target.value }))} />
+            </div>
+          </div>
+          {actionMsg && <p className="text-xs" style={{ color: 'var(--color-danger)' }}>{actionMsg}</p>}
+        </div>
+        <div className="flex items-center justify-end gap-3 mt-6">
+          <Button variant="ghost" onClick={() => setEditingStudent(null)}>Cancel</Button>
+          <Button variant="primary" onClick={handleEditStudent} disabled={editSaving}>
+            {editSaving ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </div>
       </Modal>
 
       {/* Add student modal */}
