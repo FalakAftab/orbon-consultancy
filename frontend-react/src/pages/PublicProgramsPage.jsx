@@ -368,7 +368,9 @@ export default function PublicProgramsPage() {
                               {uniName}
                             </p>
                             <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.25rem', fontWeight: 600, color: '#0F172A', marginTop: '0.4rem', lineHeight: 1.25 }}>
-                              {prog.name}
+                              <a className="program-name-link" href={`/programs/${prog.id}`} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()} style={{ color: 'inherit', textDecoration: 'none' }}>
+                                {prog.name}
+                              </a>
                             </h3>
                             <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                               <MapPin size={13} style={{ color: '#C49746' }} />
@@ -425,7 +427,9 @@ export default function PublicProgramsPage() {
                               <MapPin size={12} color="#C49746" /> {uniName}{city ? ` · ${city}` : ''}
                             </p>
                             <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.2rem', fontWeight: 600, color: '#0F172A', marginTop: '0.25rem' }}>
-                              {prog.name}
+                              <a className="program-name-link" href={`/programs/${prog.id}`} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()} style={{ color: 'inherit', textDecoration: 'none' }}>
+                                {prog.name}
+                              </a>
                             </h3>
                             <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem' }}>
                               {formatDegreeLevel(prog.degree_level)} · {formatTuitionType(prog.tuition_type, prog.tuition_fee)} · {formatLanguage(prog.language_of_instruction)}

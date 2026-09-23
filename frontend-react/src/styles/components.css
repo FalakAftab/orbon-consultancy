@@ -1216,6 +1216,18 @@ textarea.input {
   padding-bottom: 3rem;
 }
 
+.public-results-page {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  padding: 2.5rem clamp(1.25rem, 4vw, 3rem) 5rem;
+}
+
+.program-name-link:hover,
+.program-name-link:focus-visible {
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em;
+}
+
 .wizard-breadcrumb {
   font-size: 0.875rem;
   color: var(--color-text-muted);

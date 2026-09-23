@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   ArrowRight,
   CheckCircle2,
@@ -31,6 +31,7 @@ function getPasswordStrength(password) {
 }
 
 export default function RegisterPage() {
+  const location = useLocation();
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -215,7 +216,7 @@ export default function RegisterPage() {
                 </Button>
 
                 <div className="auth-footer">
-                  Already verified? <Link to="/login">Sign in</Link>
+                  Already verified? <Link to="/login" state={location.state}>Sign in</Link>
                 </div>
               </>
             ) : (

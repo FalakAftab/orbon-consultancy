@@ -108,11 +108,11 @@ export default function LoginPage() {
     try {
       // Device name is sent automatically; the user never sees this field.
       await signIn({ ...form, device_name: getDeviceName() });
-      const target = location.state?.fromResults
+      const target = location.state?.returnTo || (location.state?.fromResults
         ? '/student/results'
         : location.state?.fromEligibility
         ? '/student/wizard'
-        : (user?.role === 'admin' ? '/admin' : '/student');
+        : (user?.role === 'admin' ? '/admin' : '/student'));
       navigate(target, { replace: true });
     } catch (err) {
       if (err.statusCode === 403 && err.body?.needs_verification) {
@@ -315,7 +315,7 @@ export default function LoginPage() {
 
           <div className="auth-footer">
             Don&rsquo;t have an account?{' '}
-            <Link to="/register">Create an account</Link>
+            <Link to="/register" state={location.state}>Create an account</Link>
           </div>
         </div>
       </section>

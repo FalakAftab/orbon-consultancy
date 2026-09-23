@@ -231,7 +231,7 @@ export default function ResultsPage() {
     if (isGuest) {
       // Saving requires an account — send them to register/login. The
       // generated results stay cached in localStorage so they aren't lost.
-      navigate('/login', { state: { fromResults: true } });
+      navigate('/login', { state: { fromResults: true, returnTo: '/results' } });
       return;
     }
     try {
@@ -284,7 +284,7 @@ export default function ResultsPage() {
     : [];
 
   return (
-    <div className="results-page flex flex-col gap-6">
+    <div className={`${isGuest ? 'public-results-page ' : ''}results-page flex flex-col gap-6`}>
       {isGuest && (
         <Link to="/" className="btn btn-ghost btn-sm" style={{ alignSelf: 'flex-start' }}>
           <ArrowLeft size={15} /> Back to Home
@@ -473,7 +473,16 @@ export default function ResultsPage() {
                         marginTop: '0.35rem',
                       }}
                     >
-                      {p.programName}
+                      <a
+                        href={programPath(p.programId)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(event) => event.stopPropagation()}
+                        className="program-name-link"
+                        style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}
+                      >
+                        {p.programName}
+                      </a>
                     </h2>
                     <p style={{ fontSize: '0.875rem', color: 'var(--color-muted)', marginTop: '0.25rem' }}>
                       {formatDegreeLevel(p.degree)} {p.city ? `· ${p.city}` : ''}
@@ -589,7 +598,16 @@ export default function ResultsPage() {
                       marginTop: '0.2rem',
                     }}
                   >
-                    {p.programName}
+                    <a
+                      href={programPath(p.programId)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(event) => event.stopPropagation()}
+                      className="program-name-link"
+                      style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}
+                    >
+                      {p.programName}
+                    </a>
                   </h3>
                   <p style={{ fontSize: '0.8125rem', color: 'var(--color-muted)', marginTop: '0.15rem' }}>
 {formatDegreeLevel(p.degree)} · {formatLanguage(p.language)} · {formatTuitionType(p.tuitionType, p.tuitionFee)} · {formatIntake(p.intake)}
