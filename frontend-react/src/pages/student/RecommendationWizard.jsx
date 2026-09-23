@@ -19,6 +19,7 @@ import { SUBJECT_CATEGORIES, SUBJECT_VALUE_TO_LABEL, QUALIFICATION_OPTIONS } fro
 
 import { WizardStepper } from '../../components/student/wizard/WizardStepper';
 import { WizardTipPanel } from '../../components/student/wizard/WizardTipPanel';
+import { Navbar } from '../../components/landing/Navbar';
 
 /**
  * Recommendation Wizard — 6-Step Form Integrated directly with Laravel API.
@@ -358,8 +359,12 @@ export default function RecommendationWizard() {
     }
   };
 
+  const isPublicWizard = !user && !adminStudentId;
+
   return (
-    <div className="wizard-page">
+    <div className={isPublicWizard ? 'wizard-public-shell' : undefined}>
+      {isPublicWizard && <Navbar />}
+      <div className="wizard-page">
       {!user && !adminStudentId && (
         <Link to="/" className="btn btn-ghost btn-sm" style={{ marginBottom: '1rem', display: 'inline-flex' }}>
           <ArrowLeft size={15} /> Back to Home
@@ -1149,6 +1154,7 @@ export default function RecommendationWizard() {
         </div>
 
         <WizardTipPanel step={step} />
+      </div>
       </div>
     </div>
   );
