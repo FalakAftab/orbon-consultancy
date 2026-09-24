@@ -96,6 +96,19 @@ export default function PublicProgramDetailPage() {
   const programDescription = formatText(program.description);
   const uniDescription = formatText(uni.description);
   const universityId = uni.id || program.university_id;
+  const rules = program.eligibility_rules && typeof program.eligibility_rules === 'object'
+    ? program.eligibility_rules
+    : {};
+  const englishRaw = program.english_requirements?.raw;
+  const germanRaw = program.german_requirements?.raw;
+  const detailValue = (value) => formatText(value || 'Not specified');
+  const detailRows = [
+    ['Course location', rules.course_location],
+    ['Duration', rules.duration],
+    ['Intake', formatIntake(program.intake)],
+    ['Teaching language', formatLanguage(program.language_of_instruction)],
+    ['Admission route', formatAdmissionMethod(program.admission_method)],
+  ];
 
   return (
     <div style={{ background: '#FAF7F2', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -128,7 +141,9 @@ export default function PublicProgramDetailPage() {
           <div className="program-detail-tabs">
             {[
               { id: 'overview', label: 'Overview' },
+              { id: 'costs', label: 'Costs / Funding' },
               { id: 'requirements', label: 'Requirements' },
+                { id: 'registration', label: 'Registration' },
               { id: 'university', label: 'University' },
             ].map((tab) => (
               <button
@@ -160,6 +175,14 @@ export default function PublicProgramDetailPage() {
                 <p style={{ color: '#4A5568', fontSize: '0.95rem', lineHeight: 1.7, margin: 0 }}>
                   {programDescription !== 'Not Specified' ? programDescription : 'Program details were not provided by the source dataset.'}
                 </p>
+                <div className="program-detail-information-grid" style={{ marginTop: '1.75rem' }}>
+                  {detailRows.map(([label, value]) => (
+                    <div key={label}>
+                      <p className="program-detail-overview-label">{label}</p>
+                      <p style={{ color: '#0F172A', fontSize: '0.95rem', margin: 0 }}>{detailValue(value)}</p>
+                    </div>
+                  ))}
+                </div>
                 <div className="program-detail-overview-application">
                   <p className="program-detail-overview-label">Application Information</p>
                   <p style={{ color: '#0F172A', fontSize: '0.95rem', margin: '0 0 1rem' }}>
@@ -178,6 +201,27 @@ export default function PublicProgramDetailPage() {
               </section>
             )}
 
+            {activeTab === 'costs' && (
+              <section style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
+                <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 600, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 0 1.5rem 0' }}>
+                  <Euro size={20} color="#C49746" /> Costs & Funding
+                </h2>
+                <div className="program-detail-information-grid">
+                  <div>
+                    <p className="program-detail-overview-label">Tuition fee</p>
+                    <p style={{ color: '#0F172A', fontSize: '1rem', fontWeight: 600, margin: 0 }}>{formatTuitionType(program.tuition_type, program.tuition_fee)}</p>
+                  </div>
+                  <div>
+                    <p className="program-detail-overview-label">Scholarship / funding</p>
+                    <p style={{ color: '#0F172A', fontSize: '1rem', fontWeight: 600, margin: 0 }}>{program.scholarship_amount ? `€${program.scholarship_amount}` : 'Not specified'}</p>
+                  </div>
+                </div>
+                <p style={{ color: '#4A5568', fontSize: '0.9rem', lineHeight: 1.7, marginTop: '1.5rem' }}>
+                  Fee information is shown exactly as provided in the source record. Confirm the current amount and any semester contribution with the university before applying.
+                </p>
+              </section>
+            )}
+
             {activeTab === 'requirements' && (
               <section style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
                 <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 600, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 0 1.5rem 0' }}>
@@ -186,11 +230,11 @@ export default function PublicProgramDetailPage() {
                 <div className="program-detail-requirements-grid">
                   <div>
                     <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748B', fontWeight: 600, margin: '0 0 0.25rem 0' }}>English</p>
-                    <p style={{ color: '#0F172A', fontSize: '0.95rem', margin: 0 }}>{formatEnglishRequirement(program.english_requirements)}</p>
+                    <p style={{ color: '#0F172A', fontSize: '0.95rem', lineHeight: 1.65, margin: 0 }}>{englishRaw || formatEnglishRequirement(program.english_requirements)}</p>
                   </div>
                   <div>
                     <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748B', fontWeight: 600, margin: '0 0 0.25rem 0' }}>German</p>
-                    <p style={{ color: '#0F172A', fontSize: '0.95rem', margin: 0 }}>{formatGermanRequirement(program.german_requirements)}</p>
+                    <p style={{ color: '#0F172A', fontSize: '0.95rem', lineHeight: 1.65, margin: 0 }}>{germanRaw || formatGermanRequirement(program.german_requirements)}</p>
                   </div>
                   <div>
                     <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748B', fontWeight: 600, margin: '0 0 0.25rem 0' }}>Admission</p>
@@ -198,8 +242,30 @@ export default function PublicProgramDetailPage() {
                   </div>
                   <div>
                     <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748B', fontWeight: 600, margin: '0 0 0.25rem 0' }}>Eligibility</p>
-                    <p style={{ color: '#0F172A', fontSize: '0.95rem', margin: 0 }}>{formatEligibility(program.eligibility_rules)}</p>
+                    <p style={{ color: '#0F172A', fontSize: '0.95rem', lineHeight: 1.65, margin: 0 }}>{rules.academic_requirements || formatEligibility(program.eligibility_rules)}</p>
                   </div>
+                </div>
+              </section>
+            )}
+
+            {activeTab === 'registration' && (
+              <section style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
+                <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.5rem', fontWeight: 600, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 0 1.5rem 0' }}>
+                  <FileText size={20} color="#C49746" /> Requirements / Registration
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div>
+                    <p className="program-detail-overview-label">Application deadline</p>
+                    <p style={{ color: '#0F172A', fontSize: '0.95rem', lineHeight: 1.7, margin: 0 }}>{detailValue(rules.deadlines || program.deadline_winter || program.deadline_summer)}</p>
+                  </div>
+                  <div>
+                    <p className="program-detail-overview-label">Application / registration instructions</p>
+                    <p style={{ color: '#0F172A', fontSize: '0.95rem', lineHeight: 1.7, whiteSpace: 'pre-line', margin: 0 }}>{detailValue(rules.application_details)}</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
+                  {daadUrl && <a href={daadUrl} target="_blank" rel="noopener noreferrer" className="program-detail-apply-link">DAAD program page <ExternalLink size={15} /></a>}
+                  {applicationUrl && <a href={applicationUrl} target="_blank" rel="noopener noreferrer" className="program-detail-apply-link">Registration / application link <ExternalLink size={15} /></a>}
                 </div>
               </section>
             )}

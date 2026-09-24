@@ -13,8 +13,9 @@ $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 $input = $argv[1] ?? '';
 $mode = strtolower($argv[2] ?? 'dry-run');
-if ($input === '' || ! is_file($input) || ! in_array($mode, ['dry-run', 'write'], true)) {
-    fwrite(STDERR, "Usage: php import_staged_program_details.php <staging-json> [dry-run|write]\n");
+$scope = strtolower($argv[3] ?? 'all');
+if ($input === '' || ! is_file($input) || ! in_array($mode, ['dry-run', 'write'], true) || ! in_array($scope, ['all', 'masters'], true)) {
+    fwrite(STDERR, "Usage: php import_staged_program_details.php <staging-json> [dry-run|write] [all|masters]\n");
     exit(1);
 }
 
@@ -33,6 +34,9 @@ $degree = static function (array $record): string {
     if (str_contains($text, 'phd') || str_contains($text, 'doctoral')) return 'phd';
     if (str_contains($text, 'master') || preg_match('/\bm\.?\s*(sc|a|eng|ed|phil|res)\.?\b/i', $text) || str_contains($text, 'mba')) return 'master';
     return 'bachelor';
+};
+$isMaster = static function (array $record) use ($degree): bool {
+    return $degree($record) === 'master';
 };
 $intake = static function (string $value): string {
     $value = strtolower($value);
@@ -68,6 +72,9 @@ foreach ($programs as $program) $programMap[$program->university_id.'|'.$normali
 
 $stats = ['source_records' => 0, 'matched_universities' => 0, 'updated_existing' => 0, 'created_programs' => 0, 'skipped_university' => 0, 'errors' => []];
 $records = array_values(array_filter($payload['records'] ?? [], static fn (array $record): bool => trim((string) ($record['university_name'] ?? '')) !== ''));
+if ($scope === 'masters') {
+    $records = array_values(array_filter($records, $isMaster));
+}
 $run = function () use (&$stats, $records, $universityMap, &$programMap, $normalize, $first, $degree, $intake, $language, $tuitionType, $money, $mode): void {
     foreach ($records as $record) {
         $stats['source_records']++;
@@ -81,7 +88,14 @@ $run = function () use (&$stats, $records, $universityMap, &$programMap, $normal
         $fee = $money($first((string) ($record['tuition_fee'] ?? '')));
         $english = ['raw' => $first((string) ($record['language_requirements'] ?? '')), 'source' => 'staged_document'];
         $german = ['raw' => $first((string) ($record['language_details'] ?? '')), 'source' => 'staged_document'];
-        $eligibility = ['academic_requirements' => $first((string) ($record['academic_requirements'] ?? '')), 'course_location' => $first((string) ($record['course_location'] ?? '')), 'duration' => $first((string) ($record['programme_duration'] ?? '')), 'source_file' => $record['source_file'] ?? null];
+        $eligibility = [
+            'academic_requirements' => $first((string) ($record['academic_requirements'] ?? '')),
+            'course_location' => $first((string) ($record['course_location'] ?? '')),
+            'duration' => $first((string) ($record['programme_duration'] ?? '')),
+            'deadlines' => $first((string) ($record['deadlines'] ?? '')),
+            'application_details' => $first((string) ($record['application_details'] ?? '')),
+            'source_file' => $record['source_file'] ?? null,
+        ];
         $links = $record['links'] ?? [];
         $daad = collect($links)->first(fn ($link) => str_contains(strtolower((string) $link), 'daad.de'));
         $application = collect($links)->first(fn ($link) => ! str_contains(strtolower((string) $link), 'daad.de'));
@@ -127,4 +141,4 @@ $run = function () use (&$stats, $records, $universityMap, &$programMap, $normal
 };
 
 if ($mode === 'write') DB::transaction($run); else $run();
-print json_encode(['mode' => strtoupper($mode), 'stats' => $stats], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES).PHP_EOL;
+print json_encode(['mode' => strtoupper($mode), 'scope' => $scope, 'stats' => $stats], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES).PHP_EOL;

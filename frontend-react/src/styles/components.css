@@ -1724,6 +1724,12 @@ textarea.input {
   gap: 1.5rem;
 }
 
+.program-detail-information-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
 .program-detail-overview-application {
   margin-top: 1.75rem;
   padding-top: 1.25rem;
@@ -1759,7 +1765,7 @@ textarea.input {
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
   overflow: hidden;
-  height: 4px;
+  min-height: 3.25rem;
 }
 .program-detail-tabs::-webkit-scrollbar-track {
   background: var(--color-surface-subtle);
@@ -1796,15 +1802,29 @@ textarea.input {
     padding: 1.75rem 1.25rem 1.5rem;
   }
   .program-detail-tabs {
+    display: flex;
+    flex-direction: column;
     gap: 0;
     padding: 0;
-    justify-content: space-between;
+    min-height: 0;
+    border: 1px solid #E2E8F0;
+    background: #FFFFFF;
   }
   .program-detail-tab {
-    flex: 1 1 0;
-    padding: 0.85rem 0.25rem;
+    width: 100%;
+    flex: none;
+    padding: 0.85rem 0.75rem;
     font-size: 0.8rem;
-    text-align: center;
+    text-align: left;
+    border-bottom: 1px solid #E2E8F0;
+  }
+  .program-detail-tab:last-child {
+    border-bottom: 0;
+  }
+  .program-detail-tab-active {
+    background: #0B6FB8;
+    color: #FFFFFF;
+    border-color: #0B6FB8;
   }
   .program-detail-sticky-bar {
     padding: 0.875rem 1.25rem;
@@ -1822,6 +1842,15 @@ textarea.input {
   .program-detail-requirements-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+  .program-detail-requirements-grid > div,
+  .program-detail-information-grid > div {
+    padding: 0.85rem;
+    background: #F1F1F1;
+  }
+
+  .program-detail-information-grid {
+    grid-template-columns: 1fr;
   }
 
   .program-detail-facts {
