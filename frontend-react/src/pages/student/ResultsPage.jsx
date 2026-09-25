@@ -322,7 +322,7 @@ export default function ResultsPage() {
           </div>
           {totalMatches > 0 && (
             <span className="badge badge-primary" style={{ borderRadius: 'var(--radius-full)' }}>
-              {totalMatches} programs found
+              {filteredPrograms.length} programs found
             </span>
           )}
           <select

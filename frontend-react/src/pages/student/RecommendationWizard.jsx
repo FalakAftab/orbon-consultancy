@@ -365,12 +365,6 @@ export default function RecommendationWizard() {
     <div className={isPublicWizard ? 'wizard-public-shell' : undefined}>
       {isPublicWizard && <Navbar />}
       <div className="wizard-page">
-      {!user && !adminStudentId && (
-        <Link to="/" className="btn btn-ghost btn-sm" style={{ marginBottom: '1rem', display: 'inline-flex' }}>
-          <ArrowLeft size={15} /> Back to Home
-        </Link>
-      )}
-
       {/* Breadcrumb */}
       <div className="wizard-breadcrumb">
         Recommendations <span>&gt;</span> <strong>{STEPS[step - 1].title}</strong>
