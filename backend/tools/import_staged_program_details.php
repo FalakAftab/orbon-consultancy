@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Program;
 use App\Models\University;
+use App\Services\Excel\DatasetImportService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -62,11 +63,14 @@ $money = static function (string $value): ?float {
     $number = str_replace(',', '.', $number);
     return is_numeric($number) ? (float) $number : null;
 };
+$subjectCategory = static function (string $value): ?string {
+    return app(DatasetImportService::class)->normalizeSubjectCategory($value);
+};
 
 $universities = University::withTrashed()->get(['id', 'name']);
 $universityMap = [];
 foreach ($universities as $university) $universityMap[$normalize((string) $university->name)] = $university;
-$programs = Program::withTrashed()->get(['id', 'university_id', 'name', 'slug', 'degree_level', 'description', 'english_requirements', 'german_requirements', 'eligibility_rules', 'application_link', 'daad_program_link', 'deadline_winter', 'deadline_summer', 'tuition_type', 'tuition_fee', 'intake', 'language_of_instruction']);
+$programs = Program::withTrashed()->get(['id', 'university_id', 'name', 'slug', 'degree_level', 'field', 'subject_category', 'description', 'english_requirements', 'german_requirements', 'eligibility_rules', 'application_link', 'daad_program_link', 'deadline_winter', 'deadline_summer', 'tuition_type', 'tuition_fee', 'intake', 'language_of_instruction']);
 $programMap = [];
 foreach ($programs as $program) $programMap[$program->university_id.'|'.$normalize((string) $program->name)] = $program;
 
@@ -75,7 +79,7 @@ $records = array_values(array_filter($payload['records'] ?? [], static fn (array
 if ($scope === 'masters') {
     $records = array_values(array_filter($records, $isMaster));
 }
-$run = function () use (&$stats, $records, $universityMap, &$programMap, $normalize, $first, $degree, $intake, $language, $tuitionType, $money, $mode): void {
+$run = function () use (&$stats, $records, $universityMap, &$programMap, $normalize, $first, $degree, $intake, $language, $tuitionType, $money, $subjectCategory, $mode): void {
     foreach ($records as $record) {
         $stats['source_records']++;
         $university = $universityMap[$normalize((string) $record['university_name'])] ?? null;
@@ -85,8 +89,17 @@ $run = function () use (&$stats, $records, $universityMap, &$programMap, $normal
         if ($name === '') continue;
         $key = $university->id.'|'.$normalize($name);
         $existing = $programMap[$key] ?? null;
+        $description = $first((string) ($record['description'] ?? ''));
+        $category = $subjectCategory($name.' '.$description);
         $fee = $money($first((string) ($record['tuition_fee'] ?? '')));
-        $english = ['raw' => $first((string) ($record['language_requirements'] ?? '')), 'source' => 'staged_document'];
+        $languageRequirements = $first((string) ($record['language_requirements'] ?? ''));
+        $english = [
+            'raw' => $languageRequirements,
+            'min_ielts' => preg_match('/ielts[^0-9]*([0-9]+(?:\.[0-9]+)?)/i', $languageRequirements, $ielts) === 1 ? (float) $ielts[1] : null,
+            'min_toefl' => preg_match('/toefl[^0-9]*([0-9]+(?:\.[0-9]+)?)/i', $languageRequirements, $toefl) === 1 ? (float) $toefl[1] : null,
+            'accepts_moi' => (bool) preg_match('/medium of instruction|\bmoi\b/i', $languageRequirements),
+            'source' => 'staged_document',
+        ];
         $german = ['raw' => $first((string) ($record['language_details'] ?? '')), 'source' => 'staged_document'];
         $eligibility = [
             'academic_requirements' => $first((string) ($record['academic_requirements'] ?? '')),
@@ -101,7 +114,8 @@ $run = function () use (&$stats, $records, $universityMap, &$programMap, $normal
         $application = collect($links)->first(fn ($link) => ! str_contains(strtolower((string) $link), 'daad.de'));
         $fields = [
             'degree_level' => $degree($record),
-            'field' => 'General',
+            'field' => $category ?? 'General',
+            'subject_category' => $category,
             'intake' => $intake($first((string) ($record['intake'] ?? ''))),
             'language_of_instruction' => $language($first((string) ($record['teaching_language'] ?? '').' '.($record['language_details'] ?? ''))),
             'tuition_type' => $tuitionType($first((string) ($record['tuition_fee'] ?? ''))),
@@ -109,7 +123,7 @@ $run = function () use (&$stats, $records, $universityMap, &$programMap, $normal
             'english_requirements' => $english,
             'german_requirements' => $german,
             'eligibility_rules' => $eligibility,
-            'description' => $first((string) ($record['description'] ?? '')) ?: null,
+            'description' => $description ?: null,
             'application_link' => $application,
             'daad_program_link' => $daad,
         ];
@@ -120,6 +134,10 @@ $run = function () use (&$stats, $records, $universityMap, &$programMap, $normal
                 if (in_array($field, ['english_requirements', 'german_requirements', 'eligibility_rules'], true)) {
                     $current = is_array($existing->{$field}) ? $existing->{$field} : [];
                     $update[$field] = array_merge($value, $current);
+                } elseif ($field === 'field' && in_array(trim((string) $existing->{$field}), ['', 'General'], true)) {
+                    $update[$field] = $value;
+                } elseif ($field === 'subject_category' && ($existing->{$field} === null || $existing->{$field} === '')) {
+                    $update[$field] = $value;
                 } elseif ($existing->{$field} === null || $existing->{$field} === '') {
                     $update[$field] = $value;
                 }

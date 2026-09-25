@@ -249,6 +249,9 @@ export default function AdminImport() {
             <div>
               <p className="font-semibold" style={{ color: 'var(--color-charcoal)' }}>Import completed</p>
               <p className="text-sm text-muted">{result.message || 'Workbook processed successfully.'}</p>
+              {typeof result.synchronized_deleted === 'number' && (
+                <p className="text-xs text-muted mt-1">Catalogue synchronized: {result.synchronized_deleted} outdated program{result.synchronized_deleted === 1 ? '' : 's'} archived.</p>
+              )}
             </div>
           </div>
 

@@ -32,13 +32,16 @@ class ImportController extends Controller
             'status' => 'processing',
         ]);
 
-        $result = $this->datasetImportService->importWorkbook(storage_path('app/public/'.$filePath));
+        $result = $this->datasetImportService->importWorkbook(
+            storage_path('app/public/'.$filePath),
+            $request->boolean('sync_catalog', true)
+        );
 
         $import->update([
-            'status' => 'completed',
-            'total_rows' => $result['processed'] + $result['failed'],
+            'status' => $result['failed'] > 0 ? 'failed' : 'completed',
+            'total_rows' => $result['processed'] + $result['failed'] + $result['skipped'],
             'processed_rows' => $result['processed'],
-            'failed_rows' => $result['failed'],
+            'failed_rows' => $result['failed'] + $result['skipped'],
             'notes' => $result['errors'] ? json_encode($result['errors']) : null,
         ]);
 
@@ -46,6 +49,9 @@ class ImportController extends Controller
             'message' => 'Import processed successfully.',
             'import' => $import->fresh(),
             'errors' => $result['errors'],
+            'skipped' => $result['skipped'],
+            'synchronized_deleted' => $result['synchronized_deleted'],
+            'synchronization_skipped' => $result['synchronization_skipped'],
         ], Response::HTTP_CREATED);
     }
 
@@ -66,13 +72,13 @@ class ImportController extends Controller
             'status' => 'processing',
         ]);
 
-        $result = $this->datasetImportService->importWorkbook($path);
+        $result = $this->datasetImportService->importWorkbook($path, true);
 
         $import->update([
-            'status' => 'completed',
-            'total_rows' => $result['processed'] + $result['failed'],
+            'status' => $result['failed'] > 0 ? 'failed' : 'completed',
+            'total_rows' => $result['processed'] + $result['failed'] + $result['skipped'],
             'processed_rows' => $result['processed'],
-            'failed_rows' => $result['failed'],
+            'failed_rows' => $result['failed'] + $result['skipped'],
             'notes' => $result['errors'] ? json_encode($result['errors']) : null,
         ]);
 
@@ -80,6 +86,9 @@ class ImportController extends Controller
             'message' => 'Temporary dataset imported successfully.',
             'import' => $import->fresh(),
             'errors' => $result['errors'],
+            'skipped' => $result['skipped'],
+            'synchronized_deleted' => $result['synchronized_deleted'],
+            'synchronization_skipped' => $result['synchronization_skipped'],
         ]);
     }
 

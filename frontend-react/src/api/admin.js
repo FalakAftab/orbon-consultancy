@@ -139,6 +139,7 @@ export function deleteProgram(id) {
 export function uploadImport(file) {
   const formData = new FormData();
   formData.append('file', file);
+  formData.append('sync_catalog', '1');
   return api('/admin/imports', {
     method: 'POST',
     body: formData,

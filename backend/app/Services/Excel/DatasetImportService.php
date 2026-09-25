@@ -11,24 +11,50 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DatasetImportService
 {
-    public function importWorkbook(string $path): array
+    public function importWorkbook(string $path, bool $synchronizeCatalog = false): array
     {
         $rows = Excel::toCollection(new HeadingsImport(), $path)->first() ?? collect();
+        $result = $this->importRows($rows);
 
-        return $this->importRows($rows);
+        $result['synchronized_deleted'] = 0;
+        $result['synchronization_skipped'] = false;
+
+        if ($synchronizeCatalog && $result['failed'] === 0 && $result['program_slugs'] !== []) {
+            $result['synchronized_deleted'] = Program::query()
+                ->whereNotIn('slug', $result['program_slugs'])
+                ->delete();
+        } elseif ($synchronizeCatalog) {
+            $result['synchronization_skipped'] = true;
+        }
+
+        unset($result['program_slugs']);
+
+        return $result;
     }
 
     public function importRows(Collection $rows): array
     {
         $processed = 0;
         $failed = 0;
+        $skipped = 0;
         $errors = [];
+        $programSlugs = [];
 
         foreach ($rows as $index => $row) {
             $rowNumber = $index + 2;
 
+            if ($this->isBlankRow($row)) {
+                continue;
+            }
+
             try {
                 $data = $this->normalizeRow($row);
+                if ($data === null) {
+                    $skipped++;
+                    $errors[] = ['row' => $rowNumber, 'error' => 'University Name and Program Name are required.'];
+                    continue;
+                }
+
                 $university = University::query()->updateOrCreate(
                     ['slug' => $data['university_slug']],
                     [
@@ -79,6 +105,7 @@ class DatasetImportService
 
 
                 $processed++;
+                $programSlugs[] = $data['program_slug'];
             } catch (\Throwable $throwable) {
                 $failed++;
                 $errors[] = ['row' => $rowNumber, 'error' => $throwable->getMessage()];
@@ -86,10 +113,25 @@ class DatasetImportService
             }
         }
 
-        return compact('processed', 'failed', 'errors');
+        $programSlugs = array_values(array_unique($programSlugs));
+
+        return [
+            'processed' => $processed,
+            'failed' => $failed,
+            'skipped' => $skipped,
+            'errors' => $errors,
+            'program_slugs' => $programSlugs,
+        ];
     }
 
-    private function normalizeRow(array|Collection $row): array
+    private function isBlankRow(array|Collection $row): bool
+    {
+        return Collection::make($row)
+            ->filter(static fn ($value): bool => trim((string) $value) !== '')
+            ->isEmpty();
+    }
+
+    private function normalizeRow(array|Collection $row): ?array
     {
         $source = Collection::make($row)->mapWithKeys(function ($value, $key) {
             return [Str::lower(Str::of((string) $key)->replace(['.', '-', '/', '(', ')', '_'], ' ')->squish()->toString()) => $value];
@@ -98,7 +140,7 @@ class DatasetImportService
         $universityName = trim((string) $this->getValue($source, 'university name'));
         $programName = trim((string) $this->getValue($source, 'program name'));
         if ($universityName === '' || $programName === '') {
-            throw new \RuntimeException('University Name and Program Name are required.');
+            return null;
         }
 
         $feeAmount = $this->parseMoney($this->getFirstValue($source, ['fee amount', 'tuition fee', 'fee', 'tuition']));
@@ -444,7 +486,7 @@ class DatasetImportService
         };
     }
 
-    private function normalizeSubjectCategory(mixed $value): ?string
+    public function normalizeSubjectCategory(mixed $value): ?string
     {
         $raw = trim((string) $value);
         if ($raw === '') {
