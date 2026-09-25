@@ -183,8 +183,8 @@
 }
 
 .lp-signin-button {
-  border: 1px solid var(--lp-gold) !important;
-  background: var(--lp-gold);
+  border: 1px solid var(--lp-gold, #c7a45b) !important;
+  background: var(--lp-gold, #c7a45b);
 }
 
 .lp-signin-button:hover {
