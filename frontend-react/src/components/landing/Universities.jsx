@@ -11,6 +11,17 @@ const RANDOM_UNI_IMAGES = [
   '/assets/landing/collage-1.jpg',
   '/assets/landing/collage-2.jpg',
   '/assets/landing/collage-3.jpg',
+  '/assets/universities/campus-01.jpg',
+  '/assets/universities/campus-02.jpg',
+  '/assets/universities/campus-03.jpg',
+  '/assets/universities/campus-04.jpg',
+  '/assets/universities/campus-05.jpg',
+  '/assets/universities/campus-06.jpg',
+  '/assets/universities/campus-07.jpg',
+  '/assets/universities/campus-08.jpg',
+  '/assets/universities/campus-09.jpg',
+  '/assets/universities/campus-10.jpg',
+  '/assets/universities/campus-11.jpg',
 ];
 
 export function Universities() {
