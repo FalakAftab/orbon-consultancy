@@ -201,7 +201,7 @@ export default function NotificationsPage() {
   const [chatMessage, setChatMessage] = useState('');
   const [sendingMsg, setSendingMsg] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [filterType, setFilterType] = useState('all'); // 'all' | 'unread' | 'messages' | 'applications'
+  const [filterType, setFilterType] = useState('messages'); // 'messages' | 'updates'
   const [search, setSearch] = useState('');
 
   // New Consultation Chat Modal State
@@ -455,9 +455,7 @@ export default function NotificationsPage() {
   };
 
   const filteredNotifs = notifications.filter((item) => {
-    if (filterType === 'unread' && item.is_read) return false;
-    if (filterType === 'messages' && item.type !== 'advisor_message') return false;
-    if (filterType === 'applications' && item.type !== 'application_status') return false;
+    if (filterType === 'updates' && item.type === 'advisor_message') return false;
     if (search.trim()) {
       const q = search.toLowerCase();
       return (
@@ -511,28 +509,18 @@ export default function NotificationsPage() {
     (acc, a) => acc + (a.messages?.length || 0),
     0
   );
-  const unreadCount = notifications.filter((item) => !item.is_read).length;
+  const updatesCount = notifications.filter((item) => item.type !== 'advisor_message').length;
 
   const filterTabs = [
     {
-      id: 'all',
-      label: `All Updates (${notifications.length})`,
-      shortLabel: `All (${notifications.length})`,
-    },
-    {
       id: 'messages',
-      label: `Advisor Messages (${totalAdvisorMessages})`,
+      label: `All Messages (${totalAdvisorMessages})`,
       shortLabel: `Messages (${totalAdvisorMessages})`,
     },
     {
-      id: 'unread',
-      label: unreadCount > 0 ? `Unread (${unreadCount})` : 'Unread',
-      shortLabel: unreadCount > 0 ? `Unread (${unreadCount})` : 'Unread',
-    },
-    {
-      id: 'applications',
-      label: 'Application Status',
-      shortLabel: 'Status Updates',
+      id: 'updates',
+      label: `Updates (${updatesCount})`,
+      shortLabel: `Updates (${updatesCount})`,
     },
   ];
 
@@ -555,19 +543,19 @@ export default function NotificationsPage() {
             {activeThread
               ? 'Advisor Chat & Messages'
               : filterType === 'messages'
-              ? 'Academic Field Conversations'
-              : 'Notifications & Messages'}
+              ? 'All Messages'
+              : 'Updates'}
           </h1>
           <p style={{ fontSize: '0.875rem', color: '#5B6578', marginTop: '0.35rem' }}>
             {activeThread
               ? `Direct unified conversation feed for ${getFieldTitle(activeThread)}.`
               : filterType === 'messages'
               ? 'All advisor & student messages grouped by academic field and application tracks.'
-              : 'Complete history of advisor messages, status milestones, and official consultancy updates.'}
+              : 'Request status milestones and official consultancy updates.'}
           </p>
         </div>
 
-        {!activeThread && filterType !== 'messages' && (
+        {!activeThread && filterType === 'updates' && (
           <button
             type="button"
             onClick={handleMarkAllRead}
@@ -652,7 +640,7 @@ export default function NotificationsPage() {
             <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
             <input
               type="text"
-              placeholder={filterType === 'messages' ? 'Search messages or fields...' : 'Search history...'}
+              placeholder={filterType === 'messages' ? 'Search messages or fields...' : 'Search updates...'}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{

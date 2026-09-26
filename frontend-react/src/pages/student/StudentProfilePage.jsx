@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Save,
   X,
-  BookOpen,
   Camera,
   Upload,
   Trash2,
@@ -243,13 +242,6 @@ export default function StudentProfilePage() {
     return <ErrorState title="Could not load profile" description={error} onRetry={load} />;
   }
 
-  const accountComplete = Boolean(
-    profile?.first_name &&
-    profile?.last_name &&
-    profile?.phone &&
-    profile?.address
-  );
-
   const PROFILE_FIELD_KEYS = [
     'first_name', 'last_name', 'phone', 'address'
   ];
@@ -467,7 +459,7 @@ export default function StudentProfilePage() {
         </div>
       )}
 
-      <div className="grid" style={{ gridTemplateColumns: '1fr minmax(280px, 340px)', gap: 'var(--space-6)', alignItems: 'start' }}>
+      <div>
         <form className="flex flex-col gap-6" onSubmit={handleSave} noValidate>
           {/* Personal */}
           <Section icon={User} title="Personal Information">
@@ -515,19 +507,6 @@ export default function StudentProfilePage() {
           )}
         </form>
 
-        {/* Sidebar */}
-        <aside className="flex flex-col gap-6">
-          <div className="card" style={{ borderRadius: 'var(--radius-2xl)', padding: '1.5rem' }}>
-            <h3 className="text-xs uppercase tracking-wider text-muted font-semibold flex items-center gap-1 mb-3">
-              <BookOpen size={13} /> Summary
-            </h3>
-            <div className="flex flex-col gap-3 text-sm">
-              <div className="flex justify-between"><span className="text-muted">Name</span><strong className="text-charcoal">{profile?.first_name} {profile?.last_name}</strong></div>
-              <div className="flex justify-between"><span className="text-muted">Phone</span><strong className="text-charcoal">{profile?.phone || 'Not set'}</strong></div>
-              <div className="flex justify-between"><span className="text-muted">Profile</span><strong className="text-charcoal">{accountComplete ? 'Complete' : 'Incomplete'}</strong></div>
-            </div>
-          </div>
-        </aside>
       </div>
     </div>
   );
