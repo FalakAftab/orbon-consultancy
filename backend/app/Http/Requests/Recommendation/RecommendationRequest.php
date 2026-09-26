@@ -44,14 +44,26 @@ class RecommendationRequest extends FormRequest
                 'nullable',
                 'numeric',
                 'min:0',
-                Rule::requiredIf(function () {
-                    $type = $this->input('english_test_type');
-                    if (is_array($type)) {
-                        return in_array('ielts', $type, true) || in_array('toefl', $type, true);
-                    }
-                    return $type !== 'moi';
-                }),
             ],
+            'english_test_scores' => [
+                'nullable',
+                'array',
+                function ($attribute, $value, $fail) {
+                    $type = $this->input('english_test_type');
+                    $types = is_array($type) ? $type : [$type];
+                    $scores = is_array($value) ? $value : [];
+
+                    foreach (['ielts', 'toefl'] as $test) {
+                        if (in_array($test, $types, true)
+                            && ! isset($scores[$test])
+                            && $this->input('english_test_score') === null) {
+                            $fail("A {$test} score is required.");
+                        }
+                    }
+                },
+            ],
+            'english_test_scores.ielts' => ['nullable', 'numeric', 'min:0'],
+            'english_test_scores.toefl' => ['nullable', 'numeric', 'min:0'],
 
             'preferred_intake' => ['required', Rule::in(['winter', 'summer', 'both'])],
             'admission_preference' => ['nullable', Rule::in(['uni_assist_only', 'direct_portal_only', 'both'])],

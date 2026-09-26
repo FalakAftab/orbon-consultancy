@@ -103,7 +103,9 @@ export function AnimatedHero() {
         {/* Left Column: Heading, Badges, Search & Actions */}
         <div>
           {/* Top Pill Badge */}
-          <div
+          <form
+            onSubmit={handleSearch}
+            className="lp-animated-search-form"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -158,10 +160,7 @@ export function AnimatedHero() {
             AI-driven eligibility matching across 2,000+ German public programs. Search, get instant recommendations, or let our expert team submit unlimited applications for you.
           </p>
 
-          {/* Quick Filter Form */}
-          <form
-            onSubmit={handleSearch}
-            className="lp-animated-search-form"
+          <div
             style={{
               marginTop: '2.5rem',
               background: 'rgba(255, 255, 255, 0.04)',
@@ -384,30 +383,31 @@ export function AnimatedHero() {
                   <CheckCircle2 size={20} style={{ color: '#FCD34D' }} />
                 </div>
               </div>
+
+              <button
+                onClick={() => navigate('/check-eligibility')}
+                style={{
+                  marginTop: '1.5rem',
+                  width: '100%',
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  color: '#FFFFFF',
+                  padding: '0.75rem',
+                  borderRadius: '10px',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                }}
+              >
+                <span>Test Your Eligibility Match</span>
+                <ArrowRight size={16} />
+              </button>
             </div>
 
-            <button
-              onClick={() => navigate(user ? '/student/wizard' : '/check-eligibility')}
-              style={{
-                marginTop: '1.5rem',
-                width: '100%',
-                background: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: '#FFFFFF',
-                padding: '0.75rem',
-                borderRadius: '10px',
-                fontWeight: 600,
-                fontSize: '0.875rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-              }}
-            >
-              <span>Test Your Eligibility Match</span>
-              <ArrowRight size={16} />
-            </button>
           </div>
 
           {/* Floating Badge 1: 3D Germany Flag Shield */}

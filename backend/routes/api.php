@@ -108,6 +108,7 @@ Route::prefix('v1')->group(function (): void {
         Route::get('dashboard', [DashboardController::class, 'index']);
         Route::get('students', [StudentController::class, 'index']);
         Route::post('students', [StudentController::class, 'store']);
+        Route::get('students/{id}', [StudentController::class, 'show']);
         Route::put('students/{id}', [StudentController::class, 'update']);
         Route::delete('students/{id}', [StudentController::class, 'destroy']);
         Route::post('students/{id}/recommendations', [RecommendationController::class, 'storeForStudent']);
@@ -128,6 +129,7 @@ Route::prefix('v1')->group(function (): void {
         // Premium management (admin side)
         Route::get('premium/dashboard', [AdminPremiumController::class, 'dashboard']);
         Route::get('premium-applications', [AdminPremiumController::class, 'indexApplications']);
+        Route::post('premium-applications', [AdminPremiumController::class, 'storeApplicationOnBehalf']);
         Route::get('premium-applications/{id}', [AdminPremiumController::class, 'showApplication']);
         Route::patch('premium-applications/{id}/status', [AdminPremiumController::class, 'updateApplicationStatus']);
         Route::post('premium-applications/{id}/messages', [AdminPremiumController::class, 'sendMessage']);

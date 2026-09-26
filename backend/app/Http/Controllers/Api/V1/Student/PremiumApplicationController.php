@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\PremiumApplication;
 use App\Models\Program;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -101,6 +103,22 @@ class PremiumApplicationController extends Controller
             'student_notes' => $validated['student_notes'] ?? null,
             'documents' => $validated['documents'] ?? [],
         ]);
+
+        $application->load('program');
+        $programName = $application->program?->name ?? 'a selected program';
+
+        User::query()
+            ->where('role', 'admin')
+            ->pluck('id')
+            ->each(function (int $adminId) use ($user, $programName, $application): void {
+                Notification::notify(
+                    $adminId,
+                    'New Student Request',
+                    "{$user->name} submitted an Apply-for-Me request for {$programName}.",
+                    'new_application',
+                    '/admin/premium-applications'
+                );
+            });
 
         return response()->json([
             'message' => 'Application assistance request submitted successfully!',
@@ -203,9 +221,21 @@ class PremiumApplicationController extends Controller
     {
         $user = $request->user();
 
+        if ($user->fee_status === 'paid') {
+            return response()->json([
+                'message' => 'Your payment has already been confirmed.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (! $user->premiumApplications()->where('status', 'payment_requested')->exists()) {
+            return response()->json([
+                'message' => 'Payment receipt submission is available after the consultancy sends your challan.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $validated = $request->validate([
             'payment_reference' => ['required', 'string', 'max:255'],
-            'payment_proof' => ['nullable', 'string', 'max:5000'],
+            'payment_proof' => ['required', 'string', 'max:8000000'],
         ]);
 
         $user->update([

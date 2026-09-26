@@ -107,6 +107,13 @@ export function getAdminPremiumApplications(params = {}) {
   return api(`/admin/premium-applications${query ? `?${query}` : ''}`);
 }
 
+export function createAdminPremiumApplication(payload) {
+  return api('/admin/premium-applications', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+}
 
 export function updateAdminApplicationStatus(id, payload) {
   return api(`/admin/premium-applications/${id}/status`, {

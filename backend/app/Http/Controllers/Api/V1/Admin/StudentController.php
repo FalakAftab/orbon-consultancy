@@ -62,6 +62,27 @@ class StudentController extends Controller
         ], Response::HTTP_CREATED);
     }
 
+    /**
+     * Return one student's records for the admin workspace.
+     */
+    public function show(int $id): JsonResponse
+    {
+        $student = User::query()
+            ->where('role', 'student')
+            ->with([
+                'studentProfile',
+                'favorites.program.university',
+                'favorites.university',
+                'recommendations.program.university',
+                'premiumApplications.program.university',
+            ])
+            ->findOrFail($id);
+
+        return response()->json([
+            'data' => $student,
+        ]);
+    }
+
     public function update(Request $request, $id): JsonResponse
     {
         $student = User::query()->where('id', $id)->where('role', 'student')->firstOrFail();

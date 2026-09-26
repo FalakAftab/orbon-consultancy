@@ -32,6 +32,11 @@ export function fetchAdminStudents(params = {}) {
   return api(`/admin/students${query ? `?${query}` : ''}`);
 }
 
+/** GET /v1/admin/students/{id} -> one student's categorized admin record */
+export function fetchAdminStudent(id) {
+  return api(`/admin/students/${id}`);
+}
+
 /** POST /v1/admin/students -> admin creates a student account */
 export function createAdminStudent(payload) {
   return api('/admin/students', {

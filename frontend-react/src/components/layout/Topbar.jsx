@@ -61,9 +61,17 @@ export function Topbar({ onMenuClick, className, breadcrumb }) {
     if (!user) return;
     fetchNotifs();
 
-    // Auto-poll notifications every 30 seconds for live updates
-    const interval = setInterval(fetchNotifs, 30000);
-    return () => clearInterval(interval);
+    const refreshNotifications = () => fetchNotifs();
+    window.addEventListener('focus', refreshNotifications);
+    document.addEventListener('visibilitychange', refreshNotifications);
+
+    // Keep the bell current for actions initiated from another user session.
+    const interval = setInterval(fetchNotifs, 10000);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', refreshNotifications);
+      document.removeEventListener('visibilitychange', refreshNotifications);
+    };
   }, [user]);
 
   // Close dropdown panel when clicking outside

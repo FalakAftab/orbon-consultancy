@@ -223,6 +223,7 @@ class RecommendationService
             $maximum,
             $payload['english_test_type'] ?? $profile?->english_test_type,
             isset($payload['english_test_score']) ? (float) $payload['english_test_score'] : $profile?->english_test_score,
+            is_array($payload['english_test_scores'] ?? null) ? $payload['english_test_scores'] : null,
             $payload['preferred_intake'] ?? $profile?->preferred_intake,
             $payload['admission_preference'] ?? $profile?->admission_preference,
             $payload['tuition_preference'] ?? $profile?->tuition_preference,
@@ -343,20 +344,24 @@ class RecommendationService
             $englishOk = true;
         } else {
             foreach ($selectedTestTypes as $type) {
+                $testScore = isset($criteria->englishTestScores[$type])
+                    ? (float) $criteria->englishTestScores[$type]
+                    : $criteria->englishTestScore;
+
                 if ($type === 'moi') {
                     if ($acceptsMoi || ($minIelts === null && $minToefl === null)) {
                         $englishOk = true;
                         $reasons[] = 'MOI accepted for this profile.';
                     }
                 } elseif ($type === 'ielts') {
-                    if ($minIelts === null || ($criteria->englishTestScore !== null && $criteria->englishTestScore >= $minIelts)) {
+                    if ($minIelts === null || ($testScore !== null && $testScore >= $minIelts)) {
                         $englishOk = true;
                         if ($minIelts !== null) {
                             $reasons[] = 'IELTS requirement matched.';
                         }
                     }
                 } elseif ($type === 'toefl') {
-                    if ($minToefl === null || ($criteria->englishTestScore !== null && $criteria->englishTestScore >= $minToefl)) {
+                    if ($minToefl === null || ($testScore !== null && $testScore >= $minToefl)) {
                         $englishOk = true;
                         if ($minToefl !== null) {
                             $reasons[] = 'TOEFL requirement matched.';

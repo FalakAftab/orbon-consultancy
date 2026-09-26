@@ -51,6 +51,8 @@ import { fetchShortlist, fetchPrograms } from '../../api/student';
 const STATUS_CONFIG = {
   pending: { label: 'Pending Review', color: '#B45309', bg: '#FEF3C7', step: 1 },
   under_review: { label: 'Under Review', color: '#1D4ED8', bg: '#DBEAFE', step: 2 },
+  payment_requested: { label: 'Payment Instructions Sent', color: '#7C3AED', bg: '#EDE9FE', step: 2 },
+  payment_received: { label: 'Payment Confirmed', color: '#047857', bg: '#D1FAE5', step: 3 },
   documents_required: { label: 'Documents Required', color: '#C2410C', bg: '#FFEDD5', step: 2 },
   in_progress: { label: 'In Progress', color: '#6D28D9', bg: '#EDE9FE', step: 3 },
   submitted: { label: 'Submitted to Uni', color: '#047857', bg: '#D1FAE5', step: 4 },
@@ -282,6 +284,12 @@ export default function ApplyForMePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Please upload a receipt smaller than 5 MB.');
+      e.target.value = '';
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (uploadEvent) => {
       setPaymentScreenshot({
@@ -369,19 +377,19 @@ export default function ApplyForMePage() {
           <h1
             style={{
               fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: 'clamp(1.85rem, 3.5vw, 2.5rem)',
+              fontSize: 'clamp(1.65rem, 3vw, 2.2rem)',
               fontWeight: 700,
               lineHeight: 1.2,
               color: '#ffffff',
-              marginBottom: '0.85rem',
+              marginBottom: '0.5rem',
               letterSpacing: '-0.01em',
             }}
           >
-            Let Our Experts Handle Your German University Applications
+            Application assistance
           </h1>
 
-          <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.88)', lineHeight: 1.7, maxWidth: '680px' }}>
-            Choose your target field of study or specific program. Our dedicated education consultants verify your transcripts, format your documents for German standards, manage application deadlines, and submit directly on your behalf.
+          <p style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.82)', lineHeight: 1.65, maxWidth: '620px', margin: 0 }}>
+            Send a request for a program or study field. Your advisor will review your documents, guide you through the next steps, and keep you updated here.
           </p>
 
           <div style={{ marginTop: '1.75rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
@@ -389,58 +397,24 @@ export default function ApplyForMePage() {
               type="button"
               onClick={() => setShowApplyModal(true)}
               style={{
-                background: 'linear-gradient(135deg, #C49746 0%, #B45309 100%)',
+                background: '#C49746',
                 color: '#ffffff',
                 border: 'none',
-                padding: '0.85rem 1.85rem',
-                borderRadius: '12px',
+                padding: '0.7rem 1.15rem',
+                borderRadius: '6px',
                 fontWeight: 700,
-                fontSize: '0.925rem',
+                fontSize: '0.875rem',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.6rem',
-                boxShadow: '0 8px 24px rgba(196, 151, 70, 0.35)',
-                transition: 'transform 150ms ease, box-shadow 150ms ease',
+                boxShadow: 'none',
+                transition: 'background 150ms ease',
               }}
             >
               <Send size={18} /> Initiate Application Request
             </button>
           </div>
-
-          {/* Executive Trust Badges */}
-          <div className="apply-for-me-trust-grid">
-            <div className="apply-for-me-trust-item">
-              <div className="apply-for-me-trust-icon"><ShieldCheck size={16} /></div>
-              <span>uni-assist & Direct Submission</span>
-            </div>
-            <div className="apply-for-me-trust-item">
-              <div className="apply-for-me-trust-icon"><Award size={16} /></div>
-              <span>Bavarian Formula Conversion</span>
-            </div>
-            <div className="apply-for-me-trust-item">
-              <div className="apply-for-me-trust-icon"><FileCheck size={16} /></div>
-              <span>Certified German Document Check</span>
-            </div>
-            <div className="apply-for-me-trust-item">
-              <div className="apply-for-me-trust-icon"><UserCheck size={16} /></div>
-              <span>1-on-1 Dedicated Advisor Chat</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Ambient Watermark Icon */}
-        <div
-          style={{
-            position: 'absolute',
-            right: '-20px',
-            bottom: '-30px',
-            opacity: 0.05,
-            pointerEvents: 'none',
-            color: '#FFFFFF',
-          }}
-        >
-          <Building2 size={320} />
         </div>
       </div>
 
@@ -475,11 +449,11 @@ export default function ApplyForMePage() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0F172A', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>
-                  Your Application Requests & Live Communication
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  Your requests
                 </h2>
                 <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.25rem', margin: 0 }}>
-                  Track milestone stages, document verification, and live chat directly with your assigned German education consultant.
+                  View your application status and messages from your advisor.
                 </p>
               </div>
 
@@ -617,50 +591,8 @@ export default function ApplyForMePage() {
                         </div>
                       </div>
 
-                      {/* Stepper Track */}
-                      <div className="apply-stepper-track">
-                        {[
-                          { name: 'Requested', step: 1 },
-                          { name: 'Under Review', step: 2 },
-                          { name: 'Docs Verified', step: 3 },
-                          { name: 'Submitted', step: 4 },
-                        ].map((s) => {
-                          const isPassed = conf.step > s.step;
-                          const isCurrent = conf.step === s.step;
-                          return (
-                            <div key={s.name} className="apply-stepper-node">
-                              <div
-                                className="apply-stepper-line"
-                                style={{
-                                  background: isPassed
-                                    ? '#0F172A'
-                                    : isCurrent
-                                    ? '#C49746'
-                                    : '#E2E8F0',
-                                }}
-                              />
-                              <span
-                                className="apply-stepper-label"
-                                style={{
-                                  fontWeight: isPassed || isCurrent ? 700 : 500,
-                                  color: isPassed
-                                    ? '#0F172A'
-                                    : isCurrent
-                                    ? '#C49746'
-                                    : '#94A3B8',
-                                }}
-                              >
-                                {isPassed && <Check size={12} style={{ color: '#0F172A' }} />}
-                                {isCurrent && <Clock size={12} style={{ color: '#C49746' }} />}
-                                {s.name}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-
                       {/* Action Footer */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #F1F5F9', flexWrap: 'wrap', gap: '0.75rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #F1F5F9', flexWrap: 'wrap', gap: '0.75rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.8rem' }}>
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.35rem 0.75rem', borderRadius: '8px', fontWeight: 600, color: '#475569' }}>
                             <FileText size={14} /> {app.documents?.length || 0} Attachment(s)
@@ -670,27 +602,55 @@ export default function ApplyForMePage() {
                           </span>
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={() => setDetailApp(app)}
-                          style={{
-                            background: '#0F172A',
-                            border: 'none',
-                            color: '#ffffff',
-                            padding: '0.65rem 1.35rem',
-                            borderRadius: '10px',
-                            fontSize: '0.825rem',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.4rem',
-                            boxShadow: '0 2px 10px rgba(15, 23, 42, 0.15)',
-                            transition: 'all 150ms ease',
-                          }}
-                        >
-                          Open Request & Advisor Chat <ChevronRight size={15} style={{ color: '#C49746' }} />
-                        </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+                          {app.status === 'payment_requested' && feeStatus === 'unpaid' && (
+                            <button
+                              type="button"
+                              onClick={() => setShowPaymentModal(true)}
+                              style={{
+                                background: '#C49746',
+                                border: 'none',
+                                color: '#ffffff',
+                                padding: '0.65rem 1.1rem',
+                                borderRadius: '10px',
+                                fontSize: '0.825rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.4rem',
+                              }}
+                            >
+                              <CreditCard size={15} /> Submit Payment Receipt
+                            </button>
+                          )}
+                          {app.status === 'payment_requested' && feeStatus === 'submitted' && (
+                            <span style={{ color: '#B45309', fontSize: '0.8rem', fontWeight: 700 }}>
+                              Receipt submitted for verification
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setDetailApp(app)}
+                            style={{
+                              background: '#0F172A',
+                              border: 'none',
+                              color: '#ffffff',
+                              padding: '0.65rem 1.35rem',
+                              borderRadius: '10px',
+                              fontSize: '0.825rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.4rem',
+                              boxShadow: '0 2px 10px rgba(15, 23, 42, 0.15)',
+                              transition: 'all 150ms ease',
+                            }}
+                          >
+                            Open Request & Advisor Chat <ChevronRight size={15} style={{ color: '#C49746' }} />
+                          </button>
+                        </div>
                       </div>
 
                     </div>
@@ -1098,30 +1058,6 @@ export default function ApplyForMePage() {
                   >
                     Close
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowDocsSubmittedModal(false);
-                      setShowPaymentModal(true);
-                    }}
-                    style={{
-                      background: 'linear-gradient(135deg, #C49746 0%, #B45309 100%)',
-                      color: '#ffffff',
-                      border: 'none',
-                      padding: '0.75rem 1.65rem',
-                      borderRadius: '10px',
-                      fontWeight: 700,
-                      fontSize: '0.875rem',
-                      cursor: 'pointer',
-                      boxShadow: '0 6px 20px rgba(196, 151, 70, 0.35)',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                    }}
-                  >
-                    <CreditCard size={16} /> Pay Fee PKR 45,000 Online
-                  </button>
                 </div>
               </>
             )}
@@ -1313,16 +1249,11 @@ export default function ApplyForMePage() {
             >
               <div>
                 <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
-                  Premium Subscription
+                  Submit Payment Receipt
                 </h3>
               </div>
 
               <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ display: 'flex', gap: '1rem', color: '#64748B', fontSize: '0.9rem', marginRight: '1rem' }}>
-                  <span style={{cursor: 'pointer'}}>Upgrade</span>
-                  <span style={{cursor: 'pointer'}}>Plans</span>
-                  <span style={{cursor: 'pointer'}}>Help</span>
-                </div>
                 <button
                   type="button"
                   onClick={() => setShowPaymentModal(false)}
@@ -1333,43 +1264,14 @@ export default function ApplyForMePage() {
               </div>
             </div>
 
-            <div style={{ padding: '2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-              
-              {/* Left Column: Instructions */}
-              <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #E2E8F0' }}>
-                <div style={{ background: '#1C5B3F', color: '#ffffff', padding: '1rem 1.25rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                  <CreditCard size={20} />
-                  <span style={{ fontWeight: 600, fontSize: '1.05rem' }}>Payment Instructions</span>
-                </div>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem', textTransform: 'uppercase' }}>1. BANK TRANSFER (HBL)</h4>
-                  <div style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6, position: 'relative' }}>
-                    Account Holder:<br/>
-                    <strong style={{color: '#0F172A'}}>Orbon Consultancy</strong><br/>
-                    Account Number:<br/>
-                    <strong style={{color: '#0F172A'}}>1234 5678 9012 3456</strong><br/>
-                    IBAN:<br/>
-                    <strong style={{color: '#0F172A'}}>PK72HBL01234567890123456</strong><br/>
-                    Bank: HBL
-                  </div>
-                  <div style={{borderBottom: '1px solid #E2E8F0', margin: '1rem 0'}}></div>
-                </div>
-
-                <div>
-                  <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem', textTransform: 'uppercase' }}>2. EASYPAISA</h4>
-                  <div style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>
-                    Account Name: <strong style={{color: '#0F172A'}}>Orbon Consultancy</strong><br/>
-                    Number: <strong style={{color: '#0F172A'}}>0312-3456789</strong>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Upload Form */}
+            <div style={{ padding: '2rem', maxWidth: '560px', margin: '0 auto' }}>
               <div style={{ background: '#ffffff', borderRadius: '16px', padding: '2rem 1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #E2E8F0' }}>
                 <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0F172A', marginBottom: '1.5rem' }}>
                   Submit Payment Receipt
                 </h3>
+                <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6, marginTop: '-0.85rem', marginBottom: '1.5rem' }}>
+                  Use the bank details and amount on the challan sent by the consultancy. Your receipt will be reviewed before Premium access is activated.
+                </p>
                 
                 <form onSubmit={handleProcessManualPayment} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div>
@@ -1391,12 +1293,12 @@ export default function ApplyForMePage() {
                     <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.2rem' }}>
                       Payment Screenshot
                     </label>
-                    <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>Upload Payment Screenshot (JPG, PNG, max 5MB)</span>
-                    
+                    <span style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: '0.5rem' }}>Upload receipt (JPG, PNG, or PDF; max 5 MB)</span>
+
                     <div style={{ position: 'relative', border: '2px dashed #CBD5E1', borderRadius: '12px', padding: '2rem 1rem', textAlign: 'center', background: '#F8FAFC', transition: 'all 0.2s ease' }}>
                       <input 
                         type="file" 
-                        accept="image/*" 
+                        accept="image/jpeg,image/png,application/pdf"
                         required 
                         onChange={handleScreenshotSelect}
                         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} 
@@ -1412,7 +1314,7 @@ export default function ApplyForMePage() {
                           <div style={{ fontSize: '0.9rem', color: '#0F172A', marginBottom: '0.25rem' }}>
                             Drag & Drop your screenshot<br/>or <span style={{ color: '#1C5B3F', textDecoration: 'underline' }}>Browse</span>
                           </div>
-                          <div style={{ fontSize: '0.75rem', color: '#64748B' }}>File requirements, file or dire only</div>
+                          <div style={{ fontSize: '0.75rem', color: '#64748B' }}>JPG, PNG, or PDF up to 5 MB</div>
                         </div>
                       )}
                     </div>

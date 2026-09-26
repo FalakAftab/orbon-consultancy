@@ -38,6 +38,7 @@ const AdminDashboard = lazy(() => import('../pages/admin/AdminDashboard'));
 const AdminUniversities = lazy(() => import('../pages/admin/AdminUniversities'));
 const AdminPrograms = lazy(() => import('../pages/admin/AdminPrograms'));
 const AdminStudents = lazy(() => import('../pages/admin/AdminStudents'));
+const AdminStudentDetail = lazy(() => import('../pages/admin/AdminStudentDetail'));
 const AdminPremiumApplications = lazy(() => import('../pages/admin/AdminPremiumApplications'));
 const AdminImport = lazy(() => import('../pages/admin/AdminImport'));
 const AdminAnalytics = lazy(() => import('../pages/admin/AdminAnalytics'));
@@ -166,6 +167,7 @@ export default function AppRoutes() {
         <Route path="/admin/universities" element={withFallback(<AdminUniversities />)} />
         <Route path="/admin/programs" element={withFallback(<AdminPrograms />)} />
         <Route path="/admin/students" element={withFallback(<AdminStudents />)} />
+        <Route path="/admin/students/:id" element={withFallback(<AdminStudentDetail />)} />
         <Route path="/admin/premium-applications" element={withFallback(<AdminPremiumApplications />)} />
         {/* Part 2 — admin runs the SAME wizard/results components used by
             students, just mounted under the admin-protected route group.

@@ -10,6 +10,7 @@ class RecommendationCriteriaData
         public readonly ?float $maximumGpa,
         public readonly string|array|null $englishTestType,
         public readonly ?float $englishTestScore,
+        public readonly ?array $englishTestScores,
         public readonly ?string $preferredIntake,
         public readonly ?string $admissionPreference,
         public readonly ?string $tuitionPreference,

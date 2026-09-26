@@ -38,45 +38,38 @@ export function QuickActions({ compact = false }) {
 
   if (compact) {
     return (
-      <div className="quick-actions-mobile-grid" aria-label="Quick Actions">
-        {actions.map((action) => {
-          const Icon = action.icon;
-          return (
-            <button
-              key={action.label}
-              type="button"
-              disabled={!action.active}
-              onClick={() => action.to && navigate(action.to)}
-              className="quick-action-mobile-btn"
-              id={`quick-action-mobile-${action.shortLabel.toLowerCase()}`}
-            >
-              <span
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '10px',
-                  background: 'rgba(15, 23, 42, 0.08)',
-                  color: 'var(--color-forest)',
-                }}
-              >
-                <Icon size={18} aria-hidden="true" />
-              </span>
-              <span
-                style={{
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  color: 'var(--color-charcoal)',
-                  lineHeight: 1.2,
-                }}
-              >
-                {action.shortLabel}
-              </span>
-            </button>
-          );
-        })}
+      <div aria-label="Quick Actions" style={{ display: 'flex', justifyContent: 'center' }}>
+        <button
+          type="button"
+          onClick={() => navigate('/student/wizard')}
+          className="quick-action-mobile-btn"
+          id="quick-action-mobile-eligibility"
+          style={{
+            width: '100%',
+            maxWidth: '280px',
+            minHeight: '48px',
+            background: '#C49746',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '6px',
+            fontSize: '0.875rem',
+            fontWeight: 700,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.55rem',
+            cursor: 'pointer',
+            boxShadow: '0 5px 14px rgba(196, 151, 70, 0.28)',
+            transition: 'background 150ms ease, transform 150ms ease',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#0F172A'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = '#C49746'; }}
+        >
+          <Sparkles size={19} aria-hidden="true" />
+          Check Your Eligibility
+          <ArrowRight size={17} aria-hidden="true" />
+        </button>
       </div>
     );
   }

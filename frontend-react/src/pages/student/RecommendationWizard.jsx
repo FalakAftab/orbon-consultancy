@@ -11,6 +11,8 @@ import {
   Layers,
   CheckCircle2,
   AlertCircle,
+  X,
+  ChevronDown,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { submitRecommendation, submitGuestRecommendation } from '../../api/student';
@@ -122,6 +124,7 @@ export default function RecommendationWizard() {
   const [matchingMsgIdx, setMatchingMsgIdx] = useState(0);
   const [serverError, setServerError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
+  const [englishSelectorOpen, setEnglishSelectorOpen] = useState(false);
 
   // Compute initial names from user context or admin target student
   const nameParts = (adminStudentName || user?.name || '').trim().split(' ');
@@ -141,6 +144,7 @@ export default function RecommendationWizard() {
       ? refineCriteria.english_test_type
       : (refineCriteria?.english_test_type ? [refineCriteria.english_test_type] : []),
     english_test_score: refineCriteria?.english_test_score ?? '',
+    english_test_scores: refineCriteria?.english_test_scores || {},
     german_level: refineCriteria?.german_level || 'none',
 
     preferred_degree: refineCriteria?.preferred_degree || '',
@@ -198,16 +202,35 @@ export default function RecommendationWizard() {
     ? form.english_test_type
     : (form.english_test_type ? [form.english_test_type] : []);
 
-  const toggleEnglishType = (typeId) => {
-    let next;
-    if (selectedEnglishTypes.includes(typeId)) {
-      next = selectedEnglishTypes.filter((t) => t !== typeId);
-    } else {
-      next = [...selectedEnglishTypes, typeId];
-    }
-    updateField('english_test_type', next);
+  const addEnglishType = (typeId) => {
+    if (!typeId || selectedEnglishTypes.includes(typeId)) return;
+    updateField('english_test_type', [...selectedEnglishTypes, typeId]);
     if (fieldErrors.english_test_type) setFieldErrors((prev) => ({ ...prev, english_test_type: '' }));
-    if (fieldErrors.english_test_score) setFieldErrors((prev) => ({ ...prev, english_test_score: '' }));
+  };
+
+  const removeEnglishType = (typeId) => {
+    updateField('english_test_type', selectedEnglishTypes.filter((type) => type !== typeId));
+    setForm((prev) => {
+      const scores = { ...prev.english_test_scores };
+      delete scores[typeId];
+      return { ...prev, english_test_scores: scores };
+    });
+  };
+
+  const updateEnglishScore = (typeId, value) => {
+    setForm((prev) => ({
+      ...prev,
+      english_test_scores: { ...prev.english_test_scores, [typeId]: value },
+    }));
+    if (fieldErrors.english_test_scores) setFieldErrors((prev) => ({ ...prev, english_test_scores: '' }));
+  };
+
+  const toggleEnglishType = (typeId) => {
+    if (selectedEnglishTypes.includes(typeId)) {
+      removeEnglishType(typeId);
+    } else {
+      addEnglishType(typeId);
+    }
   };
 
   // The active parent category's subcategory options.
@@ -242,9 +265,11 @@ export default function RecommendationWizard() {
       if (!selectedEnglishTypes.length) {
         errs.english_test_type = 'Select at least one English test type.';
       }
-      const needsScore = selectedEnglishTypes.some((t) => t === 'ielts' || t === 'toefl');
-      if (needsScore && !form.english_test_score) {
-        errs.english_test_score = 'English score is required for IELTS/TOEFL.';
+      const missingScore = selectedEnglishTypes.some((type) => (
+        (type === 'ielts' || type === 'toefl') && !form.english_test_scores[type]
+      ));
+      if (missingScore) {
+        errs.english_test_scores = 'Enter a score for every selected English test.';
       }
     } else if (currentStep === 3) {
       if (!form.preferred_degree) {
@@ -297,7 +322,12 @@ export default function RecommendationWizard() {
         passing_gpa: parseFloat(form.passing_gpa),
 
         english_test_type: selectedEnglishTypes.length === 1 ? selectedEnglishTypes[0] : selectedEnglishTypes,
-        english_test_score: selectedEnglishTypes.some((t) => t === 'ielts' || t === 'toefl') && form.english_test_score ? parseFloat(form.english_test_score) : null,
+        english_test_score: null,
+        english_test_scores: Object.fromEntries(
+          Object.entries(form.english_test_scores)
+            .filter(([, score]) => score !== '')
+            .map(([type, score]) => [type, parseFloat(score)])
+        ),
         german_level: form.german_level,
 
         preferred_degree: form.preferred_degree,
@@ -601,81 +631,126 @@ export default function RecommendationWizard() {
 
           {/* STEP 2: Language Proficiency */}
           {step === 2 && (
-            <div className="flex flex-col gap-5">
-              <div>
+            <div className="language-step">
+              <div className="language-step__heading">
                 <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 400, color: 'var(--color-charcoal)' }}>
                   Language Proficiency
                 </h2>
-                <p style={{ fontSize: '0.875rem', color: 'var(--color-muted)', marginTop: '0.25rem' }}>
-                  English and German proficiency levels used for course eligibility.
+                <p>
+                  Add the language proof you already have. We will use it to check each program's requirements.
                 </p>
               </div>
 
-              <div className="field">
-                <label className="field-label">English Test Type *</label>
-                <p style={{ fontSize: '0.825rem', color: 'var(--color-muted)', marginBottom: '0.75rem' }}>
-                  Select one or multiple English proficiency options that apply to your profile (e.g. IELTS, TOEFL, or MOI).
+              <section className="language-proof-picker" aria-labelledby="english-proof-heading">
+                <div className="language-section-heading">
+                  <div>
+                    <span className="language-section-eyebrow">English</span>
+                    <h3 id="english-proof-heading">English test or proof <span>*</span></h3>
+                  </div>
+                  {selectedEnglishTypes.length > 0 && (
+                    <span className="language-proof-count">{selectedEnglishTypes.length} added</span>
+                  )}
+                </div>
+                <p className="language-section-copy">
+                  Choose IELTS, TOEFL, or Medium of Instruction. You can add more than one.
                 </p>
-                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                  {[
-                    { id: 'ielts', label: 'IELTS Academic' },
-                    { id: 'toefl', label: 'TOEFL iBT' },
-                    { id: 'moi', label: 'Medium of Instruction (MOI)' },
-                  ].map((t) => {
-                    const isSelected = selectedEnglishTypes.includes(t.id);
-                    return (
-                      <button
-                        key={t.id}
-                        type="button"
-                        onClick={() => toggleEnglishType(t.id)}
-                        style={{
-                          padding: '0.65rem 1.1rem',
-                          borderRadius: 'var(--radius-md)',
-                          border: `1px solid ${isSelected ? 'var(--color-forest)' : 'var(--color-border)'}`,
-                          background: isSelected ? 'rgba(15, 23, 42, 0.08)' : 'var(--color-surface)',
-                          color: isSelected ? 'var(--color-forest)' : 'var(--color-charcoal)',
-                          fontSize: '0.875rem',
-                          fontWeight: isSelected ? 600 : 400,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.45rem',
-                        }}
-                      >
-                        {isSelected && <span>✓</span>}
-                        {t.label}
-                      </button>
-                    );
-                  })}
+                <div className="language-multiselect">
+                  <button
+                    type="button"
+                    className={`language-multiselect-trigger ${englishSelectorOpen ? 'is-open' : ''}`}
+                    onClick={() => setEnglishSelectorOpen((open) => !open)}
+                    aria-expanded={englishSelectorOpen}
+                    aria-controls="english-proof-options"
+                  >
+                    <span>
+                      <strong>{selectedEnglishTypes.length ? `${selectedEnglishTypes.length} proof${selectedEnglishTypes.length > 1 ? 's' : ''} selected` : 'Select one or more proofs'}</strong>
+                      <small>Tick every option that applies to you</small>
+                    </span>
+                    <ChevronDown size={18} aria-hidden="true" />
+                  </button>
+                  {englishSelectorOpen && (
+                    <div className="language-multiselect-menu" id="english-proof-options">
+                      {[
+                        { id: 'ielts', label: 'IELTS Academic', description: 'Enter your overall band score', tone: 'teal' },
+                        { id: 'toefl', label: 'TOEFL iBT', description: 'Enter your iBT score', tone: 'blue' },
+                        { id: 'moi', label: 'Medium of Instruction', description: 'Your degree was taught in English', tone: 'gold' },
+                      ].map((option) => {
+                        const isChecked = selectedEnglishTypes.includes(option.id);
+                        return (
+                          <label key={option.id} className={`language-multiselect-option language-multiselect-option--${option.tone} ${isChecked ? 'is-selected' : ''}`}>
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => toggleEnglishType(option.id)}
+                            />
+                            <span className="language-option-check" aria-hidden="true"><CheckCircle2 size={17} /></span>
+                            <span>
+                              <strong>{option.label}</strong>
+                              <small>{option.description}</small>
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
                 {fieldErrors.english_test_type && <span className="field-error">{fieldErrors.english_test_type}</span>}
+              </section>
+
+              <div className="language-proof-list">
+                {selectedEnglishTypes.filter((type) => type !== 'moi').map((type) => {
+                const test = {
+                  ielts: { label: 'IELTS Academic', scoreLabel: 'IELTS band score', placeholder: 'e.g. 7.5', step: '0.5' },
+                  toefl: { label: 'TOEFL iBT', scoreLabel: 'TOEFL iBT score', placeholder: 'e.g. 95', step: '1' },
+                  moi: { label: 'Medium of Instruction (MOI)' },
+                }[type];
+
+                return (
+                  <div key={type} className={`language-proof-card language-proof-card--${type}`}>
+                    <div className="language-proof-icon" aria-hidden="true"><CheckCircle2 size={18} /></div>
+                    <div className="language-proof-content">
+                      <strong>{test.label}</strong>
+                      {type === 'moi' && <p>No score needed. We will check whether each program accepts MOI.</p>}
+                    </div>
+                    {type === 'moi' ? (
+                      null
+                    ) : (
+                      <label className="language-score-field">
+                        <span>{test.scoreLabel} *</span>
+                        <input
+                          type="number"
+                          step={test.step}
+                          min="0"
+                          className="input"
+                          placeholder={test.placeholder}
+                          value={form.english_test_scores[type] || ''}
+                          onChange={(e) => updateEnglishScore(type, e.target.value)}
+                        />
+                      </label>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeEnglishType(type)}
+                      className="language-proof-remove"
+                      aria-label={`Remove ${test.label}`}
+                      title={`Remove ${test.label}`}
+                    ><X size={16} /></button>
+                  </div>
+                );
+                })}
               </div>
+              {fieldErrors.english_test_scores && <span className="field-error">{fieldErrors.english_test_scores}</span>}
 
-              {selectedEnglishTypes.some((t) => t === 'ielts' || t === 'toefl') && (
-                <div className="field">
-                  <label className="field-label">
-                    {selectedEnglishTypes.includes('ielts') && selectedEnglishTypes.includes('toefl')
-                      ? 'IELTS Band or TOEFL iBT Score *'
-                      : selectedEnglishTypes.includes('ielts')
-                      ? 'IELTS Band Score *'
-                      : 'TOEFL iBT Score *'}
-                  </label>
-                  <input
-                    type="number"
-                    step="0.5"
-                    className="input"
-                    placeholder={selectedEnglishTypes.includes('ielts') ? '7.5' : '95'}
-                    value={form.english_test_score}
-                    onChange={(e) => updateField('english_test_score', e.target.value)}
-                  />
-                  {fieldErrors.english_test_score && <span className="field-error">{fieldErrors.english_test_score}</span>}
+              <section className="language-german-section">
+                <div className="language-section-heading">
+                  <div>
+                    <span className="language-section-eyebrow">German</span>
+                    <h3>German language level <span className="language-optional">Optional</span></h3>
+                  </div>
                 </div>
-              )}
-
-              <div className="field">
-                <label className="field-label">German Language Level (CEFR)</label>
+                <p className="language-section-copy">Select your current CEFR level if you have studied German.</p>
                 <select
-                  className="input select"
+                  className="input select language-proof-select"
                   value={form.german_level}
                   onChange={(e) => updateField('german_level', e.target.value)}
                 >
@@ -685,7 +760,7 @@ export default function RecommendationWizard() {
                     </option>
                   ))}
                 </select>
-              </div>
+              </section>
             </div>
           )}
 

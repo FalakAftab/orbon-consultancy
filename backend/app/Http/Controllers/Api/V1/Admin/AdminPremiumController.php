@@ -19,7 +19,7 @@ class AdminPremiumController extends Controller
     {
         $totalRequests = PremiumApplication::count();
         $pendingRequests = PremiumApplication::where('status', 'pending')->count();
-        $inProgressRequests = PremiumApplication::whereIn('status', ['under_review', 'in_progress', 'documents_required'])->count();
+        $inProgressRequests = PremiumApplication::whereIn('status', ['under_review', 'payment_requested', 'payment_received', 'in_progress', 'documents_required'])->count();
         $completedRequests = PremiumApplication::where('status', 'completed')->count();
 
         $activePremiumUsers = User::where('role', 'student')->where('subscription_status', 'active')->count();
@@ -78,6 +78,48 @@ class AdminPremiumController extends Controller
     }
 
     /**
+     * Create an Apply-for-Me request for a student from the admin workspace.
+     */
+    public function storeApplicationOnBehalf(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'program_id' => ['required', 'integer', 'exists:programs,id'],
+            'student_notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $student = User::where('role', 'student')->findOrFail($validated['user_id']);
+
+        if ($student->subscription_status !== 'active') {
+            $student->update([
+                'subscription_status' => $student->subscription_status === 'free' ? 'pending' : $student->subscription_status,
+                'subscription_plan' => 'premium_application',
+            ]);
+        }
+
+        $application = PremiumApplication::create([
+            'user_id' => $student->id,
+            'program_id' => $validated['program_id'],
+            'status' => 'pending',
+            'student_notes' => $validated['student_notes'] ?? null,
+            'documents' => [],
+        ]);
+
+        Notification::notify(
+            $student->id,
+            'Application Request Started',
+            'The consultancy has started an Apply-for-Me request on your behalf.',
+            'application_status',
+            "/student/apply-for-me?app_id={$application->id}"
+        );
+
+        return response()->json([
+            'message' => 'Application request created for the student.',
+            'data' => $application->load(['user.studentProfile', 'program.university']),
+        ], 201);
+    }
+
+    /**
      * Update status and admin notes on an application request
      */
     public function updateApplicationStatus(Request $request, int $id): JsonResponse
@@ -90,6 +132,8 @@ class AdminPremiumController extends Controller
                 Rule::in([
                     'pending',
                     'under_review',
+                    'payment_requested',
+                    'payment_received',
                     'documents_required',
                     'in_progress',
                     'submitted',
@@ -105,9 +149,11 @@ class AdminPremiumController extends Controller
             'admin_notes' => $validated['admin_notes'] ?? $application->admin_notes,
         ]);
 
-        // Auto activate user's premium status if administration starts handling the application
-        if (in_array($validated['status'], ['under_review', 'in_progress', 'submitted', 'completed'], true)) {
+        // Premium access begins only after the consultancy confirms receipt of payment.
+        if ($validated['status'] === 'payment_received') {
             $application->user->update([
+            'fee_status' => 'paid',
+            'fee_paid_at' => $application->user->fee_paid_at ?? now(),
                 'subscription_status' => 'active',
                 'subscription_plan' => $application->user->subscription_plan ?? 'premium_application',
                 'subscription_started_at' => $application->user->subscription_started_at ?? now(),
@@ -118,6 +164,8 @@ class AdminPremiumController extends Controller
         $statusLabels = [
             'pending' => 'Pending Review',
             'under_review' => 'Under Review',
+            'payment_requested' => 'Payment Instructions Sent',
+            'payment_received' => 'Payment Confirmed',
             'documents_required' => 'Documents Required',
             'in_progress' => 'In Progress',
             'submitted' => 'Submitted to University',

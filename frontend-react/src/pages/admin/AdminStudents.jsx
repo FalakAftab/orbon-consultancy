@@ -315,7 +315,7 @@ export default function AdminStudents() {
                       </td>
                       <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="sm" onClick={() => openView(s)}>View</Button>
+                          <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/students/${s.id}`)}>View</Button>
                           <Button variant="ghost" size="sm" onClick={() => openEdit(s)} title="Edit student" aria-label={`Edit ${s.name}`}><Pencil size={14} /></Button>
                           <Button variant="ghost" size="sm" onClick={() => setDeleteTarget(s)} title="Delete student" aria-label={`Delete ${s.name}`} className="text-danger"><Trash2 size={14} /></Button>
                         </div>

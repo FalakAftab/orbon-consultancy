@@ -30,4 +30,14 @@ class Recommendation extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function university()
+    {
+        return $this->belongsTo(University::class);
+    }
 }
