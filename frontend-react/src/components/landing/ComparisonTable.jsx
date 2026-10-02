@@ -20,8 +20,8 @@ const plans = [
   },
   {
     name: 'Ultra Plan',
-    price: 'PKR 65,000',
-    billing: 'One-time consultancy fee',
+    price: '$230',
+    billing: 'USD one-time consultancy fee',
     comingSoon: true,
     description: 'Unlimited university applications + student job search assistance in Germany.',
     features: [
@@ -34,8 +34,8 @@ const plans = [
   },
   {
     name: 'Premium Pro Plan',
-    price: 'PKR 95,000',
-    billing: 'One-time consultancy fee',
+    price: '$340',
+    billing: 'USD one-time consultancy fee',
     comingSoon: true,
     description: 'Complete German relocation package — Applications, Job Search, and Accommodation.',
     features: [
