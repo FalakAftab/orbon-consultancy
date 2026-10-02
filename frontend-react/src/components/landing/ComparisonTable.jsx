@@ -4,9 +4,9 @@ import { DecorativeLineArt } from './DecorativeLineArt';
 
 const plans = [
   {
-    name: 'Pro Plan',
-    price: 'PKR 45,000',
-    billing: 'One-time consultancy fee',
+    name: 'Premium Plan',
+    price: '$100',
+    billing: 'USD one-time consultancy fee',
     popular: true,
     active: true,
     description: 'We search, match & submit unlimited German university applications on your behalf.',
