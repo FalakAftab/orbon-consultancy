@@ -473,17 +473,16 @@ export default function AdminStudents() {
       </Modal>
 
       {/* Delete confirmation modal */}
-      <Dialog isOpen={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete Student">
-        <p className="text-sm text-muted">
-          Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This will permanently remove the student account and related data.
-        </p>
-        <div className="flex items-center justify-end gap-3 mt-6">
-          <Button variant="ghost" onClick={() => setDeleteTarget(null)}>Cancel</Button>
-          <Button variant="danger" onClick={handleDelete} disabled={deleting}>
-            {deleting ? 'Deleting...' : 'Delete'}
-          </Button>
-        </div>
-      </Dialog>
+      <Dialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Student"
+        description={`Are you sure you want to delete ${deleteTarget?.name || 'this student'}? This will permanently remove the student account and related data.`}
+        variant="danger"
+        confirmText="Delete"
+        loading={deleting}
+      />
     </div>
   );
 }
