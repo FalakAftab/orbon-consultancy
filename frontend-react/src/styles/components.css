@@ -2646,6 +2646,9 @@ textarea.input {
 }
 
 @media (max-width: 639px) {
+  .pro-vault-panel {
+    padding: 1.25rem 0.9rem !important;
+  }
   .vault-doc-grid {
     grid-template-columns: 1fr !important;
     gap: 0.85rem !important;
@@ -2656,6 +2659,21 @@ textarea.input {
   }
   .vault-doc-tile {
     padding: 1rem 0.85rem !important;
+  }
+  .vault-file-row {
+    align-items: stretch !important;
+    flex-direction: column !important;
+    gap: 0.65rem !important;
+  }
+  .vault-file-info {
+    min-width: 0;
+  }
+  .vault-file-name {
+    max-width: none !important;
+  }
+  .vault-file-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 

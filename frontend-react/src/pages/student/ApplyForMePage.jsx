@@ -663,7 +663,7 @@ export default function ApplyForMePage() {
 
         {/* TAB 2: PRO DOCUMENT VAULT */}
         {activeTab === 'vault' && (
-          <div style={{ background: '#ffffff', borderRadius: '16px', padding: '2rem 1.75rem', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)' }}>
+          <div className="pro-vault-panel" style={{ background: '#ffffff', borderRadius: '16px', padding: '2rem 1.75rem', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid #F1F5F9', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0F172A', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: "'Playfair Display', Georgia, serif" }}>
@@ -792,11 +792,11 @@ export default function ApplyForMePage() {
                     </div>
 
                     {isUploaded ? (
-                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '0.75rem', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
+                      <div className="vault-file-row" style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '0.75rem', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div className="vault-file-info" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
                           <FileCheck size={18} style={{ color: '#0F172A', flexShrink: 0 }} />
                           <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>
+                            <span className="vault-file-name" style={{ fontSize: '0.8rem', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>
                               {currentDoc.name}
                             </span>
                             {currentDoc.size && (
@@ -807,7 +807,7 @@ export default function ApplyForMePage() {
                           </div>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
+                        <div className="vault-file-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
                           {currentDoc.url && (
                             <a
                               href={currentDoc.url}
