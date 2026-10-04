@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Sparkles,
   Search,
@@ -45,8 +46,10 @@ const STATUS_OPTIONS = [
 ];
 
 export default function AdminPremiumApplications() {
+  const [searchParams] = useSearchParams();
+  const requestedTab = searchParams.get('tab');
   // We keep 'subscriptions' as default active to show the requested UI first
-  const [activeTab, setActiveTab] = useState('subscriptions'); // 'applications' | 'subscriptions' | 'admins'
+  const [activeTab, setActiveTab] = useState(requestedTab === 'applications' ? 'applications' : 'subscriptions'); // 'applications' | 'subscriptions' | 'admins'
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -84,6 +87,9 @@ export default function AdminPremiumApplications() {
   const [editApp, setEditApp] = useState(null);
   const [newStatus, setNewStatus] = useState('');
   const [adminNotes, setAdminNotes] = useState('');
+  const [selectedProgramId, setSelectedProgramId] = useState('');
+  const [editPrograms, setEditPrograms] = useState([]);
+  const [loadingEditPrograms, setLoadingEditPrograms] = useState(false);
   const [updatingApp, setUpdatingApp] = useState(false);
 
   // Admin Chat State
@@ -93,6 +99,12 @@ export default function AdminPremiumApplications() {
   useEffect(() => {
     fetchMetrics();
   }, []);
+
+  useEffect(() => {
+    if (requestedTab === 'applications') {
+      setActiveTab('applications');
+    }
+  }, [requestedTab]);
 
   useEffect(() => {
     if (activeTab === 'applications') {
@@ -219,12 +231,31 @@ export default function AdminPremiumApplications() {
   const handleConfirmFeePayment = async (userId) => {
     try { await updateStudentFeeStatus(userId, 'paid'); fetchApplications(); fetchSubscriptions(); } catch (err) { alert(err.message || 'Failed to update fee status'); }
   };
-  const handleOpenEditModal = (app) => { setEditApp(app); setNewStatus(app.status); setAdminNotes(app.admin_notes || ''); };
+  const handleOpenEditModal = async (app) => {
+    setEditApp(app);
+    setNewStatus(app.status);
+    setAdminNotes(app.admin_notes || '');
+    setSelectedProgramId(app.program_id?.toString() || '');
+    setLoadingEditPrograms(true);
+
+    try {
+      const response = await fetchAdminPrograms({ per_page: 100 });
+      setEditPrograms(response.data || []);
+    } catch (err) {
+      alert(err.message || 'Could not load programs for assignment.');
+    } finally {
+      setLoadingEditPrograms(false);
+    }
+  };
   const handleSaveApplicationStatus = async (e) => {
     e.preventDefault();
     if (!editApp) return;
+    if (newStatus !== 'pending' && !selectedProgramId) {
+      alert('Select a suitable program before moving this request beyond Pending Review.');
+      return;
+    }
     setUpdatingApp(true);
-    try { await updateAdminApplicationStatus(editApp.id, { status: newStatus, admin_notes: adminNotes }); setEditApp(null); fetchApplications(); fetchMetrics(); } catch (err) { alert(err.message || 'Failed to update application status.'); } finally { setUpdatingApp(false); }
+    try { await updateAdminApplicationStatus(editApp.id, { status: newStatus, admin_notes: adminNotes, program_id: selectedProgramId ? Number(selectedProgramId) : null }); setEditApp(null); fetchApplications(); fetchMetrics(); } catch (err) { alert(err.message || 'Failed to update application status.'); } finally { setUpdatingApp(false); }
   };
   const handleSendAdminChatMessage = async (e) => {
     e.preventDefault();
@@ -422,8 +453,8 @@ export default function AdminPremiumApplications() {
                           <span style={{ fontSize: '0.78rem', color: '#64748B' }}>{app.user?.email}</span>
                         </td>
                         <td style={{ padding: '0.9rem 1rem' }}>
-                          <div style={{ fontWeight: 600, color: '#0F172A' }}>{app.program?.name}</div>
-                          <div style={{ fontSize: '0.78rem', color: '#64748B' }}>{app.program?.university?.name}</div>
+                          <div style={{ fontWeight: 600, color: '#0F172A' }}>{app.program?.name || 'Awaiting advisor assignment'}</div>
+                          <div style={{ fontSize: '0.78rem', color: '#64748B' }}>{app.program?.university?.name || `Requested field: ${app.requested_field || 'Not specified'}`}</div>
                         </td>
                         <td style={{ padding: '0.9rem 1rem' }}>
                           <span style={{ background: app.user?.fee_status === 'paid' ? '#D1FAE5' : '#FEF3C7', color: app.user?.fee_status === 'paid' ? '#047857' : '#B45309', padding: '0.25rem 0.65rem', borderRadius: '999px', fontSize: '0.725rem', fontWeight: 700 }}>
@@ -462,8 +493,8 @@ export default function AdminPremiumApplications() {
                 </div>
                 <div className="admin-application-mobile-card__program">
                   <span className="admin-application-mobile-card__label">Target program</span>
-                  <strong>{app.program?.name || 'Program not available'}</strong>
-                  <small>{app.program?.university?.name}</small>
+                  <strong>{app.program?.name || 'Awaiting advisor assignment'}</strong>
+                  <small>{app.program?.university?.name || `Requested field: ${app.requested_field || 'Not specified'}`}</small>
                 </div>
                 <div className="admin-application-mobile-card__footer">
                   <span className="admin-application-stage">{(app.status || 'pending').replaceAll('_', ' ')}</span>
@@ -539,6 +570,15 @@ export default function AdminPremiumApplications() {
            <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '16px', maxWidth: '500px', width: '100%', boxSizing: 'border-box' }}>
              <h3 style={{ marginTop: 0, color: '#0F172A' }}>Manage {editApp.user?.name}</h3>
              <form onSubmit={handleSaveApplicationStatus}>
+               <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.85rem 1rem', marginBottom: '1rem' }}>
+                 <div style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>Student requested field</div>
+                 <div style={{ color: '#0F172A', fontWeight: 700, marginTop: '0.3rem' }}>{editApp.requested_field || 'Not specified'}</div>
+               </div>
+               <label style={{ display: 'block', color: '#334155', fontSize: '0.825rem', fontWeight: 700, marginBottom: '0.4rem' }}>Assign suitable program {newStatus !== 'pending' ? '*' : ''}</label>
+               <select value={selectedProgramId} onChange={(e) => setSelectedProgramId(e.target.value)} disabled={loadingEditPrograms} style={{ width: '100%', padding: '0.75rem', marginBottom: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0', background: '#fff' }}>
+                 <option value="">{loadingEditPrograms ? 'Loading programs...' : 'Select a program for this student'}</option>
+                 {editPrograms.map((program) => <option key={program.id} value={program.id}>{program.name}{program.university?.name ? ` - ${program.university.name}` : ''}</option>)}
+               </select>
                <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} style={{ width: '100%', padding: '0.75rem', marginBottom: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                   {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
                </select>

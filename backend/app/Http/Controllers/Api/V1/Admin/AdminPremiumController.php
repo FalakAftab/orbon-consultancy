@@ -142,11 +142,22 @@ class AdminPremiumController extends Controller
                 ]),
             ],
             'admin_notes' => ['nullable', 'string', 'max:2000'],
+            'program_id' => ['nullable', 'integer', 'exists:programs,id'],
         ]);
+
+        $programId = $validated['program_id'] ?? $application->program_id;
+
+        if ($validated['status'] !== 'pending' && ! $programId) {
+            return response()->json([
+                'message' => 'Select a suitable program before moving this request beyond Pending Review.',
+                'errors' => ['program_id' => ['A target program must be selected by an advisor first.']],
+            ], 422);
+        }
 
         $application->update([
             'status' => $validated['status'],
             'admin_notes' => $validated['admin_notes'] ?? $application->admin_notes,
+            'program_id' => $programId,
         ]);
 
         // Premium access begins only after the consultancy confirms receipt of payment.

@@ -47,7 +47,6 @@ import {
   getStudentPaymentStatus,
   submitStudentPayment,
 } from '../../api/premium';
-import { fetchShortlist, fetchPrograms } from '../../api/student';
 
 const STATUS_CONFIG = {
   pending: { label: 'Pending Review', color: '#B45309', bg: '#FEF3C7', step: 1 },
@@ -113,8 +112,6 @@ export default function ApplyForMePage() {
   const [premiumStatus, setPremiumStatus] = useState('free');
   const [feeStatus, setFeeStatus] = useState('unpaid'); // 'unpaid' | 'submitted' | 'paid'
   const [applications, setApplications] = useState([]);
-  const [shortlist, setShortlist] = useState([]);
-  const [systemPrograms, setSystemPrograms] = useState([]);
 
   // PRO Vault State
   const [vaultData, setVaultData] = useState({});
@@ -166,21 +163,17 @@ export default function ApplyForMePage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [statusRes, appsRes, shortlistRes, vaultRes, paymentRes, progsRes] = await Promise.all([
+      const [statusRes, appsRes, vaultRes, paymentRes] = await Promise.all([
         getStudentPremiumStatus().catch(() => ({ subscription_status: 'free' })),
         getStudentPremiumApplications().catch(() => ({ data: [] })),
-        fetchShortlist().catch(() => ({ data: [] })),
         getStudentVault().catch(() => ({ data: {} })),
         getStudentPaymentStatus().catch(() => ({ fee_status: 'unpaid' })),
-        fetchPrograms(50).catch(() => ({ data: [] })),
       ]);
 
       setPremiumStatus(statusRes.subscription_status || 'free');
       setFeeStatus(paymentRes.fee_status || 'unpaid');
       setApplications(appsRes.data || []);
-      setShortlist(shortlistRes.data || []);
       setVaultData(vaultRes.data || {});
-      setSystemPrograms(progsRes.data || progsRes.data?.data || []);
       
       return appsRes.data || [];
     } catch (err) {
@@ -255,36 +248,23 @@ export default function ApplyForMePage() {
   const handleSubmitApplication = async (e) => {
     e.preventDefault();
     if (!selectedTarget) {
-      setAppError('Please select your target program or field of study.');
+      setAppError('Please select your target field of study.');
       return;
     }
 
     setSubmittingApp(true);
     setAppError('');
 
-    let realProgramId = null;
-    let extraNotes = studentNotes;
-
-    // Check if user selected an academic field
     const matchedField = ACADEMIC_FIELDS.find((f) => f.id === selectedTarget);
-    if (matchedField) {
-      extraNotes = `Target Field: ${matchedField.name}${studentNotes ? `\n\nNotes: ${studentNotes}` : ''}`;
-      // Pick first program from shortlist or system programs as program reference
-      if (shortlist.length > 0) {
-        realProgramId = shortlist[0].program?.id || shortlist[0].program_id;
-      } else if (systemPrograms.length > 0) {
-        realProgramId = systemPrograms[0].id;
-      } else {
-        realProgramId = 1;
-      }
-    } else {
-      realProgramId = Number(selectedTarget);
+    if (!matchedField) {
+      setAppError('Please select a valid target field of study.');
+      return;
     }
 
     try {
       await createStudentPremiumApplication({
-        program_id: realProgramId,
-        student_notes: extraNotes,
+        requested_field: matchedField.name,
+        student_notes: studentNotes.trim() || null,
         documents: [],
       });
 
@@ -409,7 +389,7 @@ export default function ApplyForMePage() {
           </h1>
 
           <p style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.82)', lineHeight: 1.65, maxWidth: '620px', margin: 0 }}>
-            Send a request for a program or study field. Your advisor will review your documents, guide you through the next steps, and keep you updated here.
+            Choose your preferred study field. Your advisor will review your profile and documents, then match you with the right German university program.
           </p>
 
           <div style={{ marginTop: '1.75rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
@@ -527,7 +507,7 @@ export default function ApplyForMePage() {
                   No Application Requests Yet
                 </h3>
                 <p style={{ fontSize: '0.875rem', color: '#64748B', maxWidth: '460px', margin: '0 auto 1.75rem', lineHeight: 1.6 }}>
-                  Click below to initiate your application request. Select your desired field of study (Computer Science, Business, IT, Engineering, etc.) and let our consultancy team manage the rest.
+                  Click below to initiate your application request. Choose your desired study field, then let your advisor select the best university program for your profile.
                 </p>
                 <button
                   type="button"
@@ -581,11 +561,11 @@ export default function ApplyForMePage() {
                           </div>
                           <div>
                             <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A', margin: 0, lineHeight: 1.25 }}>
-                              {app.program?.name || app.student_notes?.split('\n')?.[0] || 'University Application'}
+                              {app.program?.name || app.requested_field || 'Advisor matching in progress'}
                             </h3>
                             <div style={{ fontSize: '0.825rem', color: '#64748B', marginTop: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                               <MapPin size={13} style={{ color: '#C49746' }} />
-                              {app.program?.university?.name || 'German University Track'} &bull; {app.program?.university?.city || 'Germany'}
+                              {app.program?.university?.name || 'Your advisor is selecting a suitable program'}{app.program?.university?.city ? ` • ${app.program.university.city}` : ''}
                             </div>
                           </div>
                         </div>
@@ -1141,7 +1121,7 @@ export default function ApplyForMePage() {
                   Initiate Application Request
                 </h3>
                 <p style={{ fontSize: '0.825rem', color: 'rgba(255, 255, 255, 0.85)', margin: '0.2rem 0 0' }}>
-                  Select your target study field or university program for our consultancy team.
+                  Choose your study field. Your advisor will select the most suitable university program for you.
                 </p>
               </div>
               <button

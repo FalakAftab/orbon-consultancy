@@ -81,7 +81,7 @@ class PremiumApplicationController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'program_id' => ['required', 'exists:programs,id'],
+            'requested_field' => ['required', 'string', 'max:255'],
             'student_notes' => ['nullable', 'string', 'max:2000'],
             'documents' => ['nullable', 'array'],
             'documents.*.name' => ['required', 'string', 'max:255'],
@@ -99,23 +99,23 @@ class PremiumApplicationController extends Controller
 
         $application = PremiumApplication::create([
             'user_id' => $user->id,
-            'program_id' => $validated['program_id'],
+            'program_id' => null,
+            'requested_field' => $validated['requested_field'],
             'status' => 'pending',
             'student_notes' => $validated['student_notes'] ?? null,
             'documents' => $validated['documents'] ?? [],
         ]);
 
-        $application->load('program');
-        $programName = $application->program?->name ?? 'a selected program';
+        $requestedField = $application->requested_field;
 
         User::query()
             ->where('role', 'admin')
             ->pluck('id')
-            ->each(function (int $adminId) use ($user, $programName, $application): void {
+            ->each(function (int $adminId) use ($user, $requestedField, $application): void {
                 Notification::notify(
                     $adminId,
                     'New Student Request',
-                    "{$user->name} submitted an Apply-for-Me request for {$programName}.",
+                    "{$user->name} submitted an Apply-for-Me request for {$requestedField}.",
                     'new_application',
                     '/admin/premium-applications'
                 );

@@ -13,6 +13,7 @@ class PremiumApplication extends Model
     protected $fillable = [
         'user_id',
         'program_id',
+        'requested_field',
         'status',
         'student_notes',
         'admin_notes',
