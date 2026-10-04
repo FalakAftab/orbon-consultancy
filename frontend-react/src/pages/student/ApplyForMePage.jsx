@@ -40,6 +40,7 @@ import {
   getStudentPremiumStatus,
   getStudentPremiumApplications,
   createStudentPremiumApplication,
+  deleteStudentPremiumApplication,
   postStudentApplicationMessage,
   getStudentVault,
   updateStudentVault,
@@ -142,6 +143,7 @@ export default function ApplyForMePage() {
   const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [receiptData, setReceiptData] = useState(null);
+  const [deletingApplicationId, setDeletingApplicationId] = useState(null);
 
   useEffect(() => {
     loadData().then((apps) => {
@@ -229,6 +231,24 @@ export default function ApplyForMePage() {
       alert(err.message || 'Failed to save vault');
     } finally {
       setSavingVault(false);
+    }
+  };
+
+  const handleDeleteApplication = async (application) => {
+    if (!window.confirm('Delete this pending application request? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeletingApplicationId(application.id);
+    try {
+      await deleteStudentPremiumApplication(application.id);
+      setApplications((previous) => previous.filter((item) => item.id !== application.id));
+      setDetailApp((current) => (current?.id === application.id ? null : current));
+      await loadData();
+    } catch (err) {
+      alert(err.message || 'Could not delete this application request.');
+    } finally {
+      setDeletingApplicationId(null);
     }
   };
 
@@ -603,6 +623,28 @@ export default function ApplyForMePage() {
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+                          {app.status === 'pending' && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteApplication(app)}
+                              disabled={deletingApplicationId === app.id}
+                              style={{
+                                background: '#ffffff',
+                                border: '1px solid #FCA5A5',
+                                color: '#B91C1C',
+                                padding: '0.65rem 0.9rem',
+                                borderRadius: '10px',
+                                fontSize: '0.825rem',
+                                fontWeight: 700,
+                                cursor: deletingApplicationId === app.id ? 'wait' : 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.4rem',
+                              }}
+                            >
+                              <Trash2 size={15} /> {deletingApplicationId === app.id ? 'Deleting...' : 'Delete request'}
+                            </button>
+                          )}
                           {app.status === 'payment_requested' && feeStatus === 'unpaid' && (
                             <button
                               type="button"

@@ -9,6 +9,7 @@ use App\Models\Program;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class PremiumApplicationController extends Controller
@@ -124,6 +125,36 @@ class PremiumApplicationController extends Controller
             'message' => 'Application assistance request submitted successfully!',
             'data' => $application->load(['program.university']),
         ], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Permanently remove a request before the consultancy starts processing it.
+     */
+    public function destroy(Request $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+        $application = $user->premiumApplications()->findOrFail($id);
+
+        if ($application->status !== 'pending') {
+            return response()->json([
+                'message' => 'Only requests awaiting review can be deleted. Please contact the consultancy team for an active request.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        DB::transaction(function () use ($application, $user): void {
+            $application->delete();
+
+            if ($user->subscription_status === 'pending' && ! $user->premiumApplications()->exists()) {
+                $user->update([
+                    'subscription_status' => 'free',
+                    'subscription_plan' => null,
+                ]);
+            }
+        });
+
+        return response()->json([
+            'message' => 'Application request deleted successfully.',
+        ]);
     }
 
     /**

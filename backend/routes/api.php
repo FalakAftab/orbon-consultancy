@@ -80,6 +80,7 @@ Route::prefix('v1')->group(function (): void {
         Route::get('student/premium-applications', [PremiumApplicationController::class, 'index']);
         Route::post('student/premium-applications', [PremiumApplicationController::class, 'store']);
         Route::get('student/premium-applications/{id}', [PremiumApplicationController::class, 'show']);
+        Route::delete('student/premium-applications/{id}', [PremiumApplicationController::class, 'destroy']);
         Route::post('student/premium-applications/{id}/messages', [PremiumApplicationController::class, 'sendMessage']);
         Route::get('student/premium-vault', [PremiumApplicationController::class, 'getVault']);
         Route::post('student/premium-vault', [PremiumApplicationController::class, 'updateVault']);

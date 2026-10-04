@@ -29,6 +29,12 @@ export function getStudentPremiumApplicationDetail(id) {
   return api(`/student/premium-applications/${id}`);
 }
 
+export function deleteStudentPremiumApplication(id) {
+  return api(`/student/premium-applications/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 export function postStudentApplicationMessage(id, message) {
   return api(`/student/premium-applications/${id}/messages`, {
     method: 'POST',
