@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ApplicationInvoiceMail;
 use App\Models\Notification;
 use App\Models\PremiumApplication;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
 class AdminPremiumController extends Controller
@@ -42,7 +45,22 @@ class AdminPremiumController extends Controller
      */
     public function indexApplications(Request $request): JsonResponse
     {
-        $query = PremiumApplication::with(['user.studentProfile', 'program.university']);
+        $query = PremiumApplication::query()
+            ->select([
+                'id',
+                'user_id',
+                'program_id',
+                'requested_field',
+                'status',
+                'admin_notes',
+                'created_at',
+                'updated_at',
+            ])
+            ->with([
+                'user:id,name,email,fee_status',
+                'program:id,name,university_id',
+                'program.university:id,name',
+            ]);
 
         if ($request->filled('status')) {
             $query->where('status', $request->query('status'));
@@ -169,6 +187,26 @@ class AdminPremiumController extends Controller
                 'subscription_plan' => $application->user->subscription_plan ?? 'premium_application',
                 'subscription_started_at' => $application->user->subscription_started_at ?? now(),
             ]);
+        }
+
+        if ($validated['status'] === 'payment_requested') {
+            $application->loadMissing(['user', 'program']);
+            $invoiceReference = 'ORBON-APP-'.str_pad((string) $application->id, 6, '0', STR_PAD_LEFT);
+
+            try {
+                Mail::to($application->user->email)->send(new ApplicationInvoiceMail(
+                    $application,
+                    $invoiceReference,
+                    config('premium.application_fee_usd'),
+                    config('premium.payment_instructions'),
+                ));
+            } catch (\Throwable $exception) {
+                Log::warning('Payment-request invoice email could not be sent.', [
+                    'application_id' => $application->id,
+                    'user_id' => $application->user_id,
+                    'exception' => $exception->getMessage(),
+                ]);
+            }
         }
 
         // Send notification to student regarding status update
